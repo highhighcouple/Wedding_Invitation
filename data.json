@@ -32,7 +32,7 @@
             "father": "조복래",
             "mother": "나선희",
             "fPhone": "010-9090-0824",
-            "mPhone": "010-9877-0824",
+            "mPhone": "010-8877-0824",
             "fBank": "우리",
             "fAccount": "109-08-072450",
             "mBank": "신한",
@@ -104,14 +104,14 @@
         {
             "id": "youtube",
             "title": "영상(Video)",
-            "isVisible": true,
+            "isVisible": false,
             "isFolded": false,
             "order": 3
         },
         {
             "id": "gallery",
             "title": "사진 앨범(Gallery)",
-            "isVisible": true,
+            "isVisible": false,
             "isFolded": false,
             "order": 4
         },
@@ -126,7 +126,7 @@
             "id": "accounts",
             "title": "마음 전하실 곳(Accounts)",
             "isVisible": true,
-            "isFolded": true,
+            "isFolded": false,
             "order": 6
         },
         {
@@ -139,14 +139,14 @@
         {
             "id": "guestbook",
             "title": "방명록(Guestbook)",
-            "isVisible": true,
+            "isVisible": false,
             "isFolded": false,
             "order": 8
         },
         {
             "id": "rsvp",
             "title": "참석여부(RSVP)",
-            "isVisible": true,
+            "isVisible": false,
             "isFolded": false,
             "order": 9
         },

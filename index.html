@@ -234,15 +234,17 @@
                         <!-- 1. Names/Hero -->
                         <template x-if="section.id === 'names'">
                             <div class="text-center pb-12 bg-white">
-                                <div class="relative w-full aspect-[3/4] bg-cover bg-center mb-12"
-                                    :style="`background-image: url(${data.images.main})`">
-                                    <div class="absolute inset-0 flex flex-col items-center p-12 bg-black/10">
-                                        <div class="eng-font text-white text-4xl mt-12 drop-shadow-md"
+                                <div class="relative w-full mb-12">
+                                    <img :src="data.images.main" @click="openLightbox(data.images.main)"
+                                        class="w-full h-auto block shadow-sm cursor-pointer">
+                                    <div
+                                        class="absolute inset-0 flex flex-col items-center p-12 bg-black/5 pointer-events-none">
+                                        <div class="eng-font text-white text-4xl mt-12 drop-shadow-lg"
                                             x-text="data.text.mainOverlay"></div>
                                     </div>
                                 </div>
 
-                                <div class="whitespace-pre-line leading-8 text-sm text-gray-600 mb-8 lux-font"
+                                <div class="whitespace-pre-line leading-8 text-sm text-gray-600 mb-8 lux-font px-8"
                                     x-text="data.text.mainMessage"></div>
 
                                 <!-- Names Section UI Restoration & Improvement -->
@@ -586,8 +588,9 @@
         </template>
     </main>
 
-    <footer class="py-10 text-center text-[10px] text-gray-400 font-light tracking-widest border-t border-gray-50">
-        Copyright(c) 조현우 All Right Reserved
+    <footer
+        class="py-12 text-center text-[11px] text-gray-500 font-medium tracking-widest bg-white border-t border-gray-100">
+        Copyright (c) 조현우 All Right Reserved
     </footer>
 
     <!-- Image Modal -->
@@ -799,18 +802,21 @@
                             this.isExplosion = config.isExplosion || false;
                             this.x = config.x !== undefined ? config.x : Math.random() * canvas.width;
                             this.y = config.y !== undefined ? config.y : -20;
-                            this.size = Math.random() * (this.isExplosion ? 4 : 6) + 2;
-                            this.speedX = this.isExplosion ? (Math.random() - 0.5) * 12 : (Math.random() - 0.5) * 0.5;
-                            this.speedY = this.isExplosion ? (Math.random() - 0.5) * 12 : Math.random() * 2 + 1;
+                            this.size = Math.random() * (this.isExplosion ? 4 : 8) + 4;
+                            this.speedX = this.isExplosion ? (Math.random() - 0.5) * 12 : (Math.random() - 0.5) * 0.3;
+                            this.speedY = this.isExplosion ? (Math.random() - 0.5) * 12 : Math.random() * 0.8 + 0.5; // Slower speed
                             this.angle = Math.random() * 360;
-                            this.spin = Math.random() * 4 - 2;
+                            this.spin = Math.random() * 2 - 1;
+                            this.sway = Math.random() * 2 * Math.PI;
+                            this.swaySpeed = 0.02 + Math.random() * 0.02;
                             this.life = 1.0;
-                            this.opacity = 1.0;
+                            this.opacity = 0.8;
                         }
                         update() {
-                            this.x += this.speedX;
+                            this.x += this.speedX + Math.sin(this.sway) * 0.5; // Fluttering
                             this.y += this.speedY;
                             this.angle += this.spin;
+                            this.sway += this.swaySpeed;
                             if (this.isExplosion) {
                                 this.life -= 0.02;
                                 this.opacity = Math.max(0, this.life);
@@ -825,52 +831,89 @@
                             ctx.rotate(this.angle * Math.PI / 180);
                             ctx.globalAlpha = this.opacity;
                             ctx.fillStyle = this.getColor();
-                            ctx.beginPath();
-                            if (type === 'snow') ctx.arc(0, 0, this.size, 0, Math.PI * 2);
-                            else ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
-                            ctx.fill();
+
+                            if (this.isExplosion || type === 'snow') {
+                                ctx.beginPath();
+                                ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+                                ctx.fill();
+                            } else {
+                                // Draw Petal
+                                ctx.beginPath();
+                                ctx.moveTo(0, -this.size / 2);
+                                ctx.bezierCurveTo(this.size / 3, -this.size / 2, this.size / 2, -this.size / 4, this.size / 2, 0);
+                                ctx.bezierCurveTo(this.size / 2, this.size / 4, this.size / 3, this.size / 2, 0, this.size / 2);
+                                ctx.bezierCurveTo(-this.size / 3, this.size / 2, -this.size / 2, this.size / 4, -this.size / 2, 0);
+                                ctx.bezierCurveTo(-this.size / 2, -this.size / 4, -this.size / 3, -this.size / 2, 0, -this.size / 2);
+                                ctx.fill();
+                            }
                             ctx.restore();
                         }
                         getColor() {
                             if (this.isExplosion) return '#fff700';
                             if (type === 'snow') return '#fff';
-                            if (type === 'leaves') return '#ff9a00';
-                            return '#f2aebc';
+                            return '#f2aebc'; // Rose petal pink
                         }
                     }
 
-                    class Trail {
+                    class Butterfly {
                         constructor(x, y) {
                             this.x = x; this.y = y;
-                            this.size = Math.random() * 3 + 2;
+                            this.size = Math.random() * 10 + 15;
                             this.life = 1.0;
+                            this.flap = 0;
+                            this.speedX = (Math.random() - 0.5) * 2;
+                            this.speedY = -Math.random() * 2 - 1;
                         }
-                        update() { this.life -= 0.05; }
+                        update() {
+                            this.life -= 0.015;
+                            this.x += this.speedX;
+                            this.y += this.speedY;
+                            this.flap += 0.2;
+                        }
                         draw() {
                             ctx.save();
-                            ctx.globalAlpha = this.life * 0.4;
+                            ctx.translate(this.x, this.y);
+                            ctx.globalAlpha = this.life * 0.7;
                             ctx.fillStyle = "#fff";
+
+                            const flapScale = Math.sin(this.flap);
+
+                            // Left Wing
                             ctx.beginPath();
-                            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                            ctx.ellipse(-this.size / 4 * Math.abs(flapScale), 0, this.size / 2 * Math.abs(flapScale), this.size / 2, 0, 0, Math.PI * 2);
                             ctx.fill();
+
+                            // Right Wing
+                            ctx.beginPath();
+                            ctx.ellipse(this.size / 4 * Math.abs(flapScale), 0, this.size / 2 * Math.abs(flapScale), this.size / 2, 0, 0, Math.PI * 2);
+                            ctx.fill();
+
+                            // Body
+                            ctx.fillStyle = "rgba(255,255,255,0.8)";
+                            ctx.beginPath();
+                            ctx.ellipse(0, 0, 2, this.size / 3, 0, 0, Math.PI * 2);
+                            ctx.fill();
+
                             ctx.restore();
                         }
                     }
 
-                    for (let i = 0; i < 40; i++) this.particles.push(new Particle());
-                    this.trails = [];
+                    for (let i = 0; i < 30; i++) this.particles.push(new Particle());
+                    this.butterflies = [];
 
                     const loop = () => {
                         ctx.clearRect(0, 0, canvas.width, canvas.height);
                         this.particles = this.particles.filter(p => !p.isExplosion || p.life > 0);
                         this.particles.forEach(p => { p.update(); p.draw(); });
-                        this.trails = this.trails.filter(t => t.life > 0);
-                        this.trails.forEach(t => { t.update(); t.draw(); });
+                        this.butterflies = this.butterflies.filter(b => b.life > 0);
+                        this.butterflies.forEach(b => { b.update(); b.draw(); });
                         requestAnimationFrame(loop);
                     };
                     loop();
 
-                    this._createTrail = (x, y) => this.trails.push(new Trail(x, y));
+                    this._createTrail = (x, y) => {
+                        if (this.butterflies.length < 15) this.butterflies.push(new Butterfly(x, y));
+                    };
                     this._createExplosion = (x, y) => {
                         for (let i = 0; i < 20; i++) this.particles.push(new Particle({ isExplosion: true, x, y }));
                     };
@@ -1001,8 +1044,9 @@
                 },
 
                 copyAccount(acc) {
-                    this.copy(acc.num);
-                    alert(`${acc.name} ${acc.num} (${acc.bank}) 이 클립보드에 복사되었습니다.`);
+                    const txt = `(${acc.bank}) ${acc.num}`;
+                    this.copy(txt);
+                    alert(`${acc.name} ${txt} 이 클립보드에 복사되었습니다.`);
                 },
 
                 shareKakao() {
