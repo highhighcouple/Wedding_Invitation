@@ -1,0 +1,163 @@
+{
+    "groom": {
+        "name": "조현우",
+        "rank": "장남",
+        "phone": "010-3366-4848",
+        "bank": "기업",
+        "account": "040-086067-01-014",
+        "parents": {
+            "father": "조복래",
+            "mother": "나선희",
+            "fPhone": "010-9090-0824",
+            "mPhone": "010-9877-0824",
+            "fBank": "우리",
+            "fAccount": "109-08-072450",
+            "mBank": "신한",
+            "mAccount": "110-587-170868"
+        }
+    },
+    "bride": {
+        "name": "류하영",
+        "rank": "장녀",
+        "phone": "010-6556-7525",
+        "bank": "국민",
+        "account": "926-54-7559-46",
+        "parents": {
+            "father": "류민석",
+            "mother": "고우희",
+            "fPhone": "010-5356-7558",
+            "mPhone": "010-9858-7551",
+            "fBank": "농협",
+            "fAccount": "302-5356-7558-41",
+            "mBank": "신한",
+            "mAccount": "339-06-063092"
+        }
+    },
+    "images": {
+        "main": "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2069",
+        "gallery": [
+            "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1000",
+            "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1000",
+            "https://images.unsplash.com/photo-1519741497674-611481863552?w=1000",
+            "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=1000",
+            "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1000",
+            "https://images.unsplash.com/photo-1510076857177-7470076d4098?w=1000"
+        ],
+        "og": {}
+    },
+    "text": {
+        "mainOverlay": "Wedding Invitation",
+        "mainMessage": "조현우 그리고 류하영\n\n2026년 05월 02일 토요일 PM 13시 00분\n강남 마리아쥬 스퀘어\n\n영원히 함께할\n사랑의 맹세\n같이 축복해주세요."
+    },
+    "media": {
+        "youtube": "UmdCDfXQ8wQ",
+        "bgm": []
+    },
+    "theme": {
+        "effect": "petals",
+        "color": "#f2aebc"
+    },
+    "config": {
+        "weddingDate": "2026-05-02T13:00:00",
+        "venue": {
+            "name": "마리아쥬 스퀘어",
+            "phone": "02-541-5007",
+            "address": "서울특별시 강남구 도산대로 318 SB타워 G층",
+            "guideText": "셔틀운행\n7호선, 분당선 강남구청역 3번출구 셔틀버스 이용\n\n지하철\n강남구청역 3-1번 출구 도보 600M",
+            "mapLinks": {
+                "naver": "https://map.naver.com",
+                "kakao": "https://map.kakao.com",
+                "tmap": "https://tmap.co.kr",
+                "google": "https://maps.google.com"
+            },
+            "navLinks": {
+                "kakao": "",
+                "tmap": ""
+            }
+        },
+        "secrets": {
+            "kakaoApiKey": "dacffa882aa3284870d06afa02bd5947",
+            "githubToken": ""
+        }
+    },
+    "sections": [
+        {
+            "id": "names",
+            "title": "Eternal Promise",
+            "isVisible": true,
+            "isFolded": false,
+            "order": 1
+        },
+        {
+            "id": "calendar",
+            "title": "The Day",
+            "isVisible": true,
+            "isFolded": false,
+            "order": 2
+        },
+        {
+            "id": "youtube",
+            "title": "Memory Film",
+            "isVisible": true,
+            "isFolded": true,
+            "order": 3
+        },
+        {
+            "id": "gallery",
+            "title": "Gallery",
+            "isVisible": true,
+            "isFolded": true,
+            "order": 4
+        },
+        {
+            "id": "phone",
+            "title": "Contact",
+            "isVisible": true,
+            "isFolded": true,
+            "order": 5
+        },
+        {
+            "id": "accounts",
+            "title": "Gift",
+            "isVisible": true,
+            "isFolded": true,
+            "order": 6
+        },
+        {
+            "id": "location",
+            "title": "Location",
+            "isVisible": true,
+            "isFolded": false,
+            "order": 7
+        },
+        {
+            "id": "guestbook",
+            "title": "Guestbook",
+            "isVisible": true,
+            "isFolded": true,
+            "order": 8
+        },
+        {
+            "id": "rsvp",
+            "title": "RSVP",
+            "isVisible": true,
+            "isFolded": false,
+            "order": 9
+        },
+        {
+            "id": "share",
+            "title": "Share",
+            "isVisible": true,
+            "isFolded": true,
+            "order": 10
+        }
+    ],
+    "guestbook": [
+        {
+            "name": "시스템",
+            "content": "축하합니다!",
+            "date": "2026.01.20"
+        }
+    ],
+    "rsvp": []
+}
