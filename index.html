@@ -210,12 +210,12 @@
     <canvas id="effect"></canvas>
 
     <!-- Main Content -->
-    <main class="max-w-lg mx-auto pb-32">
-
+    <main class="pb-32 w-full">
         <!-- Hero Section (Fixed ID: names) handled dynamically via sort -->
         <template x-for="section in sortedSections" :key="section.id">
             <template x-if="section.isVisible">
-                <div class="section-wrap relative" :id="section.id" :class="section.id === 'names' ? 'pt-0' : ''">
+                <div class="section-wrap relative" :id="section.id"
+                    :class="section.id === 'names' ? 'pt-0 w-full mb-0 shadow-none' : 'max-w-lg mx-auto'">
 
                     <!-- Toggle/Static Header (Exclude Names) -->
                     <div x-show="section.id !== 'names'"
@@ -234,13 +234,14 @@
                         <!-- 1. Names/Hero -->
                         <template x-if="section.id === 'names'">
                             <div class="text-center pb-12 bg-white">
-                                <div class="relative w-full mb-12">
+                                <div class="relative w-full mb-12 overflow-hidden">
                                     <img :src="data.images.main" @click="openLightbox(data.images.main)"
-                                        class="w-full h-auto block shadow-sm cursor-pointer">
+                                        class="w-full min-h-[500px] h-[75vh] object-cover block shadow-inner cursor-pointer">
                                     <div
-                                        class="absolute inset-0 flex flex-col items-center p-12 bg-black/5 pointer-events-none">
-                                        <div class="eng-font text-white text-4xl mt-12 drop-shadow-lg"
+                                        class="absolute inset-0 flex flex-col items-center justify-center p-12 bg-black/10 pointer-events-none">
+                                        <div class="eng-font text-white text-5xl mb-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
                                             x-text="data.text.mainOverlay"></div>
+                                        <div class="w-16 h-[1px] bg-white/50"></div>
                                     </div>
                                 </div>
 
@@ -862,19 +863,19 @@
                     class Butterfly {
                         constructor(x, y) {
                             this.x = x; this.y = y;
-                            this.size = Math.random() * 12 + 20;
+                            this.size = Math.random() * 15 + 25;
                             this.life = 1.0;
-                            this.flap = 0;
-                            this.speedX = (Math.random() - 0.5) * 5;
-                            this.speedY = -Math.random() * 3 - 2;
+                            this.flap = Math.random() * Math.PI;
+                            this.speedX = (Math.random() - 0.5) * 3;
+                            this.speedY = -Math.random() * 1.5 - 0.5;
                             this.hue = Math.random() * 360;
                         }
                         update() {
-                            this.life -= 0.01;
+                            this.life -= 0.008; // Slower fade
                             this.x += this.speedX;
                             this.y += this.speedY;
-                            this.flap += 0.35;
-                            this.hue = (this.hue + 10) % 360; // Rainbow shift
+                            this.flap += 0.12; // Slower flap
+                            this.hue = (this.hue + 5) % 360;
                         }
                         draw() {
                             ctx.save();
@@ -884,20 +885,29 @@
                             const flapScale = Math.sin(this.flap);
                             const w = (this.size / 2) * Math.abs(flapScale);
 
-                            // Rainbow color
-                            ctx.fillStyle = `hsl(${this.hue}, 100%, 75%)`;
+                            ctx.fillStyle = `hsl(${this.hue}, 90%, 75%)`;
 
-                            // Left Wing
+                            // Elegant Wings Shapes
+                            // Left Wings
                             ctx.beginPath();
-                            ctx.ellipse(-w / 2, 0, w, this.size / 2, 0.4, 0, Math.PI * 2);
+                            ctx.moveTo(0, 0);
+                            ctx.bezierCurveTo(-w, -this.size / 2, -w, 0, 0, 0); // Upper Left
+                            ctx.fill();
+                            ctx.beginPath();
+                            ctx.moveTo(0, 0);
+                            ctx.bezierCurveTo(-w * 0.8, this.size / 3, -w * 0.5, this.size / 2, 0, 0); // Lower Left
+                            ctx.fill();
+                            // Right Wings
+                            ctx.beginPath();
+                            ctx.moveTo(0, 0);
+                            ctx.bezierCurveTo(w, -this.size / 2, w, 0, 0, 0); // Upper Right
+                            ctx.fill();
+                            ctx.beginPath();
+                            ctx.moveTo(0, 0);
+                            ctx.bezierCurveTo(w * 0.8, this.size / 3, w * 0.5, this.size / 2, 0, 0); // Lower Right
                             ctx.fill();
 
-                            // Right Wing
-                            ctx.beginPath();
-                            ctx.ellipse(w / 2, 0, w, this.size / 2, -0.4, 0, Math.PI * 2);
-                            ctx.fill();
-
-                            // Thin Body
+                            // Body
                             ctx.fillStyle = "rgba(0,0,0,0.1)";
                             ctx.beginPath();
                             ctx.ellipse(0, 0, 1, this.size / 4, 0, 0, Math.PI * 2);
@@ -934,11 +944,10 @@
 
                 initMap() {
                     const check = setInterval(() => {
-                        if (typeof kakao !== 'undefined' && kakao.maps && this.data.config) {
+                        const container = document.getElementById('map');
+                        if (typeof kakao !== 'undefined' && kakao.maps && container && this.data.config) {
                             clearInterval(check);
-                            kakao.maps.load(() => {
-                                const container = document.getElementById('map');
-                                if (!container) return;
+                            const init = () => {
                                 const geocoder = new kakao.maps.services.Geocoder();
                                 const addr = this.data.config.venue.address;
                                 if (!addr) return;
@@ -947,13 +956,14 @@
                                         const coords = new kakao.maps.LatLng(res[0].y, res[0].x);
                                         const map = new kakao.maps.Map(container, { center: coords, level: 3 });
                                         new kakao.maps.Marker({ map: map, position: coords });
-                                        // Trigger redraw
-                                        setTimeout(() => map.relayout(), 500);
+                                        setTimeout(() => map.relayout(), 1000);
                                     }
                                 });
-                            });
+                            };
+                            if (kakao.maps.services) init();
+                            else kakao.maps.load(init);
                         }
-                    }, 500);
+                    }, 1000);
                 },
 
                 initObserver() {
