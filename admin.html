@@ -410,6 +410,16 @@
                     </div>
                 </div>
 
+                <div class="space-y-4 pt-4 border-t border-[#3d4450]">
+                    <div class="flex justify-between items-center">
+                        <label class="steam-label">지도 다운로드용 이미지</label>
+                        <button class="btn-gray text-[10px]" @click="triggerUpload('mapImg')">📁 업로드</button>
+                    </div>
+                    <input type="file" id="file-mapImg" class="hidden" @change="handleFile($event, 'mapImg')">
+                    <input x-model="data.config.venue.mapImage" placeholder="지도 이미지 URL (업로드 시 자동 입력)"
+                        class="steam-input">
+                </div>
+
                 <div class="p-4 bg-[#12151a] rounded space-y-4">
                     <label class="steam-label">지도/길찾기 링크</label>
                     <div class="grid grid-cols-2 gap-4">
@@ -446,6 +456,22 @@
                         <input x-model="data.images.og.x" placeholder="X(트위터) 공유 이미지" class="steam-input">
                     </div>
                 </div>
+
+                <!-- GitHub Token Guide -->
+                <div class="p-4 bg-blue-900/10 border border-blue-500/30 rounded-lg mt-8">
+                    <h4 class="text-blue-400 font-bold mb-2 flex items-center gap-2">
+                        ℹ️ 데이터 저장 및 파일 업로드 가이드
+                    </h4>
+                    <div class="text-[11px] text-gray-400 space-y-2 leading-relaxed">
+                        <p>1. <a href="https://github.com/settings/tokens" target="_blank"
+                                class="text-blue-400 underline">GitHub Token 생성</a> 페이지로 이동합니다.</p>
+                        <p>2. <b>Generate new token (classic)</b>을 선택합니다.</p>
+                        <p>3. Note에 "Wedding Invitation" 등을 입력하고, 권한(Scopes)에서 <b>repo</b> 항목을 체크합니다.</p>
+                        <p>4. 생성된 <b>ghp_...</b>로 시작하는 토큰을 복사하여 위 'GITHUB 토큰' 칸에 붙여넣습니다.</p>
+                        <p>5. 이제 '서버에 적용' 버튼을 누르거나 파일을 업로드하면 깃허브 저장소에 직접 데이터가 저장됩니다.</p>
+                        <p class="text-amber-400">※ 주의: 토큰은 브라우저에만 임시 저장되며, 페이지를 새로고침하면 다시 입력해야 할 수 있습니다.</p>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -457,12 +483,12 @@
                 auth: false, pass: '', tab: 'sections', ip: 'Loading...',
                 dragSrc: null,
                 tabs: [
-                    { id: 'sections', name: '순서 및 노출', icon: '☰' },
-                    { id: 'identity', name: '인적 사항', icon: '👤' },
-                    { id: 'content', name: '문구 설정', icon: '📝' },
-                    { id: 'visuals', name: '디자인/업로드', icon: '🎨' },
-                    { id: 'logistics', name: '일시/장소', icon: '📍' },
-                    { id: 'settings', name: '고급 설정', icon: '⚙️' },
+                    { id: 'sections', name: '순서 및 노출(Section Order)', icon: '☰' },
+                    { id: 'identity', name: '인적 사항(Identity)', icon: '👤' },
+                    { id: 'content', name: '문구 설정(Text & Content)', icon: '📝' },
+                    { id: 'visuals', name: '디자인/업로드(Visuals & Effects)', icon: '🎨' },
+                    { id: 'logistics', name: '일시/장소(Logistics)', icon: '📍' },
+                    { id: 'settings', name: '고급 설정(Global Settings)', icon: '⚙️' },
                 ],
                 effects: [
                     { val: 'petals', icon: '🌸', label: '벚꽃' }, { val: 'snow', icon: '❄️', label: '눈' },
@@ -479,6 +505,18 @@
                     theme: {},
                     sections: []
                 },
+                defaultSections: [
+                    { id: 'names', title: '청첩장 상단(Names)', isVisible: true, isFolded: false, order: 1 },
+                    { id: 'calendar', title: '결혼식 날(Calendar)', isVisible: true, isFolded: false, order: 2 },
+                    { id: 'youtube', title: '영상(Video)', isVisible: true, isFolded: false, order: 3 },
+                    { id: 'gallery', title: '사진 앨범(Gallery)', isVisible: true, isFolded: false, order: 4 },
+                    { id: 'phone', title: '연락처(Contact)', isVisible: true, isFolded: true, order: 5 },
+                    { id: 'accounts', title: '마음 전하실 곳(Accounts)', isVisible: true, isFolded: true, order: 6 },
+                    { id: 'location', title: '오시는 길(Location)', isVisible: true, isFolded: false, order: 7 },
+                    { id: 'guestbook', title: '방명록(Guestbook)', isVisible: true, isFolded: false, order: 8 },
+                    { id: 'rsvp', title: '참석여부(RSVP)', isVisible: true, isFolded: false, order: 9 },
+                    { id: 'share', title: '공유(Share)', isVisible: true, isFolded: false, order: 10 }
+                ],
 
                 async init() {
                     fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => this.ip = d.ip);
@@ -487,9 +525,17 @@
                     else {
                         try {
                             const r = await fetch('data.json');
-                            if (r.ok) this.data = await r.json();
+                            if (r.ok) {
+                                this.data = await r.json();
+                                // Clean up navigation if exists
+                                this.data.sections = this.data.sections.filter(s => s.id !== 'navigation' && s.id !== 'navlinks' && s.id !== 'maplinks');
+                                // Ensure location section title is correct
+                                const loc = this.data.sections.find(s => s.id === 'location');
+                                if (loc) loc.title = '오시는 길(Location)';
+                            }
                         } catch (e) { }
                     }
+                    if (!this.data.sections || !this.data.sections.length) this.data.sections = this.defaultSections;
                     if (!this.data.media) this.data.media = { bgm: [] };
                     if (!this.data.media.bgm) this.data.media.bgm = [];
                 },
@@ -535,6 +581,7 @@
                         let folder = 'local/images/gallery';
                         if (target === 'main') folder = 'local/images/bg';
                         if (target === 'bgm') folder = 'local/bgm';
+                        if (target === 'mapImg') folder = 'local/images/map';
 
                         const path = `${folder}/${Date.now()}_${file.name}`;
 
@@ -555,6 +602,7 @@
                                 if (target === 'main') this.data.images.main = url;
                                 else if (target === 'gallery') this.data.images.gallery.push(url);
                                 else if (target === 'bgm') this.data.media.bgm.push(url);
+                                else if (target === 'mapImg') this.data.config.venue.mapImage = url;
 
                                 alert('업로드 성공: ' + path);
                             } else {

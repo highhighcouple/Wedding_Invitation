@@ -89,87 +89,73 @@
     "sections": [
         {
             "id": "names",
-            "title": "Names",
+            "title": "청첩장 상단(Names)",
             "isVisible": true,
             "isFolded": false,
             "order": 1
         },
         {
             "id": "calendar",
-            "title": "Calendar",
+            "title": "결혼식 날(Calendar)",
             "isVisible": true,
             "isFolded": false,
             "order": 2
         },
         {
             "id": "youtube",
-            "title": "Video",
+            "title": "영상(Video)",
             "isVisible": true,
             "isFolded": false,
             "order": 3
         },
         {
             "id": "gallery",
-            "title": "Gallery",
+            "title": "사진 앨범(Gallery)",
             "isVisible": true,
             "isFolded": false,
             "order": 4
         },
         {
             "id": "phone",
-            "title": "Contact",
+            "title": "연락처(Contact)",
             "isVisible": true,
-            "isFolded": false,
+            "isFolded": true,
             "order": 5
         },
         {
             "id": "accounts",
-            "title": "Accounts",
+            "title": "마음 전하실 곳(Accounts)",
             "isVisible": true,
-            "isFolded": false,
+            "isFolded": true,
             "order": 6
         },
         {
             "id": "location",
-            "title": "Location",
+            "title": "오시는 길(Location)",
             "isVisible": true,
             "isFolded": false,
             "order": 7
         },
         {
-            "id": "maplinks",
-            "title": "Detail Maps",
+            "id": "guestbook",
+            "title": "방명록(Guestbook)",
             "isVisible": true,
             "isFolded": false,
             "order": 8
         },
         {
-            "id": "navlinks",
-            "title": "Navigation",
+            "id": "rsvp",
+            "title": "참석여부(RSVP)",
             "isVisible": true,
             "isFolded": false,
             "order": 9
         },
         {
-            "id": "guestbook",
-            "title": "Guestbook",
+            "id": "share",
+            "title": "공유(Share)",
             "isVisible": true,
             "isFolded": false,
             "order": 10
-        },
-        {
-            "id": "rsvp",
-            "title": "RSVP",
-            "isVisible": true,
-            "isFolded": false,
-            "order": 11
-        },
-        {
-            "id": "share",
-            "title": "Share",
-            "isVisible": true,
-            "isFolded": false,
-            "order": 12
         }
     ],
     "guestbook": [],

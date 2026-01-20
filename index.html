@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wedding Invitation</title>
+    <title
+        x-text="data.groom?.name && data.bride?.name ? data.groom.name + ' ♥ ' + data.bride.name + '의 모바일 청첩장' : '모바일 청첩장'">
+    </title>
     <!-- Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Sans+KR:wght@300;400;500&display=swap"
@@ -205,7 +207,7 @@
     <canvas id="effect"></canvas>
 
     <!-- Main Content -->
-    <div class="max-w-lg mx-auto pb-32">
+    <main class="max-w-lg mx-auto pb-32">
 
         <!-- Hero Section (Fixed ID: names) handled dynamically via sort -->
         <template x-for="section in sortedSections" :key="section.id">
@@ -241,15 +243,20 @@
                                 <div class="whitespace-pre-line leading-8 text-sm text-gray-600 mb-8 lux-font"
                                     x-text="data.text.mainMessage"></div>
 
-                                <div class="py-8 border-y border-gray-50 mx-8 flex justify-center items-center gap-8">
-                                    <div>
-                                        <div class="text-xl font-bold mb-1" x-text="data.groom.name"></div>
-                                        <div class="text-[10px] text-gray-400 tracking-widest">GROOM</div>
+                                <!-- Names Section UI Modification -->
+                                <div class="space-y-6 pt-10">
+                                    <div class="flex flex-col items-center gap-1">
+                                        <span
+                                            class="text-[10px] text-pink-400 font-bold tracking-widest uppercase">신랑</span>
+                                        <h1 class="text-3xl tracking-[0.2em] font-light flex items-center"
+                                            x-text="data.groom.name"></h1>
                                     </div>
-                                    <div class="text-pink-300 text-2xl eng-font">&</div>
-                                    <div>
-                                        <div class="text-xl font-bold mb-1" x-text="data.bride.name"></div>
-                                        <div class="text-[10px] text-gray-400 tracking-widest">BRIDE</div>
+                                    <div class="lux-font text-2xl text-pink-200 mt-[-10px]">&</div>
+                                    <div class="flex flex-col items-center gap-1">
+                                        <span
+                                            class="text-[10px] text-pink-400 font-bold tracking-widest uppercase">신부</span>
+                                        <h1 class="text-3xl tracking-[0.2em] font-light flex items-center"
+                                            x-text="data.bride.name"></h1>
                                     </div>
                                 </div>
 
@@ -274,23 +281,20 @@
                         <!-- 2. Calendar -->
                         <template x-if="section.id === 'calendar'">
                             <div class="px-8 pb-10 text-center">
-                                <div class="text-xl mb-6 font-serif" x-text="calTitle"></div>
-                                <div class="grid grid-cols-7 gap-1 text-sm mb-8">
-                                    <div class="text-red-400 py-2">S</div>
-                                    <div class="text-gray-400 py-2">M</div>
-                                    <div class="text-gray-400 py-2">T</div>
-                                    <div class="text-gray-400 py-2">W</div>
-                                    <div class="text-gray-400 py-2">T</div>
-                                    <div class="text-gray-400 py-2">F</div>
-                                    <div class="text-blue-400 py-2">S</div>
-                                    <template x-for="d in calDays">
-                                        <div class="aspect-square flex items-center justify-center rounded-full"
-                                            :class="{'text-red-400': d.w===0, 'text-blue-400': d.w===6, 'bg-pink-300 text-white shadow-lg': d.isWed}">
-                                            <span x-text="d.day || ''"></span>
-                                        </div>
-                                    </template>
+                                <div class="mt-8 mb-4">
+                                    <div class="text-[14px] font-bold text-gray-500 mb-2" x-text="dDay"></div>
+                                    <div
+                                        class="bg-gray-50 p-4 rounded-xl border border-gray-100 grid grid-cols-7 gap-1 text-center">
+                                        <template x-for="day in ['일','월','화','수','목','금','토']">
+                                            <div class="text-[10px] font-bold text-gray-400" x-text="day"></div>
+                                        </template>
+                                        <template x-for="d in calDays">
+                                            <div class="h-8 flex items-center justify-center text-sm"
+                                                :class="d.isTarget ? 'bg-pink-400 text-white rounded-full font-bold shadow-sm' : (d.isSun ? 'text-red-400' : 'text-gray-600')"
+                                                x-text="d.day || ''"></div>
+                                        </template>
+                                    </div>
                                 </div>
-                                <div class="text-2xl lux-font font-bold text-pink-400" x-text="dDay"></div>
                             </div>
                         </template>
 
@@ -358,23 +362,44 @@
                             <div class="px-8 pb-10 space-y-4">
                                 <div class="text-center text-xs text-gray-400 mb-6">마음을 전하실 곳</div>
                                 <!-- Accordions for Groom/Bride sides -->
-                                <template x-for="side in ['groom', 'bride']">
-                                    <div class="border rounded px-4 py-3 bg-gray-50">
-                                        <div class="font-bold text-sm mb-2 capitalize" x-text="side"></div>
-                                        <template x-for="acc in getAccounts(side)">
-                                            <div
-                                                class="flex justify-between items-center text-xs py-2 border-t border-gray-100">
-                                                <div>
-                                                    <div x-text="acc.label"></div>
-                                                    <div class="text-gray-400" x-text="`${acc.bank} ${acc.account}`">
-                                                    </div>
-                                                </div>
-                                                <button @click="copy(acc.bank + ' ' + acc.account)"
-                                                    class="bg-white border px-2 py-1 rounded">Copy</button>
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"
+                                    @click="copy(data.groom.accounts[0]?.num)">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-xl">
+                                            🤵</div>
+                                        <div>
+                                            <div class="font-bold text-sm">신랑 <span x-text="data.groom.name"></span>
                                             </div>
-                                        </template>
+                                            <div class="text-xs text-blue-500 font-medium">연락 및 축하 마음 전하기</div>
+                                        </div>
                                     </div>
-                                </template>
+                                    <div class="flex gap-2">
+                                        <button @click.stop="window.location.href='tel:'+data.groom.phone"
+                                            class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-sm">📞</button>
+                                        <button
+                                            class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-sm">💳</button>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"
+                                    @click="copy(data.bride.accounts[0]?.num)">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-xl">
+                                            👰</div>
+                                        <div>
+                                            <div class="font-bold text-sm">신부 <span x-text="data.bride.name"></span>
+                                            </div>
+                                            <div class="text-xs text-pink-500 font-medium">연락 및 축하 마음 전하기</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button @click.stop="window.location.href='tel:'+data.bride.phone"
+                                            class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-sm">📞</button>
+                                        <button
+                                            class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-sm">💳</button>
+                                    </div>
+                                </div>
                             </div>
                         </template>
 
@@ -386,8 +411,55 @@
                                     <div class="text-sm text-gray-500 mt-1" x-text="data.config.venue.address"></div>
                                 </div>
                                 <div id="map" class="w-full h-64 bg-gray-100 rounded mb-4"></div>
-                                <div class="whitespace-pre-line text-xs text-gray-500 leading-6 bg-gray-50 p-4 rounded"
+                                <div class="whitespace-pre-line text-xs text-gray-500 leading-6 bg-gray-50 p-4 rounded mb-6"
                                     x-text="data.config.venue.guideText"></div>
+
+                                <!-- Map Apps -->
+                                <div class="grid grid-cols-4 gap-4 mb-8">
+                                    <a :href="data.config.venue.mapLinks.kakao" target="_blank"
+                                        class="flex flex-col items-center gap-1">
+                                        <div
+                                            class="w-12 h-12 bg-yellow-400 rounded-2xl flex items-center justify-center text-lg shadow-sm">
+                                            K</div>
+                                        <span class="text-[10px] text-gray-500">카카오맵</span>
+                                    </a>
+                                    <a :href="data.config.venue.mapLinks.naver" target="_blank"
+                                        class="flex flex-col items-center gap-1">
+                                        <div
+                                            class="w-12 h-12 bg-green-500 rounded-2xl flex items-center justify-center text-lg text-white shadow-sm font-bold">
+                                            N</div>
+                                        <span class="text-[10px] text-gray-500">네이버지도</span>
+                                    </a>
+                                    <a :href="data.config.venue.mapLinks.tmap" target="_blank"
+                                        class="flex flex-col items-center gap-1">
+                                        <div
+                                            class="w-12 h-12 bg-red-500 rounded-2xl flex items-center justify-center text-lg text-white shadow-sm font-bold">
+                                            T</div>
+                                        <span class="text-[10px] text-gray-500">티맵</span>
+                                    </a>
+                                    <a :href="data.config.venue.mapLinks.google" target="_blank"
+                                        class="flex flex-col items-center gap-1">
+                                        <div
+                                            class="w-12 h-12 bg-white border border-gray-100 rounded-2xl flex items-center justify-center text-lg shadow-sm font-bold">
+                                            G</div>
+                                        <span class="text-[10px] text-gray-500">구글맵</span>
+                                    </a>
+                                </div>
+
+                                <!-- Detail Map Image -->
+                                <template x-if="data.config.venue.mapImage">
+                                    <div class="mt-4 pt-6 border-t">
+                                        <h3 class="text-sm font-bold text-gray-700 mb-4">지도 다운로드</h3>
+                                        <a :href="data.config.venue.mapImage" download class="block">
+                                            <img :src="data.config.venue.mapImage"
+                                                class="w-full rounded-lg shadow-md mb-2">
+                                            <button
+                                                class="w-full py-3 bg-gray-100 text-xs font-bold text-gray-600 rounded-lg hover:bg-gray-200">
+                                                📥 지도를 이미지로 저장하기
+                                            </button>
+                                        </a>
+                                    </div>
+                                </template>
                             </div>
                         </template>
 
@@ -421,25 +493,62 @@
                         <template x-if="section.id === 'rsvp'">
                             <div class="px-8 pb-10">
                                 <div class="p-6 bg-pink-50 rounded-lg space-y-4">
-                                    <div class="text-center font-bold text-pink-700 mb-2">참석 여부 전달</div>
+                                    <div
+                                        class="text-center font-bold text-pink-700 mb-2 underline decoration-pink-200 underline-offset-4">
+                                        참석 여부 전달</div>
                                     <div class="grid grid-cols-2 gap-2">
-                                        <button @click="newJoin.side='groom'" class="py-2 text-xs border rounded"
-                                            :class="newJoin.side==='groom'?'bg-blue-100 border-blue-300':'bg-white'">신랑측</button>
-                                        <button @click="newJoin.side='bride'" class="py-2 text-xs border rounded"
-                                            :class="newJoin.side==='bride'?'bg-pink-100 border-pink-300':'bg-white'">신부측</button>
+                                        <button @click="newJoin.side='groom'"
+                                            class="py-2 text-xs border rounded transition-all"
+                                            :class="newJoin.side==='groom'?'bg-blue-500 text-white border-blue-600 shadow-sm':'bg-white text-gray-400 border-gray-100'">신랑측</button>
+                                        <button @click="newJoin.side='bride'"
+                                            class="py-2 text-xs border rounded transition-all"
+                                            :class="newJoin.side==='bride'?'bg-pink-500 text-white border-pink-600 shadow-sm':'bg-white text-gray-400 border-gray-100'">신부측</button>
                                     </div>
                                     <input x-model="newJoin.name" placeholder="성함"
-                                        class="w-full border p-2 text-sm rounded">
+                                        class="w-full bg-white border-gray-100 border p-3 text-sm rounded-lg focus:ring-2 focus:ring-pink-200 outline-none">
                                     <div class="flex gap-2">
-                                        <input type="number" x-model="newJoin.count" placeholder="동반 인원"
-                                            class="flex-1 border p-2 text-sm rounded">
-                                        <label class="flex items-center gap-1 text-xs text-gray-500 whitespace-nowrap">
-                                            <input type="checkbox" x-model="newJoin.meal"> 식사 여부
+                                        <input type="number" x-model="newJoin.count" placeholder="동반 인원 (본인 포함)"
+                                            class="flex-1 bg-white border border-gray-100 p-3 text-sm rounded-lg outline-none">
+                                        <label
+                                            class="flex items-center gap-2 text-xs text-gray-500 whitespace-nowrap bg-white px-3 border border-gray-100 rounded-lg">
+                                            <input type="checkbox" x-model="newJoin.meal" class="accent-pink-500"> 식사 여부
                                         </label>
                                     </div>
                                     <button @click="saveJoin"
-                                        class="w-full bg-gray-800 text-white py-2 text-sm font-bold rounded">참석 정보
-                                        보내기</button>
+                                        class="w-full bg-gray-800 text-white py-3 text-sm font-bold rounded-lg shadow-lg active:scale-[0.98] transition-transform">참석
+                                        정보 보내기</button>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- 10. Share -->
+                        <template x-if="section.id === 'share'">
+                            <div class="px-8 pb-10 flex flex-col items-center gap-6">
+                                <div class="grid grid-cols-4 gap-6 w-full">
+                                    <button @click="shareKakao" class="flex flex-col items-center gap-2">
+                                        <div
+                                            class="w-12 h-12 bg-[#FEE500] rounded-full flex items-center justify-center text-xl shadow-sm">
+                                            💬</div>
+                                        <span class="text-[10px] text-gray-500">카카오톡</span>
+                                    </button>
+                                    <button @click="shareSns('facebook')" class="flex flex-col items-center gap-2">
+                                        <div
+                                            class="w-12 h-12 bg-[#1877F2] rounded-full flex items-center justify-center text-white text-xl shadow-sm font-bold">
+                                            f</div>
+                                        <span class="text-[10px] text-gray-500">페이스북</span>
+                                    </button>
+                                    <button @click="shareSns('x')" class="flex flex-col items-center gap-2">
+                                        <div
+                                            class="w-12 h-12 bg-black rounded-full flex items-center justify-center text-white text-lg shadow-sm">
+                                            𝕏</div>
+                                        <span class="text-[10px] text-gray-500">X</span>
+                                    </button>
+                                    <button @click="copyLink" class="flex flex-col items-center gap-2">
+                                        <div
+                                            class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-xl shadow-sm">
+                                            🔗</div>
+                                        <span class="text-[10px] text-gray-500">링크 복사</span>
+                                    </button>
                                 </div>
                             </div>
                         </template>
@@ -447,7 +556,29 @@
                     </div>
                 </div>
             </template>
-        </template>
+    </main>
+
+    <footer class="py-10 text-center text-[10px] text-gray-400 font-light tracking-widest border-t border-gray-50">
+        Copyright(c) 조현우 All Right Reserved
+    </footer>
+
+    <!-- Image Modal -->
+    <div x-show="showGal" x-transition class="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4">
+        <button @click="showGal = false"
+            class="absolute top-6 right-6 text-white text-3xl font-light hover:text-gray-300 transition-colors">✕</button>
+        <img :src="galSrc" class="max-w-full max-h-[85vh] rounded shadow-2xl">
+    </div>
+
+    <!-- Video Modal -->
+    <div x-show="showVid" x-transition class="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4">
+        <button @click="showVid = false"
+            class="absolute top-6 right-6 text-white text-3xl font-light hover:text-gray-300 transition-colors">✕</button>
+        <div class="w-full max-w-2xl aspect-video bg-black rounded overflow-hidden">
+            <template x-if="data.media.vidUrl">
+                <iframe class="w-full h-full" :src="data.media.vidUrl.replace('watch?v=', 'embed/')" frameborder="0"
+                    allowfullscreen></iframe>
+            </template>
+        </div>
     </div>
 
     <!-- Modals -->
@@ -478,8 +609,19 @@
                 join: [], newJoin: { side: 'groom', name: '', count: 0, meal: true },
 
                 dict: {
-                    ko: { names: '초대합니다', calendar: '소중한 날', of: '의' },
-                    en: { names: 'Invite You', calendar: 'The Date', of: '\'s' }
+                    ko: {
+                        names: '초대합니다',
+                        calendar: '결혼식 날',
+                        youtube: '영상',
+                        gallery: '사진 앨범',
+                        phone: '연락처',
+                        accounts: '마음 전하실 곳',
+                        location: '오시는 길',
+                        guestbook: '방명록',
+                        rsvp: '참석여부',
+                        share: '공유'
+                    },
+                    en: { names: 'Names', calendar: 'Calendar', of: 'of' }
                 },
 
                 async init() {
@@ -548,14 +690,37 @@
                     for (let i = 0; i < firstDay; i++) arr.push({ day: 0 });
                     for (let i = 1; i <= lastDate; i++) {
                         const cur = new Date(y, m, i);
-                        arr.push({ day: i, w: cur.getDay(), isWed: i === d.getDate() });
+                        arr.push({ day: i, w: cur.getDay(), isTarget: i === d.getDate(), isSun: cur.getDay() === 0 });
                     }
                     this.calDays = arr;
 
                     // D-Day
+                    this.updateTimer();
+                    setInterval(() => this.updateTimer(), 1000);
+                },
+
+                updateTimer() {
+                    if (!this.data.config.date) return;
+
+                    // KST (UTC+9) Calculation
                     const now = new Date();
-                    const diff = Math.ceil((d - now) / (1000 * 60 * 60 * 24));
-                    this.dDay = diff > 0 ? `D-${diff}` : `D+${Math.abs(diff)}`;
+                    const localeNow = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (9 * 3600000));
+
+                    const target = new Date(this.data.config.date);
+                    const localeTarget = new Date(target.getTime() + (target.getTimezoneOffset() * 60000) + (9 * 3600000));
+
+                    const diff = localeTarget - localeNow;
+                    const absDiff = Math.abs(diff);
+
+                    const s = Math.floor(absDiff / 1000) % 60;
+                    const m = Math.floor(absDiff / 1000 / 60) % 60;
+                    const h = Math.floor(absDiff / 1000 / 60 / 60) % 24;
+                    const d = Math.floor(absDiff / 1000 / 60 / 60 / 24);
+
+                    const timeStr = [h, m, s].map(v => v.toString().padStart(2, '0')).join(':');
+                    const prefix = diff > 0 ? 'D-DAY' : 'D+DAY';
+
+                    this.dDay = `${prefix} ${d}일 ${timeStr}`;
                 },
 
                 initEffects() {
@@ -757,9 +922,32 @@
                         });
                         return res.ok;
                     } catch (e) {
-                        alert('통신 오류가 발생했습니다.');
+                        alert('통신 오류가 발생했습니다. 토큰 만료 여부를 확인해 주세요.');
                         return false;
                     }
+                },
+
+                shareKakao() {
+                    // Simple Share URL
+                    const url = 'https://highhighcouple.github.io/Wedding_Invitation/';
+                    window.location.href = `kakaolink://sendurl?url=${encodeURIComponent(url)}`;
+                    // Fallback to Clipboard if not handling Kakao SDK
+                    setTimeout(() => {
+                        this.copyLink();
+                    }, 500);
+                },
+
+                shareSns(type) {
+                    const url = 'https://highhighcouple.github.io/Wedding_Invitation/';
+                    let target = '';
+                    if (type === 'facebook') target = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+                    if (type === 'x') target = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`;
+                    window.open(target, '_blank');
+                },
+
+                copyLink() {
+                    this.copy('https://highhighcouple.github.io/Wedding_Invitation/');
+                    alert('주소가 클립보드에 복사되었습니다.');
                 },
 
                 speakAll() {
