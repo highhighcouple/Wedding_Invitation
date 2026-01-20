@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+        body {
+            background: #171a21;
+            color: #c7d5e0;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Theme */
+        .card {
+            background: #1b2838;
+            border: 1px solid #2a475e;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            background: linear-gradient(90deg, #2a475e, #1b2838);
+            padding: 15px;
+            border-bottom: 3px solid #171a21;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .input {
+            background: #0e141b;
+            border: 1px solid #45556c;
+            color: #fff;
+            padding: 8px 12px;
+            font-size: 13px;
+            width: 100%;
+            transition: 0.2s;
+            border-radius: 2px;
+        }
+
+        .input:focus {
+            border-color: #66c0f4;
+            background: #19222d;
+            outline: none;
+            box-shadow: 0 0 5px rgba(102, 192, 244, 0.4);
+        }
+
+        .label {
+            color: #5bcaff;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            display: block;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-blue {
+            background: linear-gradient(to bottom, #47bfff 5%, #1a44c2 95%);
+            color: #fff;
+            padding: 10px 24px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 2px;
+            transition: 0.2s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-blue:hover {
+            background: linear-gradient(to bottom, #66c0f4 5%, #1a44c2 95%);
+            transform: translateY(-1px);
+        }
+
+        .btn-gray {
+            background: #3d4450;
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 2px;
+        }
+
+        .btn-gray:hover {
+            background: #4b5260;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #17141f;
+            border-right: 1px solid #2a475e;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            color: #8f98a0;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, #2a475e, transparent);
+            border-left-color: #66c0f4;
+            color: #fff;
+        }
+
+        /* Draggable List */
+        .drag-item {
+            background: #16202d;
+            padding: 10px;
+            margin-bottom: 8px;
+            border: 1px solid #2a475e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: grab;
+            transition: 0.2s;
+        }
+
+        .drag-item:active {
+            cursor: grabbing;
+            border-color: #66c0f4;
+            background: #1b2838;
+        }
+
+        .drag-handle {
+            color: #66c0f4;
+            font-size: 18px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #171a21;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3d4450;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5260;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body x-data="admin()" x-init="init()" class="h-screen flex">
+
+    <!-- Login Overlay -->
+    <div x-show="!auth" class="fixed inset-0 z-50 bg-[#171a21] flex items-center justify-center">
+        <div class="card w-96 p-8 text-center animate__animated animate__fadeIn">
+            <h1 class="text-2xl text-[#66c0f4] font-bold mb-4 tracking-widest">WEDDING ADMIN</h1>
+            <input type="password" x-model="pass" @keyup.enter="login"
+                class="input text-center text-lg tracking-[0.3em] mb-4" placeholder="PASSWORD">
+            <button @click="login" class="btn-blue w-full">ACCESS CONSOLE</button>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside x-show="auth" x-cloak class="sidebar shrink-0">
+        <div class="p-5 border-b border-[#2a475e]">
+            <h2 class="text-white font-bold text-lg">PROJ. WEDDING</h2>
+            <div class="text-xs text-[#66c0f4]">Build v2.6.4</div>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-2">
+            <template x-for="t in tabs" :key="t.id">
+                <div class="nav-item" :class="tab === t.id ? 'active' : ''" @click="tab = t.id">
+                    <span x-text="t.icon"></span>
+                    <span x-text="t.name"></span>
+                </div>
+            </template>
+        </nav>
+        <div class="p-4 border-t border-[#2a475e] space-y-2">
+            <button @click="saveLocal" class="btn-gray w-full">Save Draft (Local)</button>
+            <button @click="publishGithub" class="btn-blue w-full">PUBLISH LIVE</button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main x-show="auth" x-cloak class="flex-1 overflow-y-auto bg-[#1b2838] relative">
+        <div class="max-w-4xl mx-auto p-12 space-y-8 pb-32">
+
+            <!-- HEADER -->
+            <div class="flex justify-between items-end border-b border-[#3d4450] pb-4">
+                <div>
+                    <h1 class="text-3xl text-white font-light" x-text="tabs.find(t=>t.id===tab).name"></h1>
+                    <p class="text-xs text-gray-500 mt-1">Configure your static wedding app parameters.</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-xs text-[#66c0f4]">Current IP: <span x-text="ip"></span></div>
+                </div>
+            </div>
+
+            <!-- TAB: SECTIONS (Drag & Drop) -->
+            <div x-show="tab === 'sections'" class="space-y-4">
+                <p class="text-sm text-gray-400">Drag to reorder sections. Uncheck 'Visible' to hide from menu. Check
+                    'Folded' to collapse by default.</p>
+
+                <div class="space-y-2">
+                    <template x-for="(s, idx) in sortedSections" :key="s.id">
+                        <div class="drag-item group" draggable="true" @dragstart="dragStart($event, idx)"
+                            @dragover.prevent @drop="drop($event, idx)">
+                            <div class="drag-handle cursor-move opacity-50 group-hover:opacity-100">☰</div>
+                            <div class="flex-1 font-bold text-white"><span x-text="idx+1"></span>. <span
+                                    x-text="s.title"></span></div>
+                            <div class="flex gap-4 text-xs">
+                                <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox"
+                                        x-model="s.isVisible"> Visble</label>
+                                <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox"
+                                        x-model="s.isFolded"> Folded</label>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- TAB: IDENTITY -->
+            <div x-show="tab === 'identity'" class="grid grid-cols-2 gap-8">
+                <!-- Groom -->
+                <div class="space-y-4">
+                    <h3 class="text-[#66c0f4] font-bold border-b border-[#3d4450] pb-2">GROOM</h3>
+                    <div><label class="label">NAME</label><input x-model="data.groom.name" class="input">
+                    </div>
+                    <div><label class="label">RANK</label>
+                        <select x-model="data.groom.rank" class="input">
+                            <option>장남</option>
+                            <option>차남</option>
+                            <option>삼남</option>
+                            <option>사남</option>
+                            <option>외동</option>
+                        </select>
+                    </div>
+                    <div><label class="label">PHONE</label><input x-model="data.groom.phone" class="input">
+                    </div>
+                    <div class="p-3 bg-[#12151a] rounded">
+                        <label class="label text-gray-400">PARENTS (OPTIONAL)</label>
+                        <div class="grid grid-cols-2 gap-2 mb-2">
+                            <input x-model="data.groom.parents.father" placeholder="Father Name" class="input">
+                            <input x-model="data.groom.parents.mother" placeholder="Mother Name" class="input">
+                        </div>
+                        <input x-model="data.groom.parents.fPhone" placeholder="Father Phone" class="input mb-1">
+                        <input x-model="data.groom.parents.mPhone" placeholder="Mother Phone" class="input">
+                    </div>
+                </div>
+                <!-- Bride -->
+                <div class="space-y-4">
+                    <h3 class="text-pink-400 font-bold border-b border-[#3d4450] pb-2">BRIDE</h3>
+                    <div><label class="label">NAME</label><input x-model="data.bride.name" class="input">
+                    </div>
+                    <div><label class="label">RANK</label>
+                        <select x-model="data.bride.rank" class="input">
+                            <option>장녀</option>
+                            <option>차녀</option>
+                            <option>삼녀</option>
+                            <option>사녀</option>
+                            <option>외동</option>
+                        </select>
+                    </div>
+                    <div><label class="label">PHONE</label><input x-model="data.bride.phone" class="input">
+                    </div>
+                    <div class="p-3 bg-[#12151a] rounded">
+                        <label class="label text-gray-400">PARENTS (OPTIONAL)</label>
+                        <div class="grid grid-cols-2 gap-2 mb-2">
+                            <input x-model="data.bride.parents.father" placeholder="Father Name" class="input">
+                            <input x-model="data.bride.parents.mother" placeholder="Mother Name" class="input">
+                        </div>
+                        <input x-model="data.bride.parents.fPhone" placeholder="Father Phone" class="input mb-1">
+                        <input x-model="data.bride.parents.mPhone" placeholder="Mother Phone" class="input">
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: CONTENT (Rich Text) -->
+            <div x-show="tab === 'content'" class="space-y-8">
+                <div class="space-y-2">
+                    <label class="label">MAIN OVERLAY TEXT</label>
+                    <input x-model="data.text.mainOverlay" class="input text-lg">
+                </div>
+                <div class="space-y-2">
+                    <label class="label">MAIN INVITATION MESSAGE</label>
+                    <textarea x-model="data.text.mainMessage" rows="8" class="input font-serif"></textarea>
+                    <p class="text-xs text-gray-500">Supports line breaks. This text will be centered.</p>
+                </div>
+                <div class="space-y-2">
+                    <label class="label">TRANSPORTATION GUIDE</label>
+                    <textarea x-model="data.config.venue.guideText" rows="8" class="input"></textarea>
+                </div>
+            </div>
+
+            <!-- TAB: VISUALS (Uploads) -->
+            <div x-show="tab === 'visuals'" class="space-y-8">
+                <!-- Main Image -->
+                <div class="p-4 bg-[#12151a] rounded border border-[#2a475e]">
+                    <label class="steam-label">MAIN HERO IMAGE</label>
+                    <div class="flex gap-4 items-center">
+                        <div class="w-24 h-24 bg-cover bg-center rounded border border-gray-600"
+                            :style="`background-image: url(${data.images.main})`"></div>
+                        <div class="flex-1 space-y-2">
+                            <input type="text" x-model="data.images.main" class="steam-input" placeholder="Image URL">
+                            <button class="btn-gray" @click="triggerUpload('main')">📁 Upload File (GitHub)</button>
+                            <input type="file" id="file-main" class="hidden" @change="handleFile($event, 'main')">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery -->
+                <div class="space-y-4">
+                    <div class="flex justify-between">
+                        <label class="steam-label">GALLERY (Max 30)</label>
+                        <button class="text-xs text-[#66c0f4]" @click="data.images.gallery.push('')">+ Add Slot</button>
+                    </div>
+                    <div class="grid grid-cols-5 gap-2">
+                        <template x-for="(img, idx) in data.images.gallery" :key="idx">
+                            <div class="relative group aspect-square">
+                                <div class="w-full h-full bg-cover bg-center rounded border border-gray-600"
+                                    :style="`background-image: url(${img || 'about:blank'})`"></div>
+                                <div
+                                    class="absolute inset-0 bg-black/80 hidden group-hover:flex flex-col items-center justify-center p-1 gap-1">
+                                    <input x-model="data.images.gallery[idx]" class="steam-input text-[8px] h-6">
+                                    <button class="text-red-400 text-xs"
+                                        @click="data.images.gallery.splice(idx, 1)">DEL</button>
+                                </div>
+                            </div>
+                        </template>
+                        <div @click="triggerSimpleUpload('gallery')"
+                            class="border-2 border-dashed border-gray-600 rounded flex items-center justify-center cursor-pointer hover:border-[#66c0f4] text-gray-500 text-xs">
+                            + Upload
+                        </div>
+                        <input type="file" id="file-gallery" class="hidden" @change="handleFile($event, 'gallery')">
+                    </div>
+                </div>
+
+                <!-- BGM -->
+                <div class="p-4 bg-[#12151a] rounded space-y-4">
+                    <label class="steam-label">BGM PLAYLIST (Max 10)</label>
+                    <template x-for="(song, idx) in data.media.bgm" :key="idx">
+                        <div class="flex gap-2">
+                            <input x-model="data.media.bgm[idx]" class="steam-input">
+                            <button @click="data.media.bgm.splice(idx, 1)" class="text-red-400">X</button>
+                        </div>
+                    </template>
+                    <div class="flex gap-2">
+                        <button class="btn-gray" @click="data.media.bgm.push('')">+ Add URL</button>
+                        <button class="btn-gray" @click="triggerSimpleUpload('bgm')">📁 Upload MP3</button>
+                        <input type="file" id="file-bgm" class="hidden" @change="handleFile($event, 'bgm')">
+                    </div>
+                </div>
+
+                <!-- Effects -->
+                <div class="space-y-4">
+                    <label class="steam-label">VISUAL EFFECT</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <template x-for="eff in effects" :key="eff.val">
+                            <div @click="data.theme.effect = eff.val"
+                                class="p-3 rounded border cursor-pointer flex items-center gap-2"
+                                :class="data.theme.effect === eff.val ? 'bg-[#2a475e] border-[#66c0f4]' : 'bg-[#12151a] border-[#2a475e]'">
+                                <span x-text="eff.icon"></span>
+                                <span class="text-xs" x-text="eff.label"></span>
+                            </div>
+                        </template>
+                    </div>
+                    <input type="color" x-model="data.theme.color" class="h-10 w-full bg-transparent">
+                </div>
+            </div>
+
+            <!-- TAB: LOGISTICS -->
+            <div x-show="tab === 'logistics'" class="space-y-8">
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="space-y-2">
+                        <label class="steam-label">WEDDING DATE</label>
+                        <input type="datetime-local" x-model="data.config.weddingDate" class="steam-input">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="steam-label">VENUE NAME</label>
+                        <input x-model="data.config.venue.name" class="steam-input">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="steam-label">VENUE ADDRESS (SEARCH API SIMULATED)</label>
+                    <input x-model="data.config.venue.address" class="steam-input">
+                    <button class="btn-gray" @click="searchAddr">🔍 Search Address (Kakao/Google)</button>
+                </div>
+
+                <div class="p-4 bg-[#12151a] rounded space-y-4">
+                    <label class="steam-label">MAP LINKS</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input x-model="data.config.venue.mapLinks.naver" placeholder="Naver Map URL"
+                            class="steam-input">
+                        <input x-model="data.config.venue.mapLinks.kakao" placeholder="Kakao Map URL"
+                            class="steam-input">
+                        <input x-model="data.config.venue.mapLinks.tmap" placeholder="T-Map URL" class="steam-input">
+                        <input x-model="data.config.venue.mapLinks.google" placeholder="Google Map URL"
+                            class="steam-input">
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: SETTINGS & SECRETS -->
+            <div x-show="tab === 'settings'" class="space-y-6">
+                <div class="p-4 border border-red-900 bg-red-900/10 rounded">
+                    <label class="steam-label text-red-400">GITHUB TOKEN (REQUIRED FOR UPLOAD & SAVE)</label>
+                    <input type="password" x-model="data.config.secrets.githubToken" class="steam-input"
+                        placeholder="ghp_...">
+                </div>
+                <div class="grid grid-cols-2 gap-6">
+                    <div><label class="steam-label">KAKAO API KEY</label><input
+                            x-model="data.config.secrets.kakaoApiKey" class="steam-input"></div>
+                    <div><label class="steam-label">ADMIN PASSWORD</label><input
+                            x-model="data.config.secrets.adminPassword" class="steam-input" placeholder="New Password">
+                    </div>
+                </div>
+
+                <!-- OG Images -->
+                <div class="space-y-4 pt-4 border-t border-[#3d4450]">
+                    <label class="steam-label">OG META IMAGES</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input x-model="data.images.og.kakao" placeholder="Kakao OG" class="steam-input">
+                        <input x-model="data.images.og.facebook" placeholder="FB OG" class="steam-input">
+                        <input x-model="data.images.og.insta" placeholder="Insta OG" class="steam-input">
+                        <input x-model="data.images.og.x" placeholder="X OG" class="steam-input">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        function admin() {
+            return {
+                auth: false, pass: '', tab: 'sections', ip: 'Loading...',
+                dragSrc: null,
+                tabs: [
+                    { id: 'sections', name: 'Section Order', icon: '☰' },
+                    { id: 'identity', name: 'Identity', icon: '👤' },
+                    { id: 'content', name: 'Text & Content', icon: '📝' },
+                    { id: 'visuals', name: 'Visuals & Effects', icon: '🎨' },
+                    { id: 'logistics', name: 'Logistics', icon: '📍' },
+                    { id: 'settings', name: 'Global Settings', icon: '⚙️' },
+                ],
+                effects: [
+                    { val: 'petals', icon: '🌸', label: 'Petals' }, { val: 'snow', icon: '❄️', label: 'Snow' },
+                    { val: 'leaves', icon: '🍂', label: 'Leaves' }, { val: 'stars', icon: '✨', label: 'Stars' },
+                    { val: 'rain', icon: '💧', label: 'Rain' }, { val: 'dandelion', icon: '🌼', label: 'Dandelion' },
+                    { val: 'butterfly', icon: '🦋', label: 'Butterfly' }, { val: 'dragonfly', icon: '🌥️', label: 'Dragonfly' },
+                    { val: 'dove', icon: '🕊️', label: 'Dove' }
+                ],
+                data: {
+                    config: { venue: { mapLinks: {}, navLinks: {} }, secrets: {} },
+                    groom: { parents: {} }, bride: { parents: {} },
+                    images: { gallery: [], og: {} },
+                    text: {}, media: { bgm: [] },
+                    theme: {},
+                    sections: []
+                },
+
+                async init() {
+                    fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => this.ip = d.ip);
+                    const saved = localStorage.getItem('wedding_v2_data');
+                    if (saved) this.data = JSON.parse(saved);
+                    else {
+                        try {
+                            const r = await fetch('data.json');
+                            if (r.ok) this.data = await r.json();
+                        } catch (e) { }
+                    }
+                    if (!this.data.media) this.data.media = { bgm: [] };
+                    if (!this.data.media.bgm) this.data.media.bgm = [];
+                },
+
+                login() {
+                    if (this.pass === 'admin1234!' || (this.data.config.secrets && this.pass === this.data.config.secrets.adminPassword)) this.auth = true;
+                    else alert('Access Denied');
+                },
+
+                get sortedSections() {
+                    return this.data.sections.sort((a, b) => a.order - b.order);
+                },
+
+                // Drag & Drop
+                dragStart(e, idx) { this.dragSrc = idx; e.dataTransfer.effectAllowed = 'move'; },
+                drop(e, idx) {
+                    if (this.dragSrc !== idx) {
+                        const list = this.sortedSections;
+                        const item = list[this.dragSrc];
+                        list.splice(this.dragSrc, 1);
+                        list.splice(idx, 0, item);
+                        // Re-assign order
+                        list.forEach((s, i) => s.order = i);
+                        this.data.sections = list;
+                    }
+                },
+
+                // File Upload Logic
+                triggerUpload(target) { document.getElementById('file-' + target).click(); },
+                triggerSimpleUpload(target) { document.getElementById('file-' + target).click(); },
+
+                async handleFile(e, target) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    if (!this.data.config.secrets.githubToken) return alert('GitHub Token required for upload');
+
+                    const reader = new FileReader();
+                    reader.onload = async (evt) => {
+                        const content = evt.target.result.split(',')[1]; // base64
+                        const path = `uploads/${Date.now()}_${file.name}`;
+
+                        // PUT to GitHub
+                        try {
+                            const res = await fetch(`https://api.github.com/repos/highhighcouple/Wedding_Invitation/contents/${path}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Authorization': `token ${this.data.config.secrets.githubToken}`,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ message: 'upload file', content: content })
+                            });
+                            if (res.ok) {
+                                const json = await res.json();
+                                const url = json.content.download_url; // Raw URL
+
+                                if (target === 'main') this.data.images.main = url;
+                                else if (target === 'gallery') this.data.images.gallery.push(url);
+                                else if (target === 'bgm') this.data.media.bgm.push(url);
+
+                                alert('Upload Success: ' + url);
+                            } else {
+                                const err = await res.json();
+                                alert('Upload Failed: ' + err.message);
+                            }
+                        } catch (err) { alert('Network Error'); }
+                    };
+                    reader.readAsDataURL(file);
+                },
+
+                searchAddr() {
+                    new daum.Postcode({
+                        oncomplete: function (data) {
+                            // This requires the daum script in header, but for now we simulate or alert
+                            alert('Address selected: ' + data.address);
+                        }
+                    }).open();
+                },
+
+                publishGithub() {
+                    // Same publish logic as before
+                    const token = this.data.config.secrets.githubToken;
+                    if (!token) return alert('No Token');
+
+                    if (!confirm('Publish data.json to Live?')) return;
+
+                    const content = btoa(unescape(encodeURIComponent(JSON.stringify(this.data, null, 2))));
+                    fetch(`https://api.github.com/repos/highhighcouple/Wedding_Invitation/contents/data.json`, {
+                        headers: { 'Authorization': `token ${token}` }
+                    }).then(r => r.json()).then(d => {
+                        const sha = d.sha;
+                        fetch(`https://api.github.com/repos/highhighcouple/Wedding_Invitation/contents/data.json`, {
+                            method: 'PUT',
+                            headers: { 'Authorization': `token ${token}` },
+                            body: JSON.stringify({ message: 'update data', content, sha })
+                        }).then(r => {
+                            if (r.ok) alert('Published!');
+                            else alert('Error');
+                        });
+                    });
+                    localStorage.setItem('wedding_v2_data', JSON.stringify(this.data));
+                },
+                saveLocal() {
+                    localStorage.setItem('wedding_v2_data', JSON.stringify(this.data));
+                    alert('Saved Locally');
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
