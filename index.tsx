@@ -1,16 +1,6 @@
 
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-
-const rootElement = document.getElementById('root');
-if (!rootElement) {
-  throw new Error("Could not find root element to mount to");
-}
-
-const root = ReactDOM.createRoot(rootElement);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+/**
+ * 이 애플리케이션은 이제 정적 HTML 기반(index.html, admin.html)으로 작동합니다.
+ * React 및 TSX 관련 파일은 더 이상 사용되지 않습니다.
+ */
+console.log("Static Mode Activated.");

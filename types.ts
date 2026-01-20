@@ -1,4 +1,8 @@
+/**
+ * Wedding data types and interfaces for the mobile invitation application.
+ */
 
+// Effect styles for the background particles
 export enum EffectStyle {
   PETAL = 'PETAL',
   SNOW = 'SNOW',
@@ -11,14 +15,24 @@ export enum EffectStyle {
   PIGEON = 'PIGEON'
 }
 
+// Configuration for individual sections in the invitation
+export interface SectionConfig {
+  id: string;
+  order: number;
+  isVisible: boolean;
+  isFolded?: boolean;
+  title?: string;
+}
+
+// Entry in the guestbook
 export interface GuestbookEntry {
   id: string;
   name: string;
   content: string;
   date: string;
-  ip: string;
 }
 
+// RSVP response data
 export interface RSVP {
   id: string;
   side: 'groom' | 'bride';
@@ -30,19 +44,12 @@ export interface RSVP {
   date: string;
 }
 
-export interface SectionConfig {
-  id: string;
-  order: number;
-  isFolded: boolean;
-  isVisible: boolean;
-}
-
+// Full wedding data structure
 export interface WeddingData {
   mainImage: string;
   overlayText: string;
   overlayPos: 'top' | 'middle' | 'bottom';
   mainText: string;
-  
   groom: {
     name: string;
     father: string;
@@ -63,34 +70,20 @@ export interface WeddingData {
     account: string;
     bankName: string;
   };
-  
-  weddingDate: string; // ISO string
+  weddingDate: string;
   youtubeLink: string;
   galleryImages: string[];
-  
   venue: {
+    name: string;
     address: string;
     phone: string;
-    homepage: string;
-    mapFile: string;
     guideText: string;
-    naverMap: string;
-    kakaoMap: string;
-    tmap: string;
-    googleMap: string;
-    kakaoNavi: string;
-    tmapNavi: string;
+    naverMap?: string;
+    kakaoMap?: string;
+    tmap?: string;
+    googleMap?: string;
   };
-  
   sections: SectionConfig[];
-  effectStyle: EffectStyle;
-  bgmList: string[];
   adminPassword: string;
-  ogImages: {
-    kakao: string;
-    facebook: string;
-    instagram: string;
-    x: string;
-    blog: string;
-  };
+  effectStyle: EffectStyle;
 }

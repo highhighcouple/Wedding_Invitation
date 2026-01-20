@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="store.js"></script>
+    <style>
+        body { background-color: #1b2838; color: #c7d5e0; font-family: 'Segoe UI', sans-serif; }
+        .steam-card { background-color: #2a475e; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .sidebar-btn { background: rgba(0,0,0,0.2); transition: 0.2s; }
+        .sidebar-btn.active { background: #66c0f4; color: #fff; }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body x-data="adminApp()" x-cloak>
+
+    <!-- Login Screen -->
+    <div x-show="!isLoggedIn" class="fixed inset-0 bg-[#171a21] flex items-center justify-center z-50 p-6">
+        <div class="steam-card w-full max-w-sm p-8 space-y-6">
+            <h1 class="text-2xl font-black text-white text-center tracking-tighter uppercase italic">Wedding Project</h1>
+            <input type="password" x-model="password" placeholder="Password" class="w-full bg-[#171a21] border-none p-3 rounded text-white outline-none focus:ring-2 ring-sky-500">
+            <button @click="login()" class="w-full bg-gradient-to-r from-sky-600 to-sky-400 text-white font-bold py-3 rounded shadow-lg hover:brightness-110">SIGN IN</button>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div x-show="isLoggedIn" class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside class="w-72 bg-[#171a21] flex flex-col border-r border-black/30">
+            <div class="p-6">
+                <div class="text-sky-400 font-black text-xl italic uppercase">Admin Panel</div>
+                <div class="text-[10px] text-gray-500 uppercase mt-1 tracking-widest">Version 2.0.1 Stable</div>
+            </div>
+            <nav class="flex-1 p-4 space-y-1">
+                <template x-for="tab in tabs">
+                    <button @click="activeTab = tab.id" 
+                            :class="activeTab === tab.id ? 'active' : ''"
+                            class="sidebar-btn w-full text-left p-4 rounded text-sm font-bold flex items-center gap-3">
+                        <span x-text="tab.icon"></span>
+                        <span x-text="tab.name"></span>
+                    </button>
+                </template>
+            </nav>
+            <div class="p-4 border-t border-white/5">
+                <button @click="save()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded text-sm">SAVE ALL CHANGES</button>
+                <a href="index.html" class="w-full text-center block mt-3 text-xs text-gray-500 hover:text-white transition">Back to Public View</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto bg-gradient-to-b from-[#2a475e] to-[#1b2838] p-10">
+            <div class="max-w-4xl mx-auto">
+                
+                <!-- General Settings -->
+                <div x-show="activeTab === 'general'" class="space-y-8">
+                    <h2 class="text-3xl font-black text-white uppercase italic">General Information</h2>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="steam-card p-6 space-y-4">
+                            <h3 class="text-sky-400 text-xs font-bold uppercase">Groom Side</h3>
+                            <input x-model="data.groom.name" class="w-full bg-[#171a21] p-3 rounded text-sm text-white" placeholder="Name">
+                            <input x-model="data.groom.bank" class="w-full bg-[#171a21] p-3 rounded text-sm text-white" placeholder="Bank">
+                            <input x-model="data.groom.account" class="w-full bg-[#171a21] p-3 rounded text-sm text-white" placeholder="Account">
+                        </div>
+                        <div class="steam-card p-6 space-y-4">
+                            <h3 class="text-rose-400 text-xs font-bold uppercase">Bride Side</h3>
+                            <input x-model="data.bride.name" class="w-full bg-[#171a21] p-3 rounded text-sm text-white" placeholder="Name">
+                            <input x-model="data.bride.bank" class="w-full bg-[#171a21] p-3 rounded text-sm text-white" placeholder="Bank">
+                            <input x-model="data.bride.account" class="w-full bg-[#171a21] p-3 rounded text-sm text-white" placeholder="Account">
+                        </div>
+                    </div>
+                    <div class="steam-card p-6 space-y-4">
+                        <h3 class="text-sky-400 text-xs font-bold uppercase">Main Invitation Text</h3>
+                        <textarea x-model="data.mainText" class="w-full h-40 bg-[#171a21] p-4 rounded text-sm text-white resize-none outline-none focus:ring-1 ring-sky-500"></textarea>
+                    </div>
+                </div>
+
+                <!-- Section Order -->
+                <div x-show="activeTab === 'sections'" class="space-y-6">
+                    <h2 class="text-3xl font-black text-white uppercase italic">Section Library</h2>
+                    <div class="space-y-2">
+                        <template x-for="(sec, index) in data.sections" :key="sec.id">
+                            <div class="steam-card p-4 flex items-center justify-between group">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-gray-500 font-mono" x-text="index + 1"></span>
+                                    <span class="text-white font-bold text-sm" x-text="sec.title"></span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <button @click="toggleVisibility(sec.id)" 
+                                            :class="sec.isVisible ? 'bg-sky-600' : 'bg-red-900'"
+                                            class="text-[10px] px-3 py-1 rounded font-black text-white" 
+                                            x-text="sec.isVisible ? 'ACTIVE' : 'HIDDEN'"></button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- RSVP List -->
+                <div x-show="activeTab === 'rsvp'" class="space-y-6">
+                    <h2 class="text-3xl font-black text-white uppercase italic">RSVP Registry</h2>
+                    <div class="steam-card overflow-hidden">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-black/20 text-sky-400 uppercase font-bold text-[10px] tracking-widest">
+                                <tr>
+                                    <th class="p-4">Name</th>
+                                    <th class="p-4">Side</th>
+                                    <th class="p-4">Phone</th>
+                                    <th class="p-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5">
+                                <template x-for="r in rsvpList" :key="r.id">
+                                    <tr class="hover:bg-white/5">
+                                        <td class="p-4 font-bold text-white" x-text="r.name"></td>
+                                        <td class="p-4"><span :class="r.side === 'groom' ? 'text-sky-400' : 'text-rose-400'" x-text="r.side === 'groom' ? 'Groom' : 'Bride'"></span></td>
+                                        <td class="p-4 text-gray-400" x-text="r.phone"></td>
+                                        <td class="p-4">
+                                            <button @click="deleteRSVP(r.id)" class="text-red-500 hover:underline">Remove</button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                        <div x-show="rsvpList.length === 0" class="p-10 text-center text-gray-500 uppercase italic">No entries found</div>
+                    </div>
+                </div>
+
+                <!-- Guestbook List -->
+                <div x-show="activeTab === 'guestbook'" class="space-y-6">
+                    <h2 class="text-3xl font-black text-white uppercase italic">Guestbook Logs</h2>
+                    <div class="grid grid-cols-1 gap-4">
+                        <template x-for="g in guestbook" :key="g.id">
+                            <div class="steam-card p-4 flex justify-between items-start">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="text-sky-400 font-bold" x-text="g.name"></span>
+                                        <span class="text-[10px] text-gray-500" x-text="new Date(g.date).toLocaleString()"></span>
+                                    </div>
+                                    <p class="text-sm text-gray-300" x-text="g.content"></p>
+                                </div>
+                                <button @click="deleteGuestbook(g.id)" class="text-red-500 text-xs">Delete</button>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+        function adminApp() {
+            return {
+                isLoggedIn: false,
+                password: '',
+                activeTab: 'general',
+                data: WeddingStore.get(),
+                rsvpList: WeddingStore.getRSVP(),
+                guestbook: WeddingStore.getGuestbook(),
+                tabs: [
+                    { id: 'general', name: 'Information', icon: '📝' },
+                    { id: 'sections', name: 'Sections', icon: '↕️' },
+                    { id: 'rsvp', name: 'RSVP List', icon: '👥' },
+                    { id: 'guestbook', name: 'Guestbook', icon: '💬' }
+                ],
+
+                login() {
+                    if(this.password === this.data.adminPassword) {
+                        this.isLoggedIn = true;
+                    } else {
+                        alert('Incorrect password');
+                    }
+                },
+
+                toggleVisibility(id) {
+                    const sec = this.data.sections.find(s => s.id === id);
+                    if(sec) sec.isVisible = !sec.isVisible;
+                },
+
+                deleteRSVP(id) {
+                    if(!confirm('삭제하시겠습니까?')) return;
+                    this.rsvpList = this.rsvpList.filter(r => r.id !== id);
+                    WeddingStore.saveRSVP(this.rsvpList);
+                },
+
+                deleteGuestbook(id) {
+                    if(!confirm('삭제하시겠습니까?')) return;
+                    this.guestbook = this.guestbook.filter(g => g.id !== id);
+                    WeddingStore.saveGuestbook(this.guestbook);
+                },
+
+                save() {
+                    WeddingStore.save(this.data);
+                    alert('All changes saved to local database.');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

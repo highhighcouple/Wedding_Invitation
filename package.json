@@ -1,5 +1,5 @@
 {
-  "name": "대한민국-최고급-모바일-청첩장-&-관리-시스템",
+  "name": "프리미엄-모바일-청첩장",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,9 +10,7 @@
   },
   "dependencies": {
     "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "react-router-dom": "^7.12.0",
-    "framer-motion": "^12.27.0"
+    "framer-motion": "^12.27.1"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
