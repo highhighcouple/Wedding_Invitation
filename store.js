@@ -1,1 +1,0 @@
-// Logic embedded in index.html and admin.html
