@@ -3,7 +3,11 @@ name: Deploy to GitHub Pages
 
 on:
   push:
+<<<<<<< HEAD
     branches: ["main"] # 또는 사용 중인 기본 브랜치 이름
+=======
+    branches: ["main"]
+>>>>>>> aa2d15f (first commit)
 
 permissions:
   contents: read
@@ -28,8 +32,15 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
+<<<<<<< HEAD
           # 루트 디렉토리의 index.html을 배포
           path: '.'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+=======
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+>>>>>>> aa2d15f (first commit)

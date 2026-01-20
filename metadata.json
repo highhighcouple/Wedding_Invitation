@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "name": "프리미엄 모바일 청첩장",
   "description": "반응형 정적 HTML 기반 최고급 모바일 청첩장 솔루션",
@@ -5,3 +6,13 @@
     "geolocation"
   ]
 }
+=======
+
+{
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "name": "프리미엄 모바일 청첩장",
+  "description": "최고급 인터렉티브 모바일 청첩장"
+}
+>>>>>>> aa2d15f (first commit)
