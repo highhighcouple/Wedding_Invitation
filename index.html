@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -40,7 +39,7 @@
     <!-- Particles -->
     <template x-for="i in 15" :key="i">
         <div class="petal" 
-             :style="`left: ${Math.random()*100}%; animation: fall ${10 + Math.random()*10}s linear infinite; animation-delay: ${Math.random()*10}s;` text-align: center;"
+             :style="'left: ' + (Math.random()*100) + '%; animation: fall ' + (10 + Math.random()*10) + 's linear infinite; animation-delay: ' + (Math.random()*10) + 's; text-align: center;'"
              x-text="'🌸'"></div>
     </template>
 
@@ -196,7 +195,7 @@
     </footer>
 
     <script>
-        // Data Store Logic Embedded
+        // Default Wedding Data Configuration
         const DEFAULT_WEDDING_DATA = {
             mainImage: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80',
             overlayText: 'Our Wedding Day',
@@ -220,7 +219,8 @@
             effectStyle: 'PETAL'
         };
 
-        const Store = {
+        // Data Management Service
+        const WeddingStore = {
             get: () => JSON.parse(localStorage.getItem('wedding_v2_data')) || DEFAULT_WEDDING_DATA,
             getGuestbook: () => JSON.parse(localStorage.getItem('wedding_guestbook')) || [],
             getRSVP: () => JSON.parse(localStorage.getItem('wedding_rsvp')) || [],
@@ -230,18 +230,18 @@
 
         function weddingApp() {
             return {
-                data: Store.get(),
+                data: WeddingStore.get(),
                 showIntro: true,
                 selectedImg: null,
                 showGuestbookModal: false,
-                guestbook: Store.getGuestbook(),
+                guestbook: WeddingStore.getGuestbook(),
                 newEntry: { name: '', content: '' },
                 rsvpForm: { side: 'groom', name: '', phone: '' },
                 
                 init() {
                     window.addEventListener('storage', () => {
-                        this.data = Store.get();
-                        this.guestbook = Store.getGuestbook();
+                        this.data = WeddingStore.get();
+                        this.guestbook = WeddingStore.getGuestbook();
                     });
                 },
 
@@ -252,7 +252,7 @@
 
                 formatWeddingMonth() {
                     const d = new Date(this.data.weddingDate);
-                    return `${d.getFullYear()}. ${String(d.getMonth()+1).padStart(2,'0')}`;
+                    return d.getFullYear() + '. ' + String(d.getMonth() + 1).padStart(2, '0');
                 },
 
                 daysInMonth() {
@@ -267,9 +267,9 @@
 
                 submitGuestbook() {
                     if(!this.newEntry.name || !this.newEntry.content) return alert('내용을 입력해주세요.');
-                    const list = Store.getGuestbook();
+                    const list = WeddingStore.getGuestbook();
                     list.unshift({ ...this.newEntry, id: Date.now(), date: new Date().toISOString() });
-                    Store.saveGuestbook(list);
+                    WeddingStore.saveGuestbook(list);
                     this.guestbook = list;
                     this.newEntry = { name: '', content: '' };
                     this.showGuestbookModal = false;
@@ -278,9 +278,9 @@
 
                 submitRSVP() {
                     if(!this.rsvpForm.name) return alert('성함을 입력해주세요.');
-                    const list = Store.getRSVP();
+                    const list = WeddingStore.getRSVP();
                     list.push({ ...this.rsvpForm, id: Date.now(), date: new Date().toISOString() });
-                    Store.saveRSVP(list);
+                    WeddingStore.saveRSVP(list);
                     this.rsvpForm = { side: 'groom', name: '', phone: '' };
                     alert('참석 의사가 전달되었습니다.');
                 }

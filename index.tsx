@@ -1,1 +1,0 @@
-// This file is unused in the static HTML version.

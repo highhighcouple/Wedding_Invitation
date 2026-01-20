@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -177,7 +176,7 @@
             effectStyle: 'PETAL'
         };
 
-        const Store = {
+        const WeddingStore = {
             get: () => JSON.parse(localStorage.getItem('wedding_v2_data')) || DEFAULT_WEDDING_DATA,
             save: (d) => localStorage.setItem('wedding_v2_data', JSON.stringify(d)),
             getGuestbook: () => JSON.parse(localStorage.getItem('wedding_guestbook')) || [],
@@ -191,9 +190,9 @@
                 isLoggedIn: false,
                 password: '',
                 activeTab: 'general',
-                data: Store.get(),
-                rsvpList: Store.getRSVP(),
-                guestbook: Store.getGuestbook(),
+                data: WeddingStore.get(),
+                rsvpList: WeddingStore.getRSVP(),
+                guestbook: WeddingStore.getGuestbook(),
                 tabs: [
                     { id: 'general', name: 'Information', icon: '📝' },
                     { id: 'sections', name: 'Sections', icon: '↕️' },
@@ -217,17 +216,17 @@
                 deleteRSVP(id) {
                     if(!confirm('삭제하시겠습니까?')) return;
                     this.rsvpList = this.rsvpList.filter(r => r.id !== id);
-                    Store.saveRSVP(this.rsvpList);
+                    WeddingStore.saveRSVP(this.rsvpList);
                 },
 
                 deleteGuestbook(id) {
                     if(!confirm('삭제하시겠습니까?')) return;
                     this.guestbook = this.guestbook.filter(g => g.id !== id);
-                    Store.saveGuestbook(this.guestbook);
+                    WeddingStore.saveGuestbook(this.guestbook);
                 },
 
                 save() {
-                    Store.save(this.data);
+                    WeddingStore.save(this.data);
                     alert('All changes saved to local database.');
                 }
             }
