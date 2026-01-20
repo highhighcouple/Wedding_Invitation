@@ -4,17 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wedding Admin Dashboard</title>
+    <title>Wedding Project Hub (Admin)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
-        body { background: #1b2838; color: #c7d5e0; font-family: 'Inter', system-ui, sans-serif; }
+        body { background: #1b2838; color: #c7d5e0; font-family: 'Inter', sans-serif; }
         .steam-card { background: #16202d; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
-        .steam-input { background: #101822; border: 1px solid #000; color: #fff; padding: 12px; border-radius: 3px; font-size: 13px; width: 100%; outline: none; }
+        .steam-input { background: #101822; border: 1px solid #000; color: #fff; padding: 12px; border-radius: 3px; font-size: 13px; outline: none; transition: 0.2s; }
         .steam-input:focus { border-color: #66c0f4; box-shadow: 0 0 10px rgba(102, 192, 244, 0.2); }
-        .steam-label { color: #66c0f4; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: block; }
-        .btn-save { background: linear-gradient(to right, #47bfff 0%, #1a44c2 100%); color: white; font-weight: bold; border-radius: 3px; transition: 0.3s; }
-        .btn-save:hover { filter: brightness(1.2); }
+        .steam-label { color: #66c0f4; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; display: block; opacity: 0.8; }
+        .btn-action { background: linear-gradient(to right, #47bfff 0%, #1a44c2 100%); color: white; font-weight: bold; border-radius: 3px; transition: 0.2s; cursor: pointer; }
+        .btn-action:hover { filter: brightness(1.15); transform: translateY(-1px); }
         .sidebar-item { padding: 14px 24px; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; }
         .sidebar-item.active { background: #2a475e; border-left-color: #66c0f4; color: white; }
         [x-cloak] { display: none !important; }
@@ -24,100 +24,151 @@
 
     <!-- Login Auth -->
     <div x-show="!isLoggedIn" class="fixed inset-0 bg-[#171a21] z-[100] flex items-center justify-center p-6">
-        <div class="steam-card w-full max-w-sm p-10 space-y-8 animate__animated animate__zoomIn">
-            <div class="space-y-2">
-                <h1 class="text-3xl font-black italic tracking-tighter text-white">PROJECT_MARRY</h1>
-                <p class="text-[10px] text-gray-500 uppercase tracking-widest">Admin Control Terminal</p>
+        <div class="steam-card w-full max-w-sm p-12 space-y-10 animate__animated animate__zoomIn">
+            <div class="text-center">
+                <h1 class="text-3xl font-black italic tracking-tighter text-white">WEDDING_CONSOLE</h1>
+                <p class="text-[9px] text-sky-400/50 uppercase tracking-[0.4em] mt-2">Authorized Personnel Only</p>
             </div>
-            <div class="space-y-5">
-                <input type="password" x-model="loginPass" placeholder="Access Code" class="steam-input" @keyup.enter="tryLogin()">
-                <button @click="tryLogin()" class="w-full btn-save py-3">INITIALIZE</button>
+            <div class="space-y-6">
+                <input type="password" x-model="loginPass" placeholder="Security Token" class="w-full steam-input text-center tracking-[1em]" @keyup.enter="tryLogin()">
+                <button @click="tryLogin()" class="w-full btn-action py-4 text-xs tracking-widest uppercase">Connect to Server</button>
             </div>
         </div>
     </div>
 
     <!-- Main Workspace -->
-    <div x-show="isLoggedIn" class="flex h-screen overflow-hidden" x-cloak>
+    <div x-show="isLoggedIn" x-cloak class="flex h-screen overflow-hidden">
         
-        <!-- Navigation -->
-        <aside class="w-72 bg-[#171a21] border-r border-black/20 flex flex-col">
-            <div class="p-8 border-b border-white/5">
-                <p class="text-sky-400 font-black text-xs italic tracking-widest">ADMIN HUB v3.1</p>
+        <!-- Sidebar Navigation -->
+        <aside class="w-72 bg-[#171a21] border-r border-black/30 flex flex-col">
+            <div class="p-10 border-b border-white/5">
+                <p class="text-sky-400 font-black text-xs italic tracking-[0.2em] opacity-80 uppercase">Control Terminal v4.0</p>
             </div>
-            <nav class="flex-1 py-6">
+            <nav class="flex-1 py-8">
                 <template x-for="tab in tabs">
-                    <div @click="activeTab = tab.id" :class="activeTab === tab.id ? 'active' : ''" class="sidebar-item text-sm font-semibold flex items-center gap-4 hover:bg-white/5">
-                        <span x-text="tab.icon"></span> <span x-text="tab.name"></span>
+                    <div @click="activeTab = tab.id" :class="activeTab === tab.id ? 'active text-white' : 'text-gray-500'" class="sidebar-item text-xs font-bold flex items-center gap-4 hover:bg-white/5">
+                        <span x-text="tab.icon"></span> <span x-text="tab.name" class="tracking-widest uppercase"></span>
                     </div>
                 </template>
             </nav>
-            <div class="p-6 border-t border-white/5 space-y-3">
-                <button @click="saveData()" class="w-full btn-save py-3 text-xs">SAVE PROJECT</button>
-                <button @click="logout()" class="w-full py-2 text-[10px] text-gray-500 hover:text-white transition-colors">TERMINATE SESSION</button>
+            <div class="p-8 border-t border-white/5 space-y-4">
+                <button @click="saveData()" class="w-full btn-action py-4 text-xs tracking-widest uppercase shadow-lg shadow-sky-900/20">Sync Data</button>
+                <button @click="logout()" class="w-full py-2 text-[9px] text-gray-600 hover:text-rose-400 transition-colors uppercase tracking-[0.3em]">Logout</button>
             </div>
         </aside>
 
-        <!-- Dynamic Content -->
-        <main class="flex-1 overflow-y-auto bg-gradient-to-br from-[#2a475e] to-[#16202d] p-12">
-            <div class="max-w-5xl mx-auto">
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto bg-gradient-to-br from-[#1b2838] to-[#101822] p-16">
+            <div class="max-w-4xl mx-auto">
                 
                 <!-- Tab: Core Information -->
-                <div x-show="activeTab === 'core'" class="space-y-10 animate__animated animate__fadeIn">
-                    <h2 class="text-4xl font-black text-white italic uppercase tracking-tighter">Core Project Data</h2>
+                <div x-show="activeTab === 'core'" class="space-y-12 animate__animated animate__fadeIn">
+                    <h2 class="text-4xl font-black text-white italic uppercase tracking-tighter">Project Identity</h2>
                     
                     <div class="grid grid-cols-2 gap-8">
-                        <div class="steam-card p-8 space-y-6">
+                        <!-- Groom Side -->
+                        <div class="steam-card p-8 space-y-8">
                             <div>
-                                <label class="steam-label">Groom's Details</label>
-                                <div class="space-y-3">
-                                    <input type="text" x-model="data.groom.name" placeholder="Full Name" class="steam-input">
-                                    <input type="text" x-model="data.groom.father" placeholder="Father's Name" class="steam-input">
-                                    <input type="text" x-model="data.groom.mother" placeholder="Mother's Name" class="steam-input">
-                                    <select x-model="data.groom.rank" class="steam-input">
-                                        <option>장남</option><option>차남</option><option>삼남</option><option>외아들</option>
+                                <label class="steam-label">Groom Identity</label>
+                                <div class="space-y-4">
+                                    <input type="text" x-model="data.groom.name" placeholder="Name" class="w-full steam-input">
+                                    <input type="text" x-model="data.groom.phone" placeholder="Contact No." class="w-full steam-input">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <input type="text" x-model="data.groom.father" placeholder="Father" class="w-full steam-input">
+                                        <input type="text" x-model="data.groom.mother" placeholder="Mother" class="w-full steam-input">
+                                    </div>
+                                    <select x-model="data.groom.rank" class="w-full steam-input">
+                                        <option>장남</option><option>차남</option><option>삼남</option><option>막내</option><option>외아들</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        <div class="steam-card p-8 space-y-6">
+                        <!-- Bride Side -->
+                        <div class="steam-card p-8 space-y-8">
                             <div>
-                                <label class="steam-label">Bride's Details</label>
-                                <div class="space-y-3">
-                                    <input type="text" x-model="data.bride.name" placeholder="Full Name" class="steam-input">
-                                    <input type="text" x-model="data.bride.father" placeholder="Father's Name" class="steam-input">
-                                    <input type="text" x-model="data.bride.mother" placeholder="Mother's Name" class="steam-input">
-                                    <select x-model="data.bride.rank" class="steam-input">
-                                        <option>장녀</option><option>차녀</option><option>삼녀</option><option>외동딸</option>
+                                <label class="steam-label">Bride Identity</label>
+                                <div class="space-y-4">
+                                    <input type="text" x-model="data.bride.name" placeholder="Name" class="w-full steam-input">
+                                    <input type="text" x-model="data.bride.phone" placeholder="Contact No." class="w-full steam-input">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <input type="text" x-model="data.bride.father" placeholder="Father" class="w-full steam-input">
+                                        <input type="text" x-model="data.bride.mother" placeholder="Mother" class="w-full steam-input">
+                                    </div>
+                                    <select x-model="data.bride.rank" class="w-full steam-input">
+                                        <option>장녀</option><option>차녀</option><option>삼녀</option><option>막내</option><option>외동딸</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="steam-card p-8 space-y-6">
-                        <label class="steam-label">Main Visuals</label>
-                        <div class="grid grid-cols-2 gap-4">
-                            <input type="text" x-model="data.mainImage" placeholder="Hero Image URL" class="steam-input">
-                            <input type="text" x-model="data.overlayText" placeholder="Hero Text" class="steam-input">
+                    <div class="steam-card p-10 space-y-8">
+                        <label class="steam-label">Visual & Message Configuration</label>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <span class="text-[10px] text-gray-500 uppercase">Main Hero Image</span>
+                                <input type="text" x-model="data.mainImage" placeholder="Image URL" class="w-full steam-input">
+                            </div>
+                            <div class="space-y-2">
+                                <span class="text-[10px] text-gray-500 uppercase">Overlay Title</span>
+                                <input type="text" x-model="data.overlayText" placeholder="Hero Text" class="w-full steam-input">
+                            </div>
                         </div>
-                        <textarea x-model="data.mainText" placeholder="Invitation Message" class="steam-input h-32"></textarea>
+                        <div class="space-y-2">
+                            <span class="text-[10px] text-gray-500 uppercase">Invitation Message</span>
+                            <textarea x-model="data.mainText" placeholder="Main Message Content" class="w-full h-40 steam-input leading-relaxed"></textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="text-[10px] text-gray-500 uppercase">Wedding Date & Time (ISO Format)</span>
+                            <input type="datetime-local" x-model="data.weddingDate" class="w-full steam-input">
+                        </div>
                     </div>
                 </div>
 
-                <!-- Tab: Mapping & Nav -->
-                <div x-show="activeTab === 'map'" class="space-y-10 animate__animated animate__fadeIn">
-                    <h2 class="text-4xl font-black text-white italic uppercase tracking-tighter">Logistics & Maps</h2>
-                    <div class="steam-card p-8 space-y-6">
-                        <label class="steam-label">Venue Identity</label>
-                        <input type="text" x-model="data.venue.name" placeholder="Venue Name" class="steam-input">
-                        <input type="text" x-model="data.venue.address" placeholder="Physical Address" class="steam-input">
-                        
-                        <label class="steam-label">Navigation Sync Links</label>
-                        <div class="grid grid-cols-2 gap-4">
-                            <input type="text" x-model="data.maps.naver" placeholder="Naver Map URL" class="steam-input">
-                            <input type="text" x-model="data.maps.kakao" placeholder="Kakao Map URL" class="steam-input">
-                            <input type="text" x-model="data.maps.tmap" placeholder="T-Map URL" class="steam-input">
-                            <input type="text" x-model="data.maps.google" placeholder="Google Maps URL" class="steam-input">
+                <!-- Tab: Structure (Section Ordering) -->
+                <div x-show="activeTab === 'structure'" class="space-y-12 animate__animated animate__fadeIn">
+                    <h2 class="text-4xl font-black text-white italic uppercase tracking-tighter">Visual Structure</h2>
+                    <p class="text-xs text-sky-400 font-medium opacity-60 italic">Define the sequence and visibility of each interface module.</p>
+                    
+                    <div class="space-y-4">
+                        <template x-for="(section, idx) in data.sections" :key="section.id">
+                            <div class="steam-card p-6 flex items-center justify-between group transition-all hover:bg-[#1e2d3e]">
+                                <div class="flex items-center gap-6">
+                                    <span class="text-sky-800 font-mono text-xl" x-text="String(idx + 1).padStart(2, '0')"></span>
+                                    <div class="space-y-1">
+                                        <p class="text-white font-bold tracking-widest text-sm" x-text="section.title"></p>
+                                        <p class="text-[10px] text-gray-500 font-mono" x-text="section.id"></p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-6">
+                                    <div class="flex gap-2">
+                                        <button @click="moveSection(idx, -1)" class="w-8 h-8 flex items-center justify-center bg-black/30 rounded hover:bg-sky-500 transition-colors">↑</button>
+                                        <button @click="moveSection(idx, 1)" class="w-8 h-8 flex items-center justify-center bg-black/30 rounded hover:bg-sky-500 transition-colors">↓</button>
+                                    </div>
+                                    <div class="h-8 w-px bg-white/5"></div>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" x-model="section.isVisible" class="accent-sky-500">
+                                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Visible</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" x-model="section.isFolded" class="accent-rose-500">
+                                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Folded</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Tab: Location -->
+                <div x-show="activeTab === 'map'" class="space-y-12 animate__animated animate__fadeIn">
+                    <h2 class="text-4xl font-black text-white italic uppercase tracking-tighter">Logistics Terminal</h2>
+                    <div class="steam-card p-10 space-y-8">
+                        <div class="space-y-4">
+                            <label class="steam-label">Venue Configuration</label>
+                            <input type="text" x-model="data.venue.name" placeholder="Venue Name" class="w-full steam-input">
+                            <input type="text" x-model="data.venue.address" placeholder="Physical Address" class="w-full steam-input">
+                            <input type="text" x-model="data.venue.phone" placeholder="Venue Phone" class="w-full steam-input">
                         </div>
                     </div>
                 </div>
@@ -134,9 +185,9 @@
                 activeTab: 'core',
                 tabs: [
                     { id: 'core', name: 'Identity', icon: '🆔' },
+                    { id: 'structure', name: 'Structure', icon: '↕️' },
                     { id: 'map', name: 'Logistics', icon: '📍' },
-                    { id: 'gallery', name: 'Assets', icon: '🖼️' },
-                    { id: 'rsvp', name: 'Database', icon: '📊' }
+                    { id: 'security', name: 'Security', icon: '🔐' }
                 ],
                 data: {},
 
@@ -149,7 +200,7 @@
                     if (this.loginPass === (this.data.adminPassword || 'admin1234!')) {
                         this.isLoggedIn = true;
                     } else {
-                        alert('CRITICAL ERROR: Access Token Invalid');
+                        alert('ACCESS DENIED: Credentials Invalid.');
                     }
                 },
 
@@ -157,7 +208,18 @@
 
                 saveData() {
                     localStorage.setItem('wedding_v2_data', JSON.stringify(this.data));
-                    alert('SYSTEM: Data synchronized with production cloud (Local Storage).');
+                    alert('SUCCESS: Production environment synchronized.');
+                },
+
+                moveSection(index, dir) {
+                    const newIndex = index + dir;
+                    if (newIndex < 0 || newIndex >= this.data.sections.length) return;
+                    const arr = [...this.data.sections];
+                    const target = arr.splice(index, 1)[0];
+                    arr.splice(newIndex, 0, target);
+                    // Re-assign order based on new index
+                    arr.forEach((s, i) => s.order = i);
+                    this.data.sections = arr;
                 },
 
                 getInitialState() {
@@ -169,13 +231,12 @@
                         groom: { name: '조현우', father: '조복래', mother: '나선희', rank: '장남', phone: '010-3366-4848' },
                         bride: { name: '류하영', father: '류민석', mother: '고우희', rank: '장녀', phone: '010-6556-7525' },
                         weddingDate: '2026-05-02T13:00:00',
-                        venue: { name: '마리아쥬 스퀘어', address: '서울특별시 강남구 도산대로 318' },
-                        maps: { naver: '', kakao: '', tmap: '', google: '' },
+                        venue: { name: '마리아쥬 스퀘어', address: '서울특별시 강남구 도산대로 318', phone: '02-541-5007' },
                         sections: [
                             { id: 'mainText', title: 'INVITATION', isVisible: true, isFolded: false, order: 0 },
                             { id: 'names', title: 'WHO WE ARE', isVisible: true, isFolded: false, order: 1 },
                             { id: 'calendar', title: 'SCHEDULE', isVisible: true, isFolded: false, order: 2 },
-                            { id: 'accounts', title: 'ACCOUNTS', isVisible: true, isFolded: true, order: 3 }
+                            { id: 'location', title: 'LOCATION', isVisible: true, isFolded: false, order: 3 }
                         ]
                     };
                 }

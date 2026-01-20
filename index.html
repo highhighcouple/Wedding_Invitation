@@ -20,15 +20,21 @@
         .reveal.active { opacity: 1; transform: translateY(0); }
 
         .section-content { max-height: 0; overflow: hidden; transition: max-height 0.8s ease-in-out; }
-        .section-content.open { max-height: 3000px; }
+        .section-content.open { max-height: 4000px; }
 
         .intro-layer { background: #fff; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .bgm-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.3s; }
         .bgm-btn:hover { transform: scale(1.1); }
 
         .btn-action { @apply px-4 py-2 border border-gray-100 rounded-full text-[11px] bg-white/80 backdrop-blur hover:bg-gray-50 transition-all shadow-sm; }
-        .star-dust { position: absolute; background: white; border-radius: 50%; pointer-events: none; animation: float 3s infinite linear; }
-        @keyframes float { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-100px) scale(0); opacity: 0; } }
+        
+        /* Calendar Grid */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; text-align: center; }
+        .day-cell { width: 2.5rem; height: 2.5rem; display: flex; items-center; justify-content: center; font-size: 0.875rem; border-radius: 9999px; transition: all 0.3s; }
+        
+        /* Floating Star Dust */
+        .star-dust { position: absolute; background: white; border-radius: 50%; pointer-events: none; animation: floatUp 4s infinite linear; }
+        @keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity: 0.8; } 100% { transform: translateY(-150px) scale(0); opacity: 0; } }
     </style>
 </head>
 <body x-data="weddingApp()" x-init="init()" @mousemove="handleMouseMove($event)" @touchstart="handleTouchMove($event)">
@@ -51,7 +57,7 @@
         <div class="flex items-center gap-3 pointer-events-auto">
             <button @click="toggleBgm()" class="bgm-btn">
                 <template x-if="!bgmPlaying"><span>▶</span></template>
-                <template x-if="bgmPlaying"><span class="animate-pulse">♫</span></template>
+                <template x-if="bgmPlaying"><span class="animate-pulse text-rose-300">♫</span></template>
             </button>
         </div>
         <div class="flex items-center gap-3 pointer-events-auto">
@@ -60,7 +66,7 @@
                 <button @click="open = !open" class="btn-action flex items-center gap-2">
                     <span x-text="currentLang.flag"></span> <span x-text="currentLang.name"></span>
                 </button>
-                <div x-show="open" @click.away="open = false" class="absolute right-0 mt-3 bg-white border border-gray-100 rounded-2xl shadow-2xl p-3 w-40 space-y-1">
+                <div x-show="open" @click.away="open = false" x-cloak class="absolute right-0 mt-3 bg-white border border-gray-100 rounded-2xl shadow-2xl p-3 w-40 space-y-1">
                     <template x-for="lang in languages">
                         <button @click="changeLang(lang); open = false" class="w-full text-left px-4 py-2 text-xs hover:bg-rose-50 rounded-xl flex items-center gap-3 transition-colors">
                             <span x-text="lang.flag"></span> <span x-text="lang.name"></span>
@@ -74,13 +80,13 @@
     <main class="relative z-20" x-show="data.groom">
         <!-- Section 1: Hero -->
         <section class="h-screen relative flex items-center justify-center overflow-hidden">
-            <img :src="data.mainImage" class="absolute inset-0 w-full h-full object-cover transition-transform duration-[20s] scale-110" style="filter: brightness(0.9);">
-            <div class="absolute inset-0 bg-black/10"></div>
+            <img :src="data.mainImage" class="absolute inset-0 w-full h-full object-cover transition-transform duration-[30s] scale-110" style="filter: brightness(0.85);">
+            <div class="absolute inset-0 bg-black/5"></div>
             <div class="relative z-10 text-center text-white space-y-8 px-6">
                 <h1 class="font-cursive text-7xl md:text-9xl reveal animate__animated animate__fadeInDown" x-text="data.overlayText"></h1>
-                <div class="space-y-2 reveal" style="transition-delay: 0.6s">
-                    <p class="text-xl md:text-2xl font-light tracking-widest" x-text="`${data.groom.name} & ${data.bride.name}`"></p>
-                    <p class="text-xs uppercase tracking-[0.4em] opacity-80" x-text="formatDateKST(data.weddingDate)"></p>
+                <div class="space-y-3 reveal" style="transition-delay: 0.6s">
+                    <p class="text-xl md:text-2xl font-light tracking-[0.3em]" x-text="`${data.groom.name} & ${data.bride.name}`"></p>
+                    <p class="text-[10px] uppercase tracking-[0.6em] opacity-70" x-text="formatDateKST(data.weddingDate)"></p>
                 </div>
             </div>
         </section>
@@ -99,7 +105,7 @@
                     <!-- Main Text Section -->
                     <template x-if="section.id === 'mainText'">
                         <div class="py-12 space-y-8">
-                            <pre class="whitespace-pre-wrap leading-loose text-gray-600 font-light text-lg italic" x-text="data.mainText"></pre>
+                            <pre class="whitespace-pre-wrap leading-loose text-gray-500 font-light text-base md:text-lg italic tracking-wide" x-text="data.mainText"></pre>
                         </div>
                     </template>
 
@@ -107,64 +113,81 @@
                     <template x-if="section.id === 'names'">
                         <div class="py-12 space-y-16">
                             <div class="grid md:grid-cols-2 gap-12 items-center">
-                                <div class="space-y-4">
-                                    <p class="text-xs text-rose-300 tracking-widest">GROOM</p>
-                                    <h3 class="text-3xl font-bold" x-text="data.groom.name"></h3>
-                                    <div class="text-sm text-gray-400">
-                                        <span x-text="data.groom.father"></span> · <span x-text="data.groom.mother"></span>의 <span x-text="data.groom.rank"></span>
+                                <!-- Groom Side -->
+                                <div class="space-y-6">
+                                    <p class="text-[10px] text-rose-300 tracking-[0.4em] uppercase">The Groom</p>
+                                    <h3 class="text-3xl font-bold tracking-tighter" x-text="data.groom.name"></h3>
+                                    <div class="text-sm text-gray-400 space-y-1">
+                                        <p><span x-text="data.groom.father"></span> · <span x-text="data.groom.mother"></span>의 <span x-text="data.groom.rank"></span></p>
                                     </div>
-                                    <div class="flex justify-center gap-4 mt-4">
-                                        <a :href="`tel:${data.groom.phone}`" class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 text-gray-400 hover:text-rose-300">📞</a>
+                                    <div class="flex justify-center gap-4 mt-6">
+                                        <a :href="`tel:${data.groom.phone}`" class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 text-gray-400 hover:text-rose-300 transition-colors shadow-sm bg-white">📞</a>
                                     </div>
                                 </div>
-                                <div class="space-y-4">
-                                    <p class="text-xs text-rose-300 tracking-widest">BRIDE</p>
-                                    <h3 class="text-3xl font-bold" x-text="data.bride.name"></h3>
-                                    <div class="text-sm text-gray-400">
-                                        <span x-text="data.bride.father"></span> · <span x-text="data.bride.mother"></span>의 <span x-text="data.bride.rank"></span>
+                                <!-- Bride Side -->
+                                <div class="space-y-6">
+                                    <p class="text-[10px] text-rose-300 tracking-[0.4em] uppercase">The Bride</p>
+                                    <h3 class="text-3xl font-bold tracking-tighter" x-text="data.bride.name"></h3>
+                                    <div class="text-sm text-gray-400 space-y-1">
+                                        <p><span x-text="data.bride.father"></span> · <span x-text="data.bride.mother"></span>의 <span x-text="data.bride.rank"></span></p>
                                     </div>
-                                    <div class="flex justify-center gap-4 mt-4">
-                                        <a :href="`tel:${data.bride.phone}`" class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 text-gray-400 hover:text-rose-300">📞</a>
+                                    <div class="flex justify-center gap-4 mt-6">
+                                        <a :href="`tel:${data.bride.phone}`" class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 text-gray-400 hover:text-rose-300 transition-colors shadow-sm bg-white">📞</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </template>
 
-                    <!-- Calendar Section (KST Optimized) -->
+                    <!-- Calendar Section -->
                     <template x-if="section.id === 'calendar'">
                         <div class="py-12">
-                            <div class="inline-block p-12 bg-gray-50/30 rounded-[3rem] border border-gray-100/50 backdrop-blur-sm shadow-xl shadow-rose-50/20">
-                                <p class="text-2xl font-bold mb-10 tracking-tighter" x-text="getKSTMonthYear()"></p>
-                                <div class="grid grid-cols-7 gap-4 text-center">
+                            <div class="inline-block p-12 bg-white rounded-[3rem] border border-gray-100 shadow-2xl shadow-rose-100/30">
+                                <p class="text-2xl font-bold mb-10 tracking-tight text-gray-700" x-text="getKSTMonthYear()"></p>
+                                
+                                <div class="calendar-grid mb-12">
                                     <template x-for="day in ['일','월','화','수','목','금','토']">
-                                        <div class="text-[10px] font-bold" :class="day === '일' ? 'text-rose-400' : (day === '토' ? 'text-sky-400' : 'text-gray-300')" x-text="day"></div>
+                                        <div class="text-[10px] font-bold py-2" :class="day === '일' ? 'text-rose-400' : (day === '토' ? 'text-sky-400' : 'text-gray-300')" x-text="day"></div>
                                     </template>
-                                    <template x-for="empty in Array(new Date(data.weddingDate).getDay()).fill(0)"><div></div></template>
+                                    
+                                    <!-- Leading empty cells -->
+                                    <template x-for="empty in getStartDayOfMonth()">
+                                        <div class="day-cell"></div>
+                                    </template>
+                                    
+                                    <!-- Actual days -->
                                     <template x-for="d in getDaysInMonth()">
-                                        <div class="w-10 h-10 flex items-center justify-center text-sm rounded-full transition-all"
+                                        <div class="day-cell"
                                              :class="isWeddingDay(d) ? 'bg-rose-400 text-white font-bold scale-110 shadow-lg' : 'text-gray-600'"
                                              x-text="d"></div>
                                     </template>
                                 </div>
-                                <div class="mt-12 pt-8 border-t border-gray-100">
-                                    <p class="text-rose-400 font-bold tracking-widest text-lg" x-text="calculateDDayKST()"></p>
+
+                                <div class="pt-10 border-t border-gray-100 space-y-2">
+                                    <p class="text-xs text-gray-300 tracking-widest uppercase">Wedding Countdown</p>
+                                    <p class="text-rose-400 font-bold tracking-[0.2em] text-2xl" x-text="calculateDDayKST()"></p>
                                 </div>
                             </div>
                         </div>
                     </template>
 
-                    <!-- Account Section -->
-                    <template x-if="section.id === 'accounts'">
-                        <div class="py-12 space-y-6">
-                            <div class="bg-gray-50 rounded-3xl p-8 text-left space-y-4 border border-gray-100">
-                                <p class="text-xs font-bold text-gray-400 uppercase">Groom's Family Account</p>
-                                <div class="flex items-center justify-between border-b border-gray-200 pb-4">
-                                    <div class="text-sm">
-                                        <p class="font-bold" x-text="data.accounts.groom.name"></p>
-                                        <p class="text-gray-500" x-text="`${data.accounts.groom.bank} ${data.accounts.groom.number}`"></p>
-                                    </div>
-                                    <button @click="copyClipboard(data.accounts.groom.number)" class="text-[10px] text-rose-400 border border-rose-100 px-3 py-1 rounded-full">COPY</button>
+                    <!-- Location Section -->
+                    <template x-if="section.id === 'location'">
+                        <div class="py-12 space-y-10 text-left">
+                            <div class="space-y-3">
+                                <p class="text-xs text-rose-300 tracking-widest uppercase">The Venue</p>
+                                <h3 class="text-2xl font-bold tracking-tight" x-text="data.venue.name"></h3>
+                                <p class="text-sm text-gray-400" x-text="data.venue.address"></p>
+                                <div class="flex gap-4 pt-2">
+                                    <a :href="`tel:${data.venue.phone}`" class="text-xs text-gray-500 hover:text-rose-300 transition-colors">Tel. <span x-text="data.venue.phone"></span></a>
+                                </div>
+                            </div>
+                            <!-- Mock Map -->
+                            <div class="aspect-video bg-gray-50 rounded-[2rem] flex items-center justify-center border border-gray-100 shadow-inner group cursor-pointer overflow-hidden relative">
+                                <div class="absolute inset-0 bg-rose-50 opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                                <div class="text-center space-y-2 z-10">
+                                    <p class="text-[10px] text-gray-300 tracking-widest uppercase">Interactive Map</p>
+                                    <p class="text-xs text-gray-400 italic">Click to open Navigation</p>
                                 </div>
                             </div>
                         </div>
@@ -175,10 +198,14 @@
         </template>
     </main>
 
-    <footer class="py-24 bg-gray-50/50 text-center border-t border-gray-100">
-        <p class="text-[10px] text-gray-300 tracking-[0.5em] mb-4">LOVE & ETERNITY</p>
-        <p class="text-[10px] text-gray-300">COPYRIGHT(C) JOE ALL RIGHT RESERVED</p>
-        <a href="admin.html" class="mt-8 inline-block text-[9px] text-gray-200 hover:text-gray-400 transition-colors">MANAGEMENT HUB</a>
+    <footer class="py-32 bg-gray-50/50 text-center border-t border-gray-100 relative overflow-hidden">
+        <div class="relative z-10">
+            <p class="text-[10px] text-gray-300 tracking-[0.6em] mb-6 uppercase">Eternal Love & Promise</p>
+            <p class="text-[10px] text-gray-300 font-light tracking-widest italic">COPYRIGHT(C) JOE ALL RIGHT RESERVED</p>
+            <div class="mt-12">
+                <a href="admin.html" class="text-[9px] text-gray-200 hover:text-rose-300 transition-colors border border-gray-100 px-4 py-2 rounded-full bg-white">ADMIN TERMINAL</a>
+            </div>
+        </div>
     </footer>
 
     <script>
@@ -194,6 +221,7 @@
                 showIntro: true,
                 bgmPlaying: false,
                 audio: null,
+                playPromise: null,
                 currentLang: LANG_LIST.ko,
                 languages: Object.values(LANG_LIST),
                 data: {},
@@ -201,10 +229,9 @@
                 
                 async init() {
                     const saved = localStorage.getItem('wedding_v2_data');
-                    this.data = saved ? JSON.parse(saved) : this.getDefaultData();
+                    this.data = saved ? JSON.parse(saved) : this.getInitialState();
                     this.sortedSections = [...this.data.sections].sort((a, b) => a.order - b.order);
                     
-                    // Interaction Observer for Scroll Effects
                     const observer = new IntersectionObserver((entries) => {
                         entries.forEach(entry => {
                             if (entry.isIntersecting) entry.target.classList.add('active');
@@ -216,26 +243,23 @@
                         this.initCanvas();
                     });
 
-                    // Pre-load audio to avoid AbortError on fast interactions
                     this.setupAudio();
                 },
 
-                getDefaultData() {
+                getInitialState() {
                     return {
                         mainImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070',
-                        overlayText: 'Wedding Day',
-                        mainText: '영원히 함께할 사랑의 맹세,\n그 첫 발걸음에 여러분을 초대합니다.',
+                        overlayText: 'Our Wedding',
+                        mainText: '봄의 따스함이 가득한 날,\n저희 두 사람의 소중한 연을 맺고자 합니다.\n\n함께 자리를 빛내주시면\n더없는 기쁨으로 간직하겠습니다.',
                         groom: { name: '조현우', father: '조복래', mother: '나선희', rank: '장남', phone: '010-3366-4848' },
                         bride: { name: '류하영', father: '류민석', mother: '고우희', rank: '장녀', phone: '010-6556-7525' },
                         weddingDate: '2026-05-02T13:00:00',
-                        accounts: {
-                            groom: { name: '조현우', bank: '우리은행', number: '1002-123-456789' }
-                        },
+                        venue: { name: '마리아쥬 스퀘어', address: '서울특별시 강남구 도산대로 318', phone: '02-541-5007' },
                         sections: [
                             { id: 'mainText', title: 'INVITATION', isVisible: true, isFolded: false, order: 0 },
                             { id: 'names', title: 'WHO WE ARE', isVisible: true, isFolded: false, order: 1 },
                             { id: 'calendar', title: 'SCHEDULE', isVisible: true, isFolded: false, order: 2 },
-                            { id: 'accounts', title: 'ACCOUNTS', isVisible: true, isFolded: true, order: 3 }
+                            { id: 'location', title: 'LOCATION', isVisible: true, isFolded: false, order: 3 }
                         ]
                     };
                 },
@@ -251,18 +275,20 @@
                     
                     try {
                         if (this.bgmPlaying) {
+                            // If we have an active play promise, wait for it before pausing
+                            if (this.playPromise) await this.playPromise;
                             this.audio.pause();
                             this.bgmPlaying = false;
                         } else {
-                            // Catching the "Aborted by user agent" or Autoplay block errors
-                            const playPromise = this.audio.play();
-                            if (playPromise !== undefined) {
-                                await playPromise;
+                            this.playPromise = this.audio.play();
+                            if (this.playPromise !== undefined) {
+                                await this.playPromise;
                                 this.bgmPlaying = true;
+                                this.playPromise = null;
                             }
                         }
                     } catch (err) {
-                        console.warn("BGM Playback was interrupted or blocked:", err.message);
+                        console.warn("BGM state change was interrupted:", err.name);
                         this.bgmPlaying = false;
                     }
                 },
@@ -279,7 +305,13 @@
 
                 getKSTMonthYear() {
                     const d = new Date(this.data.weddingDate);
-                    return `${d.getFullYear()} / ${d.getMonth() + 1}`;
+                    return `${d.getFullYear()} / ${String(d.getMonth() + 1).padStart(2, '0')}`;
+                },
+
+                getStartDayOfMonth() {
+                    const d = new Date(this.data.weddingDate);
+                    // 1st day of the wedding month
+                    return new Date(d.getFullYear(), d.getMonth(), 1).getDay();
                 },
 
                 getDaysInMonth() {
@@ -293,12 +325,21 @@
 
                 calculateDDayKST() {
                     const now = new Date();
-                    // Korea Standard Time (UTC+9)
-                    const kstNow = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (9 * 60 * 60 * 1000));
+                    // Explicitly calculate Korea Standard Time
+                    const kstNow = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Seoul"}));
                     const target = new Date(this.data.weddingDate);
-                    const diff = target - kstNow;
-                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                    return days > 0 ? `D-${days}` : (days === 0 ? 'D-DAY' : `D+${Math.abs(days)}`);
+                    const kstTarget = new Date(target.toLocaleString("en-US", {timeZone: "Asia/Seoul"}));
+                    
+                    // Midnight normalization for pure day count
+                    kstNow.setHours(0,0,0,0);
+                    kstTarget.setHours(0,0,0,0);
+                    
+                    const diff = kstTarget - kstNow;
+                    const days = Math.round(diff / (1000 * 60 * 60 * 24));
+                    
+                    if (days > 0) return `D-${days}`;
+                    if (days === 0) return 'D-DAY';
+                    return `D+${Math.abs(days)}`;
                 },
 
                 runTTS() {
@@ -306,13 +347,9 @@
                     if (synth.speaking) { synth.cancel(); return; }
                     const msg = new SpeechSynthesisUtterance(this.data.mainText);
                     msg.lang = 'ko-KR';
-                    msg.pitch = 1.1;
-                    msg.rate = 0.9;
+                    msg.pitch = 1.0;
+                    msg.rate = 0.95;
                     synth.speak(msg);
-                },
-
-                copyClipboard(text) {
-                    navigator.clipboard.writeText(text).then(() => alert('계좌번호가 복사되었습니다.'));
                 },
 
                 initCanvas() {
@@ -326,12 +363,12 @@
                     class Particle {
                         constructor(x, y) {
                             this.x = x; this.y = y;
-                            this.size = Math.random() * 2 + 0.5;
-                            this.speedX = Math.random() * 2 - 1;
-                            this.speedY = Math.random() * 2 - 1;
-                            this.opacity = 1;
+                            this.size = Math.random() * 2 + 0.3;
+                            this.speedX = Math.random() * 1.5 - 0.75;
+                            this.speedY = Math.random() * 1.5 - 0.75;
+                            this.opacity = 0.8;
                         }
-                        update() { this.x += this.speedX; this.y += this.speedY; this.opacity -= 0.015; }
+                        update() { this.x += this.speedX; this.y += this.speedY; this.opacity -= 0.012; }
                         draw() {
                             ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
                             ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
@@ -346,11 +383,11 @@
                     };
                     animate();
 
-                    this.addParticle = (x, y) => { for(let i=0; i<3; i++) particles.push(new Particle(x, y)); };
+                    this.addParticle = (x, y) => { for(let i=0; i<4; i++) particles.push(new Particle(x, y)); };
                 },
 
                 handleMouseMove(e) { this.addParticle?.(e.clientX, e.clientY); },
-                handleTouchMove(e) { this.addParticle?.(e.touches[0].clientX, e.touches[0].clientY); }
+                handleTouchMove(e) { if(e.touches[0]) this.addParticle?.(e.touches[0].clientX, e.touches[0].clientY); }
             }
         }
     </script>
