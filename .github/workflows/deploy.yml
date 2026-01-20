@@ -1,4 +1,4 @@
-name: Deploy static content to Pages
+name: Deploy index.html and admin.html to Pages
 
 on:
   push:
