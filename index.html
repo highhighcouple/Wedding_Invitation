@@ -4,9 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title
-        x-text="data.groom?.name && data.bride?.name ? data.groom.name + ' ♥ ' + data.bride.name + '의 모바일 청첩장' : '모바일 청첩장'">
-    </title>
+    <title>모바일 청첩장</title>
     <!-- Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Sans+KR:wght@300;400;500&display=swap"
@@ -556,6 +554,7 @@
                     </div>
                 </div>
             </template>
+        </template>
     </main>
 
     <footer class="py-10 text-center text-[10px] text-gray-400 font-light tracking-widest border-t border-gray-50">
@@ -601,6 +600,7 @@
         function app() {
             return {
                 lang: 'ko', showIntro: true, showVideo: false, lightbox: null,
+                showGal: false, galSrc: '', showVid: false,
                 data: {}, sortedSections: [],
                 calDays: [], calTitle: '', dDay: '',
                 bgmPlaying: false, audio: null,
@@ -650,7 +650,9 @@
                         // Observer
                         setTimeout(() => this.initObserver(), 500);
 
-                    } catch (e) { }
+                    } catch (e) {
+                        console.error('Data loading error:', e);
+                    }
                 },
 
                 closeIntro() {
@@ -677,11 +679,11 @@
                 },
 
                 initCal() {
-                    if (!this.data.config.weddingDate) return;
-                    const d = new Date(this.data.config.weddingDate);
+                    const dateVal = this.data.config?.date;
+                    if (!dateVal) return;
+                    const d = new Date(dateVal + 'T00:00:00'); // Ensure KST baseline
                     this.calTitle = `${d.getFullYear()}. ${d.getMonth() + 1}`;
 
-                    // Logic to fill calDays with { day: 1, w: 0..6, isWed: bool }
                     const y = d.getFullYear(), m = d.getMonth();
                     const firstDay = new Date(y, m, 1).getDay();
                     const lastDate = new Date(y, m + 1, 0).getDate();
