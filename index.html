@@ -15,6 +15,9 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script type="text/javascript"
         src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=dacffa882aa3284870d06afa02bd5947&libraries=services"></script>
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js"
+        integrity="sha384-l6I7YpLAnpS8mXdfzD4pUnVqB3kS+Yn0yW4I3oR6K7CizK6G/h6y3J3LzW9p+G2J"
+        crossorigin="anonymous"></script>
 
     <style>
         :root {
@@ -214,17 +217,19 @@
             <template x-if="section.isVisible">
                 <div class="section-wrap relative" :id="section.id" :class="section.id === 'names' ? 'pt-0' : ''">
 
-                    <!-- Toggle Header (Except Names) -->
-                    <div x-show="section.id !== 'names'" @click="section.isFolded = !section.isFolded"
-                        class="p-6 flex justify-between items-center bg-white z-10 relative cursor-pointer">
+                    <!-- Toggle/Static Header (Exclude Names) -->
+                    <div x-show="section.id !== 'names'"
+                        @click="if(section._canFold) section._isFolded = !section._isFolded"
+                        class="p-6 flex justify-between items-center bg-white z-10 relative"
+                        :class="section._canFold ? 'cursor-pointer' : ''">
                         <h2 class="text-lg lux-font font-bold text-gray-700 tracking-wide"
                             x-text="t(section.id) === section.id ? section.title : t(section.id)"></h2>
-                        <span class="text-gray-300 text-xs" x-text="section.isFolded ? '▼' : '▲'"></span>
+                        <span x-show="section._canFold" class="text-gray-300 text-xs"
+                            x-text="section._isFolded ? '▼' : '▲'"></span>
                     </div>
 
                     <!-- Body -->
-                    <div class="content-body" :class="section.isFolded ? 'folded' : ''"
-                        :style="section.isFolded ? 'transition: none;' : ''">
+                    <div class="content-body" :class="section._isFolded ? 'folded' : ''">
 
                         <!-- 1. Names/Hero -->
                         <template x-if="section.id === 'names'">
@@ -240,36 +245,41 @@
                                 <div class="whitespace-pre-line leading-8 text-sm text-gray-600 mb-8 lux-font"
                                     x-text="data.text.mainMessage"></div>
 
-                                <!-- Names Section UI Restoration -->
-                                <div class="space-y-6 pt-10">
-                                    <div class="flex flex-col items-center gap-1">
-                                        <h1 class="text-3xl tracking-[0.2em] font-light flex items-center"
-                                            x-text="data.groom.name"></h1>
-                                        <span
-                                            class="text-[10px] text-pink-400 font-bold tracking-widest uppercase">신랑</span>
-                                    </div>
-                                    <div class="lux-font text-2xl text-pink-200 mt-[-10px]">&</div>
-                                    <div class="flex flex-col items-center gap-1">
-                                        <h1 class="text-3xl tracking-[0.2em] font-light flex items-center"
-                                            x-text="data.bride.name"></h1>
-                                        <span
-                                            class="text-[10px] text-pink-400 font-bold tracking-widest uppercase">신부</span>
-                                    </div>
-                                </div>
+                                <!-- Names Section UI Restoration & Improvement -->
+                                <div class="px-8 pt-10 pb-12 bg-white">
+                                    <div class="grid grid-cols-[1fr_auto_1fr] items-end gap-2 text-center">
+                                        <!-- Groom Column -->
+                                        <div class="flex flex-col items-center">
+                                            <div class="text-[12px] text-gray-500 mb-6 lux-font">
+                                                <span x-text="data.groom.parents.father"></span>·<span
+                                                    x-text="data.groom.parents.mother"></span><span
+                                                    class="mx-1">의</span><span x-text="data.groom.rank"></span>
+                                            </div>
+                                            <div class="flex flex-col items-center">
+                                                <span class="text-[0.7em] text-pink-400 font-bold mb-1"
+                                                    :style="`font-size: calc(1.875rem * 0.7)`">신랑</span>
+                                                <h1 class="text-3xl tracking-[0.1em] font-light"
+                                                    x-text="data.groom.name"></h1>
+                                            </div>
+                                        </div>
 
-                                <!-- Parents -->
-                                <div class="mt-8 space-y-2 text-sm text-gray-500">
-                                    <div>
-                                        <span x-text="data.groom.parents.father"></span>·<span
-                                            x-text="data.groom.parents.mother"></span> <span x-text="t('of')">의</span>
-                                        <span x-text="data.groom.rank"></span> <b><span
-                                                x-text="data.groom.name"></span></b>
-                                    </div>
-                                    <div>
-                                        <span x-text="data.bride.parents.father"></span>·<span
-                                            x-text="data.bride.parents.mother"></span> <span x-text="t('of')">의</span>
-                                        <span x-text="data.bride.rank"></span> <b><span
-                                                x-text="data.bride.name"></span></b>
+                                        <!-- Divider -->
+                                        <div class="lux-font text-2xl text-pink-200 pb-2">&</div>
+
+                                        <!-- Bride Column -->
+                                        <div class="flex flex-col items-center">
+                                            <div class="text-[12px] text-gray-500 mb-6 lux-font">
+                                                <span x-text="data.bride.parents.father"></span>·<span
+                                                    x-text="data.bride.parents.mother"></span><span
+                                                    class="mx-1">의</span><span x-text="data.bride.rank"></span>
+                                            </div>
+                                            <div class="flex flex-col items-center">
+                                                <span class="text-[0.7em] text-pink-400 font-bold mb-1"
+                                                    :style="`font-size: calc(1.875rem * 0.7)`">신부</span>
+                                                <h1 class="text-3xl tracking-[0.1em] font-light"
+                                                    x-text="data.bride.name"></h1>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -277,20 +287,21 @@
 
                         <!-- 2. Calendar -->
                         <template x-if="section.id === 'calendar'">
-                            <div class="px-8 pb-10 text-center">
-                                <div class="mt-8 mb-4">
-                                    <div class="text-[14px] font-bold text-gray-500 mb-2" x-text="dDay"></div>
-                                    <div
-                                        class="bg-gray-50 p-4 rounded-xl border border-gray-100 grid grid-cols-7 gap-1 text-center">
-                                        <template x-for="day in ['일','월','화','수','목','금','토']">
-                                            <div class="text-[10px] font-bold text-gray-400" x-text="day"></div>
-                                        </template>
-                                        <template x-for="d in calDays">
-                                            <div class="h-8 flex items-center justify-center text-sm"
-                                                :class="d.isTarget ? 'bg-pink-400 text-white rounded-full font-bold shadow-sm' : (d.isSun ? 'text-red-400' : 'text-gray-600')"
-                                                x-text="d.day || ''"></div>
-                                        </template>
-                                    </div>
+                            <div class="px-8 pb-12 text-center">
+                                <h3 class="lux-font text-xl text-gray-700 mb-6" x-text="calTitle"></h3>
+                                <div
+                                    class="bg-white p-4 rounded-xl border border-gray-100 grid grid-cols-7 gap-1 text-center shadow-sm mb-10">
+                                    <template x-for="day in ['일','월','화','수','목','금','토']">
+                                        <div class="text-[10px] font-bold text-gray-400 pb-2" x-text="day"></div>
+                                    </template>
+                                    <template x-for="d in calDays">
+                                        <div class="h-10 flex items-center justify-center text-sm"
+                                            :class="d.isTarget ? 'bg-pink-400 text-white rounded-full font-bold shadow-md' : (d.isSun ? 'text-red-400' : 'text-gray-600')"
+                                            x-text="d.day || ''"></div>
+                                    </template>
+                                </div>
+                                <div class="mt-4 p-6 bg-pink-50/30 rounded-2xl border border-pink-100/50">
+                                    <div class="text-[16px] font-bold text-gray-700 tracking-tight" x-text="dDay"></div>
                                 </div>
                             </div>
                         </template>
@@ -540,6 +551,18 @@
                                             𝕏</div>
                                         <span class="text-[10px] text-gray-500">X</span>
                                     </button>
+                                    <button @click="shareSns('line')" class="flex flex-col items-center gap-2">
+                                        <div
+                                            class="w-12 h-12 bg-[#00B900] rounded-full flex items-center justify-center text-white text-xl shadow-sm font-bold">
+                                            L</div>
+                                        <span class="text-[10px] text-gray-500">라인</span>
+                                    </button>
+                                    <button @click="shareSns('telegram')" class="flex flex-col items-center gap-2">
+                                        <div
+                                            class="w-12 h-12 bg-[#0088CC] rounded-full flex items-center justify-center text-white text-xl shadow-sm">
+                                            ✈</div>
+                                        <span class="text-[10px] text-gray-500">텔레그램</span>
+                                    </button>
                                     <button @click="copyLink" class="flex flex-col items-center gap-2">
                                         <div
                                             class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-xl shadow-sm">
@@ -606,6 +629,7 @@
                 galIdx: 0,
                 bbs: [], newPost: { name: '', message: '' },
                 join: [], newJoin: { side: 'groom', name: '', count: 0, meal: true },
+                copyNotified: false,
 
                 dict: {
                     ko: {
@@ -630,7 +654,21 @@
                     // Fetch Data
                     try {
                         this.data = await (await fetch('data.json')).json();
-                        this.processSections();
+
+                        // Kakao Init for Share
+                        if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
+                            Kakao.init('dacffa882aa3284870d06afa02bd5947');
+                        }
+
+                        // Process Sections with Internal State
+                        if (this.data.sections) {
+                            this.data.sections.forEach(sec => {
+                                sec._canFold = !!sec.isFolded;
+                                sec._isFolded = !!sec.isFolded;
+                            });
+                            this.sortedSections = [...this.data.sections].sort((a, b) => a.order - b.order);
+                        }
+
                         this.initCal();
                         this.initEffects();
                         this.initMap();
@@ -718,10 +756,12 @@
                     const h = Math.floor(absDiff / 1000 / 60 / 60) % 24;
                     const d = Math.floor(absDiff / 1000 / 60 / 60 / 24);
 
-                    const timeStr = [h, m, s].map(v => v.toString().padStart(2, '0')).join(':');
-                    const prefix = diff > 0 ? 'D-DAY' : 'D+DAY';
+                    const timeStr = `${h}시간 ${m}분 ${s}초`;
+                    const daysStr = d > 0 ? `${d}일 ` : '';
+                    const prefix = diff > 0 ? 'D-' : 'D+';
+                    const suffix = diff > 0 ? '남음' : '지남';
 
-                    this.dDay = `${prefix} ${d}일 ${timeStr}`;
+                    this.dDay = `${prefix}${daysStr}${timeStr} ${suffix}`;
                 },
 
                 initEffects() {
@@ -825,20 +865,22 @@
                 handleTouchStart(e) { if (this._createExplosion) this._createExplosion(e.touches[0].clientX, e.touches[0].clientY); },
 
                 initMap() {
-                    // Kakao Map
                     const check = setInterval(() => {
-                        if (typeof kakao !== 'undefined' && kakao.maps) {
+                        if (typeof kakao !== 'undefined' && kakao.maps && this.data.config) {
                             clearInterval(check);
                             kakao.maps.load(() => {
                                 const container = document.getElementById('map');
                                 if (!container) return;
                                 const geocoder = new kakao.maps.services.Geocoder();
-                                const addr = this.data.config.venue.address || '서울특별시 강남구 도산대로 318 SB타워 G층';
+                                const addr = this.data.config.venue.address;
+                                if (!addr) return;
                                 geocoder.addressSearch(addr, (res, status) => {
                                     if (status === kakao.maps.services.Status.OK) {
                                         const coords = new kakao.maps.LatLng(res[0].y, res[0].x);
                                         const map = new kakao.maps.Map(container, { center: coords, level: 3 });
                                         new kakao.maps.Marker({ map: map, position: coords });
+                                        // Trigger redraw
+                                        setTimeout(() => map.relayout(), 500);
                                     }
                                 });
                             });
@@ -929,26 +971,49 @@
                 },
 
                 shareKakao() {
-                    // Simple Share URL
-                    const url = 'https://highhighcouple.github.io/Wedding_Invitation/';
-                    window.location.href = `kakaolink://sendurl?url=${encodeURIComponent(url)}`;
-                    // Fallback to Clipboard if not handling Kakao SDK
-                    setTimeout(() => {
+                    if (typeof Kakao !== 'undefined' && Kakao.isInitialized()) {
+                        Kakao.Share.sendDefault({
+                            objectType: 'feed',
+                            content: {
+                                title: `${this.data.groom.name} ♥ ${this.data.bride.name}의 결혼식에 초대합니다`,
+                                description: this.data.config.venue.name + ' ' + this.data.config.weddingDate,
+                                imageUrl: this.data.images.main,
+                                link: {
+                                    mobileWebUrl: window.location.href,
+                                    webUrl: window.location.href,
+                                },
+                            },
+                            buttons: [
+                                {
+                                    title: '모바일 청첩장 보기',
+                                    link: {
+                                        mobileWebUrl: window.location.href,
+                                        webUrl: window.location.href,
+                                    },
+                                },
+                            ],
+                        });
+                    } else {
                         this.copyLink();
-                    }, 500);
+                    }
                 },
 
                 shareSns(type) {
-                    const url = 'https://highhighcouple.github.io/Wedding_Invitation/';
+                    const url = window.location.href;
                     let target = '';
                     if (type === 'facebook') target = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
                     if (type === 'x') target = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`;
-                    window.open(target, '_blank');
+                    if (type === 'line') target = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}`;
+                    if (type === 'telegram') target = `https://t.me/share/url?url=${encodeURIComponent(url)}`;
+                    if (target) window.open(target, '_blank');
                 },
 
                 copyLink() {
-                    this.copy('https://highhighcouple.github.io/Wedding_Invitation/');
-                    alert('주소가 클립보드에 복사되었습니다.');
+                    this.copy(window.location.href);
+                    if (!this.copyNotified) {
+                        alert('클립 보드에 주소가 저장되었습니다.');
+                        this.copyNotified = true;
+                    }
                 },
 
                 speakAll() {
