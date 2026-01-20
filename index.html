@@ -184,21 +184,22 @@
             💿
         </button>
     </div>
+    <!-- Floating Nav (TTS/Language UI 주석 처리) -->
+    <!--
     <div class="fixed top-4 right-4 z-[90] flex gap-2 transition-all duration-300"
         :class="showIntro?'opacity-0':'opacity-100'">
-        <!-- Lang -->
         <select x-model="lang" class="bg-white/80 backdrop-blur border rounded-full px-3 py-1 text-xs outline-none">
             <option value="ko">KR</option>
             <option value="en">EN</option>
             <option value="jp">JP</option>
             <option value="cn">CN</option>
         </select>
-        <!-- TTS -->
         <button @click="speakAll"
             class="w-8 h-8 rounded-full bg-pink-100/80 backdrop-blur flex items-center justify-center text-sm shadow">
             👄
         </button>
     </div>
+    -->
 
     <!-- Effect Canvas -->
     <canvas id="effect"></canvas>
@@ -212,15 +213,19 @@
                 <div class="section-wrap relative" :id="section.id" :class="section.id === 'names' ? 'pt-0' : ''">
 
                     <!-- Toggle Header (Except Names) -->
-                    <div x-show="section.id !== 'names'" @click="section.isFolded = !section.isFolded"
-                        class="p-6 cursor-pointer flex justify-between items-center bg-white z-10 relative">
+                    <div x-show="section.id !== 'names'"
+                        @click="if(section.isFolded) section.isFolded = !section.isFolded"
+                        class="p-6 flex justify-between items-center bg-white z-10 relative"
+                        :class="section.isFolded ? 'cursor-pointer' : 'cursor-default'">
                         <h2 class="text-lg lux-font font-bold text-gray-700 tracking-wide"
                             x-text="t(section.id) === section.id ? section.title : t(section.id)"></h2>
-                        <span class="text-gray-300 text-xs" x-text="section.isFolded ? '▼' : '▲'"></span>
+                        <span x-show="section.isFolded" class="text-gray-300 text-xs"
+                            x-text="section.isFolded ? '▼' : '▲'"></span>
                     </div>
 
                     <!-- Body -->
-                    <div class="content-body" :class="section.isFolded ? 'folded' : ''">
+                    <div class="content-body" :class="section.isFolded ? 'folded' : ''"
+                        :style="section.isFolded ? 'transition: none;' : ''">
 
                         <!-- 1. Names/Hero -->
                         <template x-if="section.id === 'names'">
@@ -386,6 +391,59 @@
                             </div>
                         </template>
 
+                        <!-- 8. Guestbook (New Implementation) -->
+                        <template x-if="section.id === 'guestbook'">
+                            <div class="px-8 pb-10">
+                                <div class="space-y-4 mb-6">
+                                    <template x-for="post in bbs" :key="post.date">
+                                        <div class="p-4 bg-gray-50 rounded text-sm relative">
+                                            <div class="font-bold mb-1" x-text="post.name"></div>
+                                            <div class="text-gray-600 mb-2 whitespace-pre-line" x-text="post.message">
+                                            </div>
+                                            <div class="text-[10px] text-gray-400"
+                                                x-text="new Date(post.date).toLocaleString()"></div>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="p-4 border rounded space-y-3">
+                                    <input x-model="newPost.name" placeholder="성함"
+                                        class="w-full border p-2 text-sm rounded">
+                                    <textarea x-model="newPost.message" placeholder="축하 메시지를 남겨주세요"
+                                        class="w-full border p-2 text-sm rounded" rows="3"></textarea>
+                                    <button @click="saveBbs"
+                                        class="w-full bg-pink-100 py-2 text-sm font-bold rounded hover:bg-pink-200">메시지
+                                        남기기</button>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- 9. RSVP (New Implementation) -->
+                        <template x-if="section.id === 'rsvp'">
+                            <div class="px-8 pb-10">
+                                <div class="p-6 bg-pink-50 rounded-lg space-y-4">
+                                    <div class="text-center font-bold text-pink-700 mb-2">참석 여부 전달</div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button @click="newJoin.side='groom'" class="py-2 text-xs border rounded"
+                                            :class="newJoin.side==='groom'?'bg-blue-100 border-blue-300':'bg-white'">신랑측</button>
+                                        <button @click="newJoin.side='bride'" class="py-2 text-xs border rounded"
+                                            :class="newJoin.side==='bride'?'bg-pink-100 border-pink-300':'bg-white'">신부측</button>
+                                    </div>
+                                    <input x-model="newJoin.name" placeholder="성함"
+                                        class="w-full border p-2 text-sm rounded">
+                                    <div class="flex gap-2">
+                                        <input type="number" x-model="newJoin.count" placeholder="동반 인원"
+                                            class="flex-1 border p-2 text-sm rounded">
+                                        <label class="flex items-center gap-1 text-xs text-gray-500 whitespace-nowrap">
+                                            <input type="checkbox" x-model="newJoin.meal"> 식사 여부
+                                        </label>
+                                    </div>
+                                    <button @click="saveJoin"
+                                        class="w-full bg-gray-800 text-white py-2 text-sm font-bold rounded">참석 정보
+                                        보내기</button>
+                                </div>
+                            </div>
+                        </template>
+
                     </div>
                 </div>
             </template>
@@ -416,6 +474,8 @@
                 calDays: [], calTitle: '', dDay: '',
                 bgmPlaying: false, audio: null,
                 galIdx: 0,
+                bbs: [], newPost: { name: '', message: '' },
+                join: [], newJoin: { side: 'groom', name: '', count: 0, meal: true },
 
                 dict: {
                     ko: { names: '초대합니다', calendar: '소중한 날', of: '의' },
@@ -433,6 +493,10 @@
                         this.initCal();
                         this.initEffects();
                         this.initMap();
+
+                        // Load BBS & Join
+                        try { this.bbs = await (await fetch('bbs.json')).json(); } catch (e) { }
+                        try { this.join = await (await fetch('join.json')).json(); } catch (e) { }
 
                         // Gallery Loop
                         setInterval(() => {
@@ -603,7 +667,8 @@
                                 const container = document.getElementById('map');
                                 if (!container) return;
                                 const geocoder = new kakao.maps.services.Geocoder();
-                                geocoder.addressSearch(this.data.config.venue.address || 'Seoul', (res, status) => {
+                                const addr = this.data.config.venue.address || '서울특별시 강남구 도산대로 318 SB타워 G층';
+                                geocoder.addressSearch(addr, (res, status) => {
                                     if (status === kakao.maps.services.Status.OK) {
                                         const coords = new kakao.maps.LatLng(res[0].y, res[0].x);
                                         const map = new kakao.maps.Map(container, { center: coords, level: 3 });
@@ -646,6 +711,55 @@
 
                 copy(txt) {
                     navigator.clipboard.writeText(txt).then(() => alert('Copied!'));
+                },
+
+                async saveBbs() {
+                    if (!this.newPost.name || !this.newPost.message) return alert('성함과 메시지를 입력해주세요.');
+                    const post = { ...this.newPost, date: new Date().toISOString() };
+                    const newList = [post, ...this.bbs];
+                    if (await this.pushToGithub('bbs.json', newList)) {
+                        this.bbs = newList;
+                        this.newPost = { name: '', message: '' };
+                        alert('메시지가 등록되었습니다!');
+                    }
+                },
+
+                async saveJoin() {
+                    if (!this.newJoin.name) return alert('성함을 입력해주세요.');
+                    const entry = { ...this.newJoin, date: new Date().toISOString() };
+                    const newList = [...this.join, entry];
+                    if (await this.pushToGithub('join.json', newList)) {
+                        this.join = newList;
+                        this.newJoin = { side: 'groom', name: '', count: 0, meal: true };
+                        alert('참석 정보가 전달되었습니다.');
+                    }
+                },
+
+                async pushToGithub(filename, data) {
+                    const token = localStorage.getItem('ghToken') || this.data.config.secrets.githubToken;
+                    if (!token) {
+                        alert('데이터 저장을 위해 GitHub 토큰이 필요합니다. 관리자 모드에서 로그인을 먼저 해주세요.');
+                        return false;
+                    }
+
+                    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+                    try {
+                        const r = await fetch(`https://api.github.com/repos/highhighcouple/Wedding_Invitation/contents/${filename}`, {
+                            headers: { 'Authorization': `token ${token}` }
+                        });
+                        const d = await r.json();
+                        const sha = d.sha;
+
+                        const res = await fetch(`https://api.github.com/repos/highhighcouple/Wedding_Invitation/contents/${filename}`, {
+                            method: 'PUT',
+                            headers: { 'Authorization': `token ${token}` },
+                            body: JSON.stringify({ message: `update ${filename}`, content, sha })
+                        });
+                        return res.ok;
+                    } catch (e) {
+                        alert('통신 오류가 발생했습니다.');
+                        return false;
+                    }
                 },
 
                 speakAll() {

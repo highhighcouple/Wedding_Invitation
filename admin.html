@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 
@@ -171,21 +172,21 @@
 
 <body x-data="admin()" x-init="init()" class="h-screen flex">
 
-    <!-- Login Overlay -->
+    <!-- 로그인 오버레이 -->
     <div x-show="!auth" class="fixed inset-0 z-50 bg-[#171a21] flex items-center justify-center">
         <div class="card w-96 p-8 text-center animate__animated animate__fadeIn">
-            <h1 class="text-2xl text-[#66c0f4] font-bold mb-4 tracking-widest">WEDDING ADMIN</h1>
+            <h1 class="text-2xl text-[#66c0f4] font-bold mb-4 tracking-widest">웨딩 관리자</h1>
             <input type="password" x-model="pass" @keyup.enter="login"
-                class="input text-center text-lg tracking-[0.3em] mb-4" placeholder="PASSWORD">
-            <button @click="login" class="btn-blue w-full">ACCESS CONSOLE</button>
+                class="input text-center text-lg tracking-[0.3em] mb-4" placeholder="비밀번호">
+            <button @click="login" class="btn-blue w-full">콘솔 접속</button>
         </div>
     </div>
 
-    <!-- Sidebar -->
+    <!-- 사이드바 -->
     <aside x-show="auth" x-cloak class="sidebar shrink-0">
         <div class="p-5 border-b border-[#2a475e]">
-            <h2 class="text-white font-bold text-lg">PROJ. WEDDING</h2>
-            <div class="text-xs text-[#66c0f4]">Build v2.6.4</div>
+            <h2 class="text-white font-bold text-lg">결혼식 프로젝트</h2>
+            <div class="text-xs text-[#66c0f4]">버전 v2.6.5</div>
         </div>
         <nav class="flex-1 overflow-y-auto py-2">
             <template x-for="t in tabs" :key="t.id">
@@ -196,8 +197,8 @@
             </template>
         </nav>
         <div class="p-4 border-t border-[#2a475e] space-y-2">
-            <button @click="saveLocal" class="btn-gray w-full">Save Draft (Local)</button>
-            <button @click="publishGithub" class="btn-blue w-full">PUBLISH LIVE</button>
+            <button @click="saveLocal" class="btn-gray w-full">임시 저장 (로컬)</button>
+            <button @click="publishGithub" class="btn-blue w-full">서버에 적용 (배포)</button>
         </div>
     </aside>
 
@@ -209,10 +210,10 @@
             <div class="flex justify-between items-end border-b border-[#3d4450] pb-4">
                 <div>
                     <h1 class="text-3xl text-white font-light" x-text="tabs.find(t=>t.id===tab).name"></h1>
-                    <p class="text-xs text-gray-500 mt-1">Configure your static wedding app parameters.</p>
+                    <p class="text-xs text-gray-500 mt-1">모바일 초대장의 데이터를 설정합니다.</p>
                 </div>
                 <div class="text-right">
-                    <div class="text-xs text-[#66c0f4]">Current IP: <span x-text="ip"></span></div>
+                    <div class="text-xs text-[#66c0f4]">현재 IP: <span x-text="ip"></span></div>
                 </div>
             </div>
 
@@ -230,9 +231,9 @@
                                     x-text="s.title"></span></div>
                             <div class="flex gap-4 text-xs">
                                 <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox"
-                                        x-model="s.isVisible"> Visble</label>
+                                        x-model="s.isVisible"> 노출</label>
                                 <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox"
-                                        x-model="s.isFolded"> Folded</label>
+                                        x-model="s.isFolded"> 기본 접기(Folded)</label>
                             </div>
                         </div>
                     </template>
@@ -243,10 +244,10 @@
             <div x-show="tab === 'identity'" class="grid grid-cols-2 gap-8">
                 <!-- Groom -->
                 <div class="space-y-4">
-                    <h3 class="text-[#66c0f4] font-bold border-b border-[#3d4450] pb-2">GROOM</h3>
-                    <div><label class="label">NAME</label><input x-model="data.groom.name" class="input">
+                    <h3 class="text-[#66c0f4] font-bold border-b border-[#3d4450] pb-2">신랑</h3>
+                    <div><label class="label">이름</label><input x-model="data.groom.name" class="input">
                     </div>
-                    <div><label class="label">RANK</label>
+                    <div><label class="label">관계</label>
                         <select x-model="data.groom.rank" class="input">
                             <option>장남</option>
                             <option>차남</option>
@@ -255,24 +256,24 @@
                             <option>외동</option>
                         </select>
                     </div>
-                    <div><label class="label">PHONE</label><input x-model="data.groom.phone" class="input">
+                    <div><label class="label">연락처</label><input x-model="data.groom.phone" class="input">
                     </div>
                     <div class="p-3 bg-[#12151a] rounded">
-                        <label class="label text-gray-400">PARENTS (OPTIONAL)</label>
+                        <label class="label text-gray-400">부모님 (선택항목)</label>
                         <div class="grid grid-cols-2 gap-2 mb-2">
-                            <input x-model="data.groom.parents.father" placeholder="Father Name" class="input">
-                            <input x-model="data.groom.parents.mother" placeholder="Mother Name" class="input">
+                            <input x-model="data.groom.parents.father" placeholder="아버지 성함" class="input">
+                            <input x-model="data.groom.parents.mother" placeholder="어머니 성함" class="input">
                         </div>
-                        <input x-model="data.groom.parents.fPhone" placeholder="Father Phone" class="input mb-1">
-                        <input x-model="data.groom.parents.mPhone" placeholder="Mother Phone" class="input">
+                        <input x-model="data.groom.parents.fPhone" placeholder="아버지 연락처" class="input mb-1">
+                        <input x-model="data.groom.parents.mPhone" placeholder="어머니 연락처" class="input">
                     </div>
                 </div>
                 <!-- Bride -->
                 <div class="space-y-4">
-                    <h3 class="text-pink-400 font-bold border-b border-[#3d4450] pb-2">BRIDE</h3>
-                    <div><label class="label">NAME</label><input x-model="data.bride.name" class="input">
+                    <h3 class="text-pink-400 font-bold border-b border-[#3d4450] pb-2">신부</h3>
+                    <div><label class="label">이름</label><input x-model="data.bride.name" class="input">
                     </div>
-                    <div><label class="label">RANK</label>
+                    <div><label class="label">관계</label>
                         <select x-model="data.bride.rank" class="input">
                             <option>장녀</option>
                             <option>차녀</option>
@@ -281,16 +282,16 @@
                             <option>외동</option>
                         </select>
                     </div>
-                    <div><label class="label">PHONE</label><input x-model="data.bride.phone" class="input">
+                    <div><label class="label">연락처</label><input x-model="data.bride.phone" class="input">
                     </div>
                     <div class="p-3 bg-[#12151a] rounded">
-                        <label class="label text-gray-400">PARENTS (OPTIONAL)</label>
+                        <label class="label text-gray-400">부모님 (선택항목)</label>
                         <div class="grid grid-cols-2 gap-2 mb-2">
-                            <input x-model="data.bride.parents.father" placeholder="Father Name" class="input">
-                            <input x-model="data.bride.parents.mother" placeholder="Mother Name" class="input">
+                            <input x-model="data.bride.parents.father" placeholder="아버지 성함" class="input">
+                            <input x-model="data.bride.parents.mother" placeholder="어머니 성함" class="input">
                         </div>
-                        <input x-model="data.bride.parents.fPhone" placeholder="Father Phone" class="input mb-1">
-                        <input x-model="data.bride.parents.mPhone" placeholder="Mother Phone" class="input">
+                        <input x-model="data.bride.parents.fPhone" placeholder="아버지 연락처" class="input mb-1">
+                        <input x-model="data.bride.parents.mPhone" placeholder="어머니 연락처" class="input">
                     </div>
                 </div>
             </div>
@@ -298,16 +299,16 @@
             <!-- TAB: CONTENT (Rich Text) -->
             <div x-show="tab === 'content'" class="space-y-8">
                 <div class="space-y-2">
-                    <label class="label">MAIN OVERLAY TEXT</label>
+                    <label class="label">메인 상단 문구</label>
                     <input x-model="data.text.mainOverlay" class="input text-lg">
                 </div>
                 <div class="space-y-2">
-                    <label class="label">MAIN INVITATION MESSAGE</label>
+                    <label class="label">인사말 본문</label>
                     <textarea x-model="data.text.mainMessage" rows="8" class="input font-serif"></textarea>
-                    <p class="text-xs text-gray-500">Supports line breaks. This text will be centered.</p>
+                    <p class="text-xs text-gray-500">줄바꿈이 적용됩니다. 중앙 정렬되어 표시됩니다.</p>
                 </div>
                 <div class="space-y-2">
-                    <label class="label">TRANSPORTATION GUIDE</label>
+                    <label class="label">오시는 길 안내</label>
                     <textarea x-model="data.config.venue.guideText" rows="8" class="input"></textarea>
                 </div>
             </div>
@@ -316,13 +317,13 @@
             <div x-show="tab === 'visuals'" class="space-y-8">
                 <!-- Main Image -->
                 <div class="p-4 bg-[#12151a] rounded border border-[#2a475e]">
-                    <label class="steam-label">MAIN HERO IMAGE</label>
+                    <label class="steam-label">메인 대표 이미지</label>
                     <div class="flex gap-4 items-center">
                         <div class="w-24 h-24 bg-cover bg-center rounded border border-gray-600"
                             :style="`background-image: url(${data.images.main})`"></div>
                         <div class="flex-1 space-y-2">
-                            <input type="text" x-model="data.images.main" class="steam-input" placeholder="Image URL">
-                            <button class="btn-gray" @click="triggerUpload('main')">📁 Upload File (GitHub)</button>
+                            <input type="text" x-model="data.images.main" class="steam-input" placeholder="이미지 URL">
+                            <button class="btn-gray" @click="triggerUpload('main')">📁 파일 업로드</button>
                             <input type="file" id="file-main" class="hidden" @change="handleFile($event, 'main')">
                         </div>
                     </div>
@@ -331,8 +332,8 @@
                 <!-- Gallery -->
                 <div class="space-y-4">
                     <div class="flex justify-between">
-                        <label class="steam-label">GALLERY (Max 30)</label>
-                        <button class="text-xs text-[#66c0f4]" @click="data.images.gallery.push('')">+ Add Slot</button>
+                        <label class="steam-label">갤러리 (최대 30개)</label>
+                        <button class="text-xs text-[#66c0f4]" @click="data.images.gallery.push('')">+ 슬롯 추가</button>
                     </div>
                     <div class="grid grid-cols-5 gap-2">
                         <template x-for="(img, idx) in data.images.gallery" :key="idx">
@@ -343,13 +344,13 @@
                                     class="absolute inset-0 bg-black/80 hidden group-hover:flex flex-col items-center justify-center p-1 gap-1">
                                     <input x-model="data.images.gallery[idx]" class="steam-input text-[8px] h-6">
                                     <button class="text-red-400 text-xs"
-                                        @click="data.images.gallery.splice(idx, 1)">DEL</button>
+                                        @click="data.images.gallery.splice(idx, 1)">삭제</button>
                                 </div>
                             </div>
                         </template>
                         <div @click="triggerSimpleUpload('gallery')"
                             class="border-2 border-dashed border-gray-600 rounded flex items-center justify-center cursor-pointer hover:border-[#66c0f4] text-gray-500 text-xs">
-                            + Upload
+                            + 업로드
                         </div>
                         <input type="file" id="file-gallery" class="hidden" @change="handleFile($event, 'gallery')">
                     </div>
@@ -357,7 +358,7 @@
 
                 <!-- BGM -->
                 <div class="p-4 bg-[#12151a] rounded space-y-4">
-                    <label class="steam-label">BGM PLAYLIST (Max 10)</label>
+                    <label class="steam-label">배경음악 (MP3)</label>
                     <template x-for="(song, idx) in data.media.bgm" :key="idx">
                         <div class="flex gap-2">
                             <input x-model="data.media.bgm[idx]" class="steam-input">
@@ -365,15 +366,15 @@
                         </div>
                     </template>
                     <div class="flex gap-2">
-                        <button class="btn-gray" @click="data.media.bgm.push('')">+ Add URL</button>
-                        <button class="btn-gray" @click="triggerSimpleUpload('bgm')">📁 Upload MP3</button>
+                        <button class="btn-gray" @click="data.media.bgm.push('')">+ URL 추가</button>
+                        <button class="btn-gray" @click="triggerSimpleUpload('bgm')">📁 파일 업로드</button>
                         <input type="file" id="file-bgm" class="hidden" @change="handleFile($event, 'bgm')">
                     </div>
                 </div>
 
                 <!-- Effects -->
                 <div class="space-y-4">
-                    <label class="steam-label">VISUAL EFFECT</label>
+                    <label class="steam-label">배경 시각 효과</label>
                     <div class="grid grid-cols-3 gap-2">
                         <template x-for="eff in effects" :key="eff.val">
                             <div @click="data.theme.effect = eff.val"
@@ -392,31 +393,30 @@
             <div x-show="tab === 'logistics'" class="space-y-8">
                 <div class="grid grid-cols-2 gap-8">
                     <div class="space-y-2">
-                        <label class="steam-label">WEDDING DATE</label>
+                        <label class="steam-label">예식 일시</label>
                         <input type="datetime-local" x-model="data.config.weddingDate" class="steam-input">
                     </div>
                     <div class="space-y-2">
-                        <label class="steam-label">VENUE NAME</label>
+                        <label class="steam-label">예식장 이름</label>
                         <input x-model="data.config.venue.name" class="steam-input">
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="steam-label">VENUE ADDRESS (SEARCH API SIMULATED)</label>
-                    <input x-model="data.config.venue.address" class="steam-input">
-                    <button class="btn-gray" @click="searchAddr">🔍 Search Address (Kakao/Google)</button>
+                    <label class="steam-label">예식장 주소</label>
+                    <div class="flex gap-2">
+                        <input x-model="data.config.venue.address" class="steam-input" readonly>
+                        <button class="btn-gray whitespace-nowrap" @click="searchAddr">🔍 주소 검색</button>
+                    </div>
                 </div>
 
                 <div class="p-4 bg-[#12151a] rounded space-y-4">
-                    <label class="steam-label">MAP LINKS</label>
+                    <label class="steam-label">지도/길찾기 링크</label>
                     <div class="grid grid-cols-2 gap-4">
-                        <input x-model="data.config.venue.mapLinks.naver" placeholder="Naver Map URL"
-                            class="steam-input">
-                        <input x-model="data.config.venue.mapLinks.kakao" placeholder="Kakao Map URL"
-                            class="steam-input">
-                        <input x-model="data.config.venue.mapLinks.tmap" placeholder="T-Map URL" class="steam-input">
-                        <input x-model="data.config.venue.mapLinks.google" placeholder="Google Map URL"
-                            class="steam-input">
+                        <input x-model="data.config.venue.mapLinks.naver" placeholder="네이버 지도 URL" class="steam-input">
+                        <input x-model="data.config.venue.mapLinks.kakao" placeholder="카카오 맵 URL" class="steam-input">
+                        <input x-model="data.config.venue.mapLinks.tmap" placeholder="티맵 URL" class="steam-input">
+                        <input x-model="data.config.venue.mapLinks.google" placeholder="구글 지도 URL" class="steam-input">
                     </div>
                 </div>
             </div>
@@ -424,26 +424,26 @@
             <!-- TAB: SETTINGS & SECRETS -->
             <div x-show="tab === 'settings'" class="space-y-6">
                 <div class="p-4 border border-red-900 bg-red-900/10 rounded">
-                    <label class="steam-label text-red-400">GITHUB TOKEN (REQUIRED FOR UPLOAD & SAVE)</label>
+                    <label class="steam-label text-red-400">GITHUB 토큰 (업로드 및 저장에 필수)</label>
                     <input type="password" x-model="data.config.secrets.githubToken" class="steam-input"
                         placeholder="ghp_...">
                 </div>
                 <div class="grid grid-cols-2 gap-6">
-                    <div><label class="steam-label">KAKAO API KEY</label><input
+                    <div><label class="steam-label">카카오 API 키 (JavaScript)</label><input
                             x-model="data.config.secrets.kakaoApiKey" class="steam-input"></div>
-                    <div><label class="steam-label">ADMIN PASSWORD</label><input
-                            x-model="data.config.secrets.adminPassword" class="steam-input" placeholder="New Password">
+                    <div><label class="steam-label">관리자 비밀번호</label><input x-model="data.config.secrets.adminPassword"
+                            class="steam-input" placeholder="비밀번호 변경">
                     </div>
                 </div>
 
                 <!-- OG Images -->
                 <div class="space-y-4 pt-4 border-t border-[#3d4450]">
-                    <label class="steam-label">OG META IMAGES</label>
+                    <label class="steam-label">공유용 메타 데이터 (OG Image)</label>
                     <div class="grid grid-cols-2 gap-2">
-                        <input x-model="data.images.og.kakao" placeholder="Kakao OG" class="steam-input">
-                        <input x-model="data.images.og.facebook" placeholder="FB OG" class="steam-input">
-                        <input x-model="data.images.og.insta" placeholder="Insta OG" class="steam-input">
-                        <input x-model="data.images.og.x" placeholder="X OG" class="steam-input">
+                        <input x-model="data.images.og.kakao" placeholder="카카오톡 공유 이미지" class="steam-input">
+                        <input x-model="data.images.og.facebook" placeholder="페이스북 공유 이미지" class="steam-input">
+                        <input x-model="data.images.og.insta" placeholder="인스타그램 공유 이미지" class="steam-input">
+                        <input x-model="data.images.og.x" placeholder="X(트위터) 공유 이미지" class="steam-input">
                     </div>
                 </div>
             </div>
@@ -457,19 +457,19 @@
                 auth: false, pass: '', tab: 'sections', ip: 'Loading...',
                 dragSrc: null,
                 tabs: [
-                    { id: 'sections', name: 'Section Order', icon: '☰' },
-                    { id: 'identity', name: 'Identity', icon: '👤' },
-                    { id: 'content', name: 'Text & Content', icon: '📝' },
-                    { id: 'visuals', name: 'Visuals & Effects', icon: '🎨' },
-                    { id: 'logistics', name: 'Logistics', icon: '📍' },
-                    { id: 'settings', name: 'Global Settings', icon: '⚙️' },
+                    { id: 'sections', name: '순서 및 노출', icon: '☰' },
+                    { id: 'identity', name: '인적 사항', icon: '👤' },
+                    { id: 'content', name: '문구 설정', icon: '📝' },
+                    { id: 'visuals', name: '디자인/업로드', icon: '🎨' },
+                    { id: 'logistics', name: '일시/장소', icon: '📍' },
+                    { id: 'settings', name: '고급 설정', icon: '⚙️' },
                 ],
                 effects: [
-                    { val: 'petals', icon: '🌸', label: 'Petals' }, { val: 'snow', icon: '❄️', label: 'Snow' },
-                    { val: 'leaves', icon: '🍂', label: 'Leaves' }, { val: 'stars', icon: '✨', label: 'Stars' },
-                    { val: 'rain', icon: '💧', label: 'Rain' }, { val: 'dandelion', icon: '🌼', label: 'Dandelion' },
-                    { val: 'butterfly', icon: '🦋', label: 'Butterfly' }, { val: 'dragonfly', icon: '🌥️', label: 'Dragonfly' },
-                    { val: 'dove', icon: '🕊️', label: 'Dove' }
+                    { val: 'petals', icon: '🌸', label: '벚꽃' }, { val: 'snow', icon: '❄️', label: '눈' },
+                    { val: 'leaves', icon: '🍂', label: '단풍' }, { val: 'stars', icon: '✨', label: '별빛' },
+                    { val: 'rain', icon: '💧', label: '빗방울' }, { val: 'dandelion', icon: '🌼', label: '민들레' },
+                    { val: 'butterfly', icon: '🦋', label: '나비' }, { val: 'dragonfly', icon: '🌥️', label: '잠자리' },
+                    { val: 'dove', icon: '🕊️', label: '비둘기' }
                 ],
                 data: {
                     config: { venue: { mapLinks: {}, navLinks: {} }, secrets: {} },
@@ -495,8 +495,11 @@
                 },
 
                 login() {
-                    if (this.pass === 'admin1234!' || (this.data.config.secrets && this.pass === this.data.config.secrets.adminPassword)) this.auth = true;
-                    else alert('Access Denied');
+                    if (this.pass === 'admin1234!' || (this.data.config.secrets && this.pass === this.data.config.secrets.adminPassword)) {
+                        this.auth = true;
+                        if (this.data.config.secrets.githubToken) localStorage.setItem('ghToken', this.data.config.secrets.githubToken);
+                    }
+                    else alert('비밀번호가 틀렸습니다.');
                 },
 
                 get sortedSections() {
@@ -529,7 +532,11 @@
                     const reader = new FileReader();
                     reader.onload = async (evt) => {
                         const content = evt.target.result.split(',')[1]; // base64
-                        const path = `uploads/${Date.now()}_${file.name}`;
+                        let folder = 'local/images/gallery';
+                        if (target === 'main') folder = 'local/images/bg';
+                        if (target === 'bgm') folder = 'local/bgm';
+
+                        const path = `${folder}/${Date.now()}_${file.name}`;
 
                         // PUT to GitHub
                         try {
@@ -539,7 +546,7 @@
                                     'Authorization': `token ${this.data.config.secrets.githubToken}`,
                                     'Content-Type': 'application/json'
                                 },
-                                body: JSON.stringify({ message: 'upload file', content: content })
+                                body: JSON.stringify({ message: `upload ${target} file`, content: content })
                             });
                             if (res.ok) {
                                 const json = await res.json();
@@ -549,21 +556,22 @@
                                 else if (target === 'gallery') this.data.images.gallery.push(url);
                                 else if (target === 'bgm') this.data.media.bgm.push(url);
 
-                                alert('Upload Success: ' + url);
+                                alert('업로드 성공: ' + path);
                             } else {
                                 const err = await res.json();
-                                alert('Upload Failed: ' + err.message);
+                                alert('업로드 실패: ' + err.message);
                             }
-                        } catch (err) { alert('Network Error'); }
+                        } catch (err) { alert('네트워크 오류'); }
                     };
                     reader.readAsDataURL(file);
                 },
 
                 searchAddr() {
+                    const self = this;
                     new daum.Postcode({
                         oncomplete: function (data) {
-                            // This requires the daum script in header, but for now we simulate or alert
-                            alert('Address selected: ' + data.address);
+                            self.data.config.venue.address = data.address;
+                            alert('주소가 입력되었습니다: ' + data.address);
                         }
                     }).open();
                 },
@@ -583,17 +591,17 @@
                         fetch(`https://api.github.com/repos/highhighcouple/Wedding_Invitation/contents/data.json`, {
                             method: 'PUT',
                             headers: { 'Authorization': `token ${token}` },
-                            body: JSON.stringify({ message: 'update data', content, sha })
+                            body: JSON.stringify({ message: '초대장 데이터 업데이트', content, sha })
                         }).then(r => {
-                            if (r.ok) alert('Published!');
-                            else alert('Error');
+                            if (r.ok) alert('성공적으로 배포되었습니다!');
+                            else alert('배포 실패');
                         });
                     });
                     localStorage.setItem('wedding_v2_data', JSON.stringify(this.data));
                 },
                 saveLocal() {
                     localStorage.setItem('wedding_v2_data', JSON.stringify(this.data));
-                    alert('Saved Locally');
+                    alert('로컬에 임시 저장되었습니다.');
                 }
             }
         }
