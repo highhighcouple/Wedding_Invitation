@@ -14,7 +14,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script type="text/javascript"
-        src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=dacffa882aa3284870d06afa02bd5947&libraries=services"></script>
+        src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=dacffa882aa3284870d06afa02bd5947"></script>
     <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js"
         integrity="sha384-l6I7YpLAnpS8mXdfzD4pUnVqB3kS+Yn0yW4I3oR6K7CizK6G/h6y3J3LzW9p+G2J"
         crossorigin="anonymous"></script>
@@ -802,18 +802,18 @@
                             this.isExplosion = config.isExplosion || false;
                             this.x = config.x !== undefined ? config.x : Math.random() * canvas.width;
                             this.y = config.y !== undefined ? config.y : -20;
-                            this.size = Math.random() * (this.isExplosion ? 4 : 8) + 4;
-                            this.speedX = this.isExplosion ? (Math.random() - 0.5) * 12 : (Math.random() - 0.5) * 0.3;
-                            this.speedY = this.isExplosion ? (Math.random() - 0.5) * 12 : Math.random() * 0.8 + 0.5; // Slower speed
+                            this.size = Math.random() * (this.isExplosion ? 4 : 10) + 6;
+                            this.speedX = this.isExplosion ? (Math.random() - 0.5) * 12 : (Math.random() - 0.5) * 0.4;
+                            this.speedY = this.isExplosion ? (Math.random() - 0.5) * 12 : Math.random() * 0.7 + 0.4; // Slower
                             this.angle = Math.random() * 360;
-                            this.spin = Math.random() * 2 - 1;
+                            this.spin = Math.random() * 1.5 - 0.75;
                             this.sway = Math.random() * 2 * Math.PI;
-                            this.swaySpeed = 0.02 + Math.random() * 0.02;
+                            this.swaySpeed = 0.015 + Math.random() * 0.015;
                             this.life = 1.0;
-                            this.opacity = 0.8;
+                            this.opacity = 0.75 + Math.random() * 0.2;
                         }
                         update() {
-                            this.x += this.speedX + Math.sin(this.sway) * 0.5; // Fluttering
+                            this.x += this.speedX + Math.sin(this.sway) * 0.6;
                             this.y += this.speedY;
                             this.angle += this.spin;
                             this.sway += this.swaySpeed;
@@ -837,13 +837,17 @@
                                 ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
                                 ctx.fill();
                             } else {
-                                // Draw Petal
+                                // Real Petal Shape
                                 ctx.beginPath();
                                 ctx.moveTo(0, -this.size / 2);
-                                ctx.bezierCurveTo(this.size / 3, -this.size / 2, this.size / 2, -this.size / 4, this.size / 2, 0);
-                                ctx.bezierCurveTo(this.size / 2, this.size / 4, this.size / 3, this.size / 2, 0, this.size / 2);
-                                ctx.bezierCurveTo(-this.size / 3, this.size / 2, -this.size / 2, this.size / 4, -this.size / 2, 0);
-                                ctx.bezierCurveTo(-this.size / 2, -this.size / 4, -this.size / 3, -this.size / 2, 0, -this.size / 2);
+                                ctx.bezierCurveTo(-this.size / 2, -this.size / 2, -this.size / 1.5, this.size / 4, 0, this.size / 2);
+                                ctx.bezierCurveTo(this.size / 1.5, this.size / 4, this.size / 2, -this.size / 2, 0, -this.size / 2);
+                                ctx.fill();
+                                // Heart-like notch at top
+                                ctx.fillStyle = 'rgba(0,0,0,0.05)';
+                                ctx.beginPath();
+                                ctx.moveTo(0, -this.size / 2);
+                                ctx.arc(0, -this.size / 2, this.size / 6, 0, Math.PI * 2);
                                 ctx.fill();
                             }
                             ctx.restore();
@@ -851,47 +855,52 @@
                         getColor() {
                             if (this.isExplosion) return '#fff700';
                             if (type === 'snow') return '#fff';
-                            return '#f2aebc'; // Rose petal pink
+                            return '#f8ccd4'; // Soft pink
                         }
                     }
 
                     class Butterfly {
                         constructor(x, y) {
                             this.x = x; this.y = y;
-                            this.size = Math.random() * 10 + 15;
+                            this.size = Math.random() * 12 + 20;
                             this.life = 1.0;
                             this.flap = 0;
-                            this.speedX = (Math.random() - 0.5) * 2;
-                            this.speedY = -Math.random() * 2 - 1;
+                            this.speedX = (Math.random() - 0.5) * 5;
+                            this.speedY = -Math.random() * 3 - 2;
+                            this.hue = Math.random() * 360;
                         }
                         update() {
-                            this.life -= 0.015;
+                            this.life -= 0.01;
                             this.x += this.speedX;
                             this.y += this.speedY;
-                            this.flap += 0.2;
+                            this.flap += 0.35;
+                            this.hue = (this.hue + 10) % 360; // Rainbow shift
                         }
                         draw() {
                             ctx.save();
                             ctx.translate(this.x, this.y);
-                            ctx.globalAlpha = this.life * 0.7;
-                            ctx.fillStyle = "#fff";
+                            ctx.globalAlpha = this.life * 0.9;
 
                             const flapScale = Math.sin(this.flap);
+                            const w = (this.size / 2) * Math.abs(flapScale);
+
+                            // Rainbow color
+                            ctx.fillStyle = `hsl(${this.hue}, 100%, 75%)`;
 
                             // Left Wing
                             ctx.beginPath();
-                            ctx.ellipse(-this.size / 4 * Math.abs(flapScale), 0, this.size / 2 * Math.abs(flapScale), this.size / 2, 0, 0, Math.PI * 2);
+                            ctx.ellipse(-w / 2, 0, w, this.size / 2, 0.4, 0, Math.PI * 2);
                             ctx.fill();
 
                             // Right Wing
                             ctx.beginPath();
-                            ctx.ellipse(this.size / 4 * Math.abs(flapScale), 0, this.size / 2 * Math.abs(flapScale), this.size / 2, 0, 0, Math.PI * 2);
+                            ctx.ellipse(w / 2, 0, w, this.size / 2, -0.4, 0, Math.PI * 2);
                             ctx.fill();
 
-                            // Body
-                            ctx.fillStyle = "rgba(255,255,255,0.8)";
+                            // Thin Body
+                            ctx.fillStyle = "rgba(0,0,0,0.1)";
                             ctx.beginPath();
-                            ctx.ellipse(0, 0, 2, this.size / 3, 0, 0, Math.PI * 2);
+                            ctx.ellipse(0, 0, 1, this.size / 4, 0, 0, Math.PI * 2);
                             ctx.fill();
 
                             ctx.restore();
@@ -1044,7 +1053,7 @@
                 },
 
                 copyAccount(acc) {
-                    const txt = `(${acc.bank}) ${acc.num}`;
+                    const txt = `${acc.bank} ${acc.num}`;
                     this.copy(txt);
                     alert(`${acc.name} ${txt} 이 클립보드에 복사되었습니다.`);
                 },
