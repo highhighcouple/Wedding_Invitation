@@ -11,97 +11,97 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=dacffa882aa3284870d06afa02bd5947&libraries=services&autoload=false"></script>
     <style>
-        :root { --accent: #f2aebc; --text: #333; --bg: #ffffff; }
-        body { font-family: 'Gowun Batang', serif; color: var(--text); background: var(--bg); overflow-x: hidden; scroll-behavior: smooth; }
+        :root { --accent: #f2aebc; --text: #222; --bg: #ffffff; }
+        body { font-family: 'Gowun Batang', serif; color: var(--text); background: var(--bg); overflow-x: hidden; scroll-behavior: smooth; font-size: 18px; }
         [x-cloak] { display: none !important; }
         .lux-font { font-family: 'Nanum Myeongjo', serif; }
         
-        /* Particle Layer */
         #effect-canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 50; }
 
-        /* Performance Optimized Transitions */
+        /* Optimized Accordion */
         .section-fold-content { 
             display: grid;
             grid-template-rows: 0fr;
-            transition: grid-template-rows 0.4s ease-out;
+            transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
         }
         .section-fold-content.open { grid-template-rows: 1fr; }
         .section-fold-inner { min-height: 0; }
 
-        /* Calendar */
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; border: 1px solid #eee; }
-        .cal-cell { aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; border: 0.5px solid #f9f9f9; }
-        .cal-header { font-weight: bold; padding: 10px 0; background: #fdfdfd; font-size: 0.9rem; }
-        .cal-sat { color: #3b82f6; }
-        .cal-sun { color: #ef4444; }
-        .cal-wedding { background: var(--accent); color: white; border-radius: 50%; width: 36px; height: 36px; margin: auto; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        /* Calendar Styling */
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; border: 1px solid #f0f0f0; }
+        .cal-cell { aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; font-size: 1rem; border: 0.5px solid #fafafa; }
+        .cal-header { font-weight: bold; padding: 12px 0; background: #fdfdfd; font-size: 0.85rem; }
+        .cal-sat { color: #3b82f6 !important; }
+        .cal-sun { color: #ef4444 !important; }
+        .cal-wedding { background: var(--accent); color: white !important; border-radius: 50%; width: 34px; height: 34px; margin: auto; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 2px 8px rgba(242, 174, 188, 0.4); }
 
-        /* Buttons & UI */
-        .btn-action { border: 1px solid #eee; padding: 12px 20px; border-radius: 4px; font-size: 0.9rem; transition: 0.3s; background: white; }
-        .btn-action:hover { border-color: var(--accent); color: var(--accent); }
-        .section-sep { height: 1px; background: linear-gradient(to right, transparent, #eee, transparent); margin: 2rem 0; }
+        /* Section Separator */
+        .section-sep { height: 1px; background: linear-gradient(to right, transparent, #eee, transparent); margin: 1rem 0; }
+        .section-title { font-size: 1.5rem; font-weight: 700; tracking: 0.1em; color: #1a1a1a; position: relative; display: inline-block; }
         
-        .modal-dim { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-dim { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        
+        pre { font-family: 'Gowun Batang', serif; }
     </style>
 </head>
 <body x-data="weddingApp()" x-init="init()">
 
     <canvas id="effect-canvas"></canvas>
 
-    <!-- BGM UI -->
+    <!-- BGM Controller -->
     <div class="fixed top-6 right-6 z-[200]">
-        <button @click="toggleBgm()" class="w-12 h-12 bg-white/80 backdrop-blur rounded-full border border-gray-100 shadow-lg flex items-center justify-center text-xl">
-            <span x-text="bgmPlaying ? '⏸' : '▶️'"></span>
+        <button @click="toggleBgm()" class="w-14 h-14 bg-white/90 backdrop-blur rounded-full border border-gray-100 shadow-xl flex items-center justify-center text-2xl hover:scale-105 transition-transform">
+            <span x-text="bgmPlaying ? '⏸' : '🎵'"></span>
         </button>
-        <audio id="bgm-player" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+        <audio id="bgm-player" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"></audio>
     </div>
 
-    <!-- Hero Section (Unfoldable) -->
+    <!-- 1. Hero Section -->
     <section class="min-h-screen relative flex flex-col">
-        <div class="relative w-full h-[70vh] overflow-hidden">
+        <div class="relative w-full h-[75vh] overflow-hidden">
             <img :src="data.mainImage" class="w-full h-full object-cover">
-            <div class="absolute inset-0 flex flex-col p-12 text-white" 
+            <div class="absolute inset-0 flex flex-col p-10 text-white" 
                  :class="{'justify-start': data.overlayPos === 'top', 'justify-center items-center': data.overlayPos === 'middle', 'justify-end': data.overlayPos === 'bottom'}">
-                <h1 class="lux-font italic text-6xl md:text-8xl drop-shadow-2xl" x-text="data.overlayText"></h1>
+                <h1 class="lux-font italic text-5xl md:text-7xl drop-shadow-2xl animate__animated animate__fadeInDown" x-text="data.overlayText"></h1>
             </div>
         </div>
-        <div class="flex-1 bg-white py-16 px-8 text-center animate__animated animate__fadeInUp">
-            <pre class="text-xl md:text-2xl leading-relaxed whitespace-pre-wrap font-medium text-gray-700" x-text="data.mainMessage"></pre>
+        <div class="flex-1 bg-white py-20 px-10 text-center">
+            <pre class="text-2xl md:text-3xl leading-relaxed whitespace-pre-wrap font-bold text-gray-800 animate__animated animate__fadeInUp" x-text="data.mainMessage"></pre>
         </div>
     </section>
 
-    <!-- Dynamic Sections -->
-    <main class="max-w-3xl mx-auto px-6 pb-24">
+    <!-- Dynamic Content -->
+    <main class="max-w-3xl mx-auto px-6 pb-32">
         <template x-for="section in sortedSections" :key="section.id">
-            <div x-show="section.isVisible" class="mb-4">
+            <div x-show="section.isVisible" class="mb-2">
                 <div class="section-sep"></div>
-                <!-- Section Header -->
-                <div @click="toggleFold(section)" class="flex justify-between items-center py-6 cursor-pointer group">
-                    <h2 class="text-2xl font-bold tracking-widest text-gray-800 group-hover:text-pink-400 transition-colors" x-text="section.title"></h2>
-                    <span class="text-xl text-gray-300" x-text="section.isFolded ? '▼' : '▲'"></span>
+                <!-- Accordion Header -->
+                <div @click="toggleFold(section)" class="flex justify-between items-center py-5 cursor-pointer group">
+                    <h2 class="section-title" x-text="`[ ${section.title} ]`"></h2>
+                    <span class="text-2xl text-gray-400 group-hover:text-pink-400 transition-colors" x-text="section.isFolded ? '▼' : '▲'"></span>
                 </div>
 
                 <div class="section-fold-content" :class="!section.isFolded ? 'open' : ''">
-                    <div class="section-fold-inner space-y-8 pb-10">
+                    <div class="section-fold-inner space-y-10 pb-12">
                         
                         <!-- 2. Names -->
                         <template x-if="section.id === 'names'">
-                            <div class="grid grid-cols-2 gap-8 text-center bg-pink-50/30 p-8 rounded-2xl">
-                                <div class="space-y-4">
-                                    <p class="text-xs text-pink-400 font-bold tracking-widest uppercase">Groom</p>
+                            <div class="grid grid-cols-2 gap-10 text-center bg-gray-50/50 p-10 rounded-3xl border border-gray-50">
+                                <div class="space-y-6">
+                                    <p class="text-xs text-blue-400 font-bold tracking-widest uppercase">Groom</p>
                                     <h3 class="text-3xl font-bold" x-text="data.groom.name"></h3>
                                     <div class="text-sm text-gray-500 space-y-1">
                                         <p x-text="`${data.groom.father} · ${data.groom.mother}`"></p>
-                                        <p class="italic" x-text="'의 ' + data.groom.rank"></p>
+                                        <p class="italic text-gray-400" x-text="'의 ' + data.groom.rank"></p>
                                     </div>
                                 </div>
-                                <div class="space-y-4 border-l border-white">
+                                <div class="space-y-6 border-l border-gray-100">
                                     <p class="text-xs text-pink-400 font-bold tracking-widest uppercase">Bride</p>
                                     <h3 class="text-3xl font-bold" x-text="data.bride.name"></h3>
                                     <div class="text-sm text-gray-500 space-y-1">
                                         <p x-text="`${data.bride.father} · ${data.bride.mother}`"></p>
-                                        <p class="italic" x-text="'의 ' + data.bride.rank"></p>
+                                        <p class="italic text-gray-400" x-text="'의 ' + data.bride.rank"></p>
                                     </div>
                                 </div>
                             </div>
@@ -109,54 +109,50 @@
 
                         <!-- 3. Calendar -->
                         <template x-if="section.id === 'calendar'">
-                            <div class="space-y-10">
-                                <div class="bg-white border p-6 rounded-xl shadow-sm">
-                                    <h4 class="text-2xl font-bold text-center mb-6" x-text="getCalTitle()"></h4>
-                                    <div class="cal-grid">
-                                        <template x-for="h in ['일','월','화','수','목','금','토']">
-                                            <div class="cal-header" :class="h==='일'?'cal-sun':(h==='토'?'cal-sat':'')" x-text="h"></div>
-                                        </template>
-                                        <template x-for="e in getCalStartDay()"><div></div></template>
-                                        <template x-for="d in getCalDays()">
-                                            <div class="cal-cell">
-                                                <div :class="isWeddingDay(d) ? 'cal-wedding' : (getCalDayNum(d)===0 ? 'cal-sun' : (getCalDayNum(d)===6 ? 'cal-sat' : ''))" x-text="d"></div>
-                                            </div>
-                                        </template>
-                                    </div>
-                                    <div class="mt-10 text-center space-y-3">
-                                        <p class="text-xs text-gray-400 font-bold tracking-[0.3em] uppercase">Countdown</p>
-                                        <p class="text-3xl font-bold text-pink-500 font-mono" x-text="timerText"></p>
-                                    </div>
+                            <div class="bg-white border p-10 rounded-3xl shadow-sm space-y-10">
+                                <h4 class="text-2xl font-bold text-center" x-text="getCalTitle()"></h4>
+                                <div class="cal-grid">
+                                    <template x-for="h in ['일','월','화','수','목','금','토']">
+                                        <div class="cal-header" :class="h==='일'?'cal-sun':(h==='토'?'cal-sat':'')" x-text="h"></div>
+                                    </template>
+                                    <template x-for="e in getCalStartDay()"><div></div></template>
+                                    <template x-for="d in getCalDays()">
+                                        <div class="cal-cell">
+                                            <div :class="isWeddingDay(d) ? 'cal-wedding' : (getCalDayNum(d)===0 ? 'cal-sun' : (getCalDayNum(d)===6 ? 'cal-sat' : ''))" x-text="d"></div>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="text-center space-y-2">
+                                    <p class="text-xs text-gray-400 font-bold tracking-[0.4em] uppercase">Wedding Countdown</p>
+                                    <p class="text-4xl font-bold text-gray-800 font-mono tracking-tighter" x-text="timerText"></p>
                                 </div>
                             </div>
                         </template>
 
                         <!-- 4. YouTube -->
                         <template x-if="section.id === 'youtube'">
-                            <div class="relative aspect-video rounded-xl overflow-hidden shadow-lg group cursor-pointer" @click="openYoutube()">
+                            <div class="relative aspect-video rounded-3xl overflow-hidden shadow-2xl group cursor-pointer" @click="openYoutube()">
                                 <img :src="`https://img.youtube.com/vi/${getYoutubeId()}/maxresdefault.jpg`" class="w-full h-full object-cover">
-                                <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
-                                    <div class="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">▶️</div>
+                                <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                    <div class="w-24 h-24 bg-white/95 rounded-full flex items-center justify-center text-4xl shadow-xl group-hover:scale-110 transition-transform">▶</div>
                                 </div>
                             </div>
                         </template>
 
                         <!-- 5. Gallery -->
                         <template x-if="section.id === 'gallery'">
-                            <div class="space-y-6">
-                                <div class="relative aspect-[4/5] md:aspect-video rounded-2xl overflow-hidden shadow-xl">
+                            <div class="space-y-8">
+                                <div class="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl bg-gray-100">
                                     <template x-for="(img, i) in data.gallery" :key="i">
                                         <img :src="img" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
                                              :class="galIdx === i ? 'opacity-100' : 'opacity-0'"
                                              @click="openGallery(img)">
                                     </template>
-                                    <div class="absolute inset-y-0 left-0 w-16 flex items-center justify-center text-white text-3xl cursor-pointer" @click="galIdx = (galIdx - 1 + data.gallery.length) % data.gallery.length">❮</div>
-                                    <div class="absolute inset-y-0 right-0 w-16 flex items-center justify-center text-white text-3xl cursor-pointer" @click="galIdx = (galIdx + 1) % data.gallery.length">❯</div>
                                 </div>
-                                <div class="grid grid-cols-5 gap-2">
+                                <div class="grid grid-cols-5 gap-3">
                                     <template x-for="(img, i) in data.gallery" :key="i">
-                                        <div @click="galIdx = i" class="aspect-square cursor-pointer border-2 transition-all rounded-md overflow-hidden" 
-                                             :class="galIdx === i ? 'border-pink-300 scale-95' : 'border-transparent opacity-60'">
+                                        <div @click="galIdx = i" class="aspect-square cursor-pointer border-2 transition-all rounded-xl overflow-hidden" 
+                                             :class="galIdx === i ? 'border-pink-300 scale-95 shadow-lg' : 'border-transparent opacity-50'">
                                             <img :src="img" class="w-full h-full object-cover">
                                         </div>
                                     </template>
@@ -166,22 +162,28 @@
 
                         <!-- 6. Phone -->
                         <template x-if="section.id === 'phone'">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="bg-gray-50 p-6 rounded-2xl space-y-4">
-                                    <p class="text-xs font-bold text-gray-400 uppercase">신랑측 연락처</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="bg-blue-50/20 p-8 rounded-3xl space-y-6">
+                                    <p class="text-xs font-bold text-blue-400 uppercase tracking-widest">신랑측</p>
                                     <template x-for="p in getGroomPhones()">
-                                        <div class="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                            <span class="font-bold text-sm" x-text="p.label"></span>
-                                            <a :href="`tel:${p.val}`" class="w-10 h-10 bg-green-50 text-green-600 rounded-full flex items-center justify-center text-xl">📞</a>
+                                        <div class="flex justify-between items-center bg-white p-5 rounded-2xl border border-blue-50 shadow-sm">
+                                            <div class="flex flex-col">
+                                                <span class="font-bold text-lg" x-text="p.label"></span>
+                                                <span class="text-xs text-gray-400 font-mono" x-text="p.val"></span>
+                                            </div>
+                                            <a :href="`tel:${p.val}`" class="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center text-xl shadow-lg">📞</a>
                                         </div>
                                     </template>
                                 </div>
-                                <div class="bg-pink-50/30 p-6 rounded-2xl space-y-4">
-                                    <p class="text-xs font-bold text-pink-300 uppercase">신부측 연락처</p>
+                                <div class="bg-pink-50/20 p-8 rounded-3xl space-y-6">
+                                    <p class="text-xs font-bold text-pink-400 uppercase tracking-widest">신부측</p>
                                     <template x-for="p in getBridePhones()">
-                                        <div class="flex justify-between items-center bg-white p-4 rounded-xl border border-pink-50 shadow-sm">
-                                            <span class="font-bold text-sm" x-text="p.label"></span>
-                                            <a :href="`tel:${p.val}`" class="w-10 h-10 bg-pink-50 text-pink-600 rounded-full flex items-center justify-center text-xl">📞</a>
+                                        <div class="flex justify-between items-center bg-white p-5 rounded-2xl border border-pink-50 shadow-sm">
+                                            <div class="flex flex-col">
+                                                <span class="font-bold text-lg" x-text="p.label"></span>
+                                                <span class="text-xs text-gray-400 font-mono" x-text="p.val"></span>
+                                            </div>
+                                            <a :href="`tel:${p.val}`" class="w-12 h-12 bg-pink-500 text-white rounded-full flex items-center justify-center text-xl shadow-lg">📞</a>
                                         </div>
                                     </template>
                                 </div>
@@ -190,33 +192,33 @@
 
                         <!-- 7. Accounts -->
                         <template x-if="section.id === 'accounts'">
-                            <div class="space-y-6">
-                                <div class="bg-gray-50 p-6 rounded-2xl space-y-4">
-                                    <p class="text-xs font-bold text-gray-400 uppercase">신랑측 계좌번호</p>
+                            <div class="space-y-8">
+                                <div class="bg-gray-50/50 p-8 rounded-3xl space-y-6">
+                                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">신랑측 마음 전하실 곳</p>
                                     <template x-for="a in getGroomAccounts()">
-                                        <div class="bg-white p-5 rounded-xl border border-gray-100 space-y-2">
+                                        <div class="bg-white p-6 rounded-2xl border border-gray-100 space-y-3">
                                             <div class="flex justify-between text-sm">
-                                                <span class="font-bold" x-text="a.label"></span>
-                                                <span class="text-gray-400" x-text="a.bank"></span>
+                                                <span class="font-bold text-lg" x-text="a.label"></span>
+                                                <span class="bg-gray-100 px-3 py-1 rounded-full text-xs font-bold" x-text="a.bank"></span>
                                             </div>
                                             <div class="flex justify-between items-center">
-                                                <span class="text-lg font-mono font-bold" x-text="a.val"></span>
-                                                <button @click="copy(a.val)" class="text-[10px] bg-gray-100 px-3 py-1 rounded">복사</button>
+                                                <span class="text-xl font-mono font-bold tracking-tight" x-text="a.val"></span>
+                                                <button @click="copy(a.val)" class="text-xs bg-gray-800 text-white px-4 py-2 rounded-xl">복사</button>
                                             </div>
                                         </div>
                                     </template>
                                 </div>
-                                <div class="bg-pink-50/30 p-6 rounded-2xl space-y-4">
-                                    <p class="text-xs font-bold text-pink-300 uppercase">신부측 계좌번호</p>
+                                <div class="bg-pink-50/10 p-8 rounded-3xl space-y-6">
+                                    <p class="text-xs font-bold text-pink-300 uppercase tracking-widest">신부측 마음 전하실 곳</p>
                                     <template x-for="a in getBrideAccounts()">
-                                        <div class="bg-white p-5 rounded-xl border border-pink-50 space-y-2">
+                                        <div class="bg-white p-6 rounded-2xl border border-pink-50 space-y-3">
                                             <div class="flex justify-between text-sm">
-                                                <span class="font-bold" x-text="a.label"></span>
-                                                <span class="text-gray-400" x-text="a.bank"></span>
+                                                <span class="font-bold text-lg" x-text="a.label"></span>
+                                                <span class="bg-pink-50 px-3 py-1 rounded-full text-xs font-bold text-pink-400" x-text="a.bank"></span>
                                             </div>
                                             <div class="flex justify-between items-center">
-                                                <span class="text-lg font-mono font-bold" x-text="a.val"></span>
-                                                <button @click="copy(a.val)" class="text-[10px] bg-pink-50 px-3 py-1 rounded">복사</button>
+                                                <span class="text-xl font-mono font-bold tracking-tight" x-text="a.val"></span>
+                                                <button @click="copy(a.val)" class="text-xs bg-pink-400 text-white px-4 py-2 rounded-xl">복사</button>
                                             </div>
                                         </div>
                                     </template>
@@ -226,68 +228,58 @@
 
                         <!-- 8. Location -->
                         <template x-if="section.id === 'location'">
-                            <div class="space-y-8">
-                                <div class="text-center space-y-2">
+                            <div class="space-y-10">
+                                <div class="text-center space-y-4">
                                     <h3 class="text-3xl font-bold" x-text="data.venue.name"></h3>
-                                    <p class="text-gray-400" x-text="data.venue.address"></p>
-                                    <div class="flex justify-center gap-6 py-4">
-                                        <a :href="`tel:${data.venue.phone}`" class="text-sm border-b">전화하기</a>
-                                        <a :href="data.venue.homepage" target="_blank" class="text-sm border-b">홈페이지</a>
+                                    <p class="text-gray-500 leading-relaxed" x-text="data.venue.address"></p>
+                                    <div class="flex justify-center gap-8 py-2">
+                                        <a :href="`tel:${data.venue.phone}`" class="text-sm font-bold border-b-2 border-pink-200 pb-1">예식장 전화</a>
+                                        <a :href="data.venue.homepage" target="_blank" class="text-sm font-bold border-b-2 border-pink-200 pb-1">홈페이지</a>
                                     </div>
                                 </div>
-                                <div id="map" style="width:100%;height:300px;" class="rounded-xl shadow-inner"></div>
-                                <div class="flex justify-center gap-4">
-                                    <button @click="openExternalMap('naver')" class="flex flex-col items-center gap-1">
-                                        <div class="w-12 h-12 bg-[#03C75A] text-white rounded-xl flex items-center justify-center font-bold">N</div>
-                                        <span class="text-[10px]">네이버</span>
-                                    </button>
-                                    <button @click="openExternalMap('kakao')" class="flex flex-col items-center gap-1">
-                                        <div class="w-12 h-12 bg-[#FEE500] text-black rounded-xl flex items-center justify-center font-bold">K</div>
-                                        <span class="text-[10px]">카카오</span>
-                                    </button>
-                                    <button @click="openExternalMap('tmap')" class="flex flex-col items-center gap-1">
-                                        <div class="w-12 h-12 bg-[#E10000] text-white rounded-xl flex items-center justify-center font-bold">T</div>
-                                        <span class="text-[10px]">티맵</span>
-                                    </button>
-                                </div>
-                                <div class="bg-gray-50 p-8 rounded-2xl">
-                                    <pre class="text-sm leading-loose whitespace-pre-wrap text-gray-600" x-text="data.venue.guideText"></pre>
+                                <div id="map" class="rounded-3xl shadow-xl overflow-hidden border border-gray-100"></div>
+                                <div class="bg-white p-10 rounded-3xl border shadow-sm">
+                                    <pre class="text-base leading-loose whitespace-pre-wrap text-gray-700" x-text="data.venue.guideText"></pre>
                                 </div>
                             </div>
                         </template>
 
                         <!-- 11. Guestbook -->
                         <template x-if="section.id === 'guestbook'">
-                            <div class="space-y-6">
-                                <template x-for="g in data.guestbook.slice(0, 3)">
-                                    <div class="p-6 bg-white border border-gray-100 rounded-2xl shadow-sm relative">
-                                        <p class="text-xs font-bold text-pink-300 mb-2" x-text="g.name"></p>
-                                        <p class="text-base text-gray-700 font-light" x-text="g.content"></p>
-                                        <span class="absolute top-6 right-6 text-[10px] text-gray-200" x-text="g.date"></span>
-                                    </div>
-                                </template>
+                            <div class="space-y-8">
+                                <div class="space-y-4">
+                                    <template x-for="g in data.guestbook.slice(0, 3)">
+                                        <div class="p-8 bg-white border border-gray-100 rounded-3xl shadow-sm relative animate__animated animate__fadeIn">
+                                            <div class="flex justify-between mb-3">
+                                                <span class="text-sm font-bold text-pink-400" x-text="g.name"></span>
+                                                <span class="text-[10px] text-gray-300 font-mono" x-text="g.date"></span>
+                                            </div>
+                                            <p class="text-base text-gray-700 font-light leading-relaxed" x-text="g.content"></p>
+                                        </div>
+                                    </template>
+                                </div>
                                 <div class="grid grid-cols-2 gap-4">
-                                    <button @click="showGuestbookModal = true" class="btn-action w-full font-bold">방명록 작성하기</button>
-                                    <button @click="showAllGuestbook = true" class="btn-action w-full">전체 방명록 보기</button>
+                                    <button @click="showGuestbookModal = true" class="py-5 bg-gray-900 text-white rounded-2xl font-bold text-lg shadow-xl">메시지 작성</button>
+                                    <button @click="showAllGuestbook = true" class="py-5 bg-white border border-gray-100 text-gray-400 rounded-2xl font-bold text-lg shadow-sm">전체 보기</button>
                                 </div>
                             </div>
                         </template>
 
                         <!-- 12. RSVP -->
                         <template x-if="section.id === 'rsvp'">
-                            <div class="bg-gray-50 p-8 rounded-3xl text-center space-y-8">
-                                <p class="text-sm text-gray-500">축하의 마음으로 참석 여부를 알려주시면<br>원활한 예식 준비에 큰 도움이 됩니다.</p>
-                                <button @click="showRsvpModal = true" class="w-full py-5 bg-gray-800 text-white rounded-xl font-bold tracking-widest shadow-xl shadow-gray-200">참석 여부 전달하기</button>
+                            <div class="bg-gray-50 p-12 rounded-[3rem] text-center space-y-8 border border-gray-100">
+                                <p class="text-base text-gray-500 leading-relaxed">참석해주시는 모든 분들께<br>정성을 다해 대접하겠습니다.</p>
+                                <button @click="showRsvpModal = true" class="w-full py-6 bg-pink-400 text-white rounded-2xl font-bold text-xl shadow-2xl shadow-pink-100 tracking-widest">참석 여부 전달하기</button>
                             </div>
                         </template>
 
                         <!-- 13. Share -->
                         <template x-if="section.id === 'share'">
-                            <div class="flex justify-center gap-6 py-6">
-                                <button @click="share('kakao')" class="w-14 h-14 bg-[#FEE500] rounded-full flex items-center justify-center shadow-md">💬</button>
-                                <button @click="share('facebook')" class="w-14 h-14 bg-[#1877F2] text-white rounded-full flex items-center justify-center shadow-md text-2xl">f</button>
-                                <button @click="share('x')" class="w-14 h-14 bg-black text-white rounded-full flex items-center justify-center shadow-md text-xl">𝕏</button>
-                                <button @click="copyLink()" class="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center shadow-md">🔗</button>
+                            <div class="flex justify-center gap-8 py-10 flex-wrap">
+                                <button @click="share('kakao')" class="w-16 h-16 bg-[#FEE500] rounded-full flex items-center justify-center shadow-lg text-2xl">💬</button>
+                                <button @click="share('facebook')" class="w-16 h-16 bg-[#1877F2] text-white rounded-full flex items-center justify-center shadow-lg text-3xl font-black">f</button>
+                                <button @click="share('x')" class="w-16 h-16 bg-black text-white rounded-full flex items-center justify-center shadow-lg text-xl">𝕏</button>
+                                <button @click="copyLink()" class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center shadow-lg text-2xl">🔗</button>
                             </div>
                         </template>
 
@@ -297,73 +289,75 @@
         </template>
     </main>
 
-    <footer class="py-24 text-center border-t border-gray-50 bg-gray-50/30">
-        <p class="text-gray-300 tracking-[0.6em] text-xs font-bold uppercase mb-4">Forever & Ever</p>
-        <p class="text-gray-300 text-[10px] font-light">Copyright(c) Joe All Right Reserved</p>
+    <footer class="py-32 text-center bg-gray-50/50 mt-10">
+        <p class="text-gray-400 tracking-[0.8em] text-xs font-bold uppercase mb-6">Love & Eternal Bliss</p>
+        <p class="text-gray-300 text-[11px] font-light">Copyright(c) Joe All Right Reserved</p>
     </footer>
 
     <!-- Modals -->
-    <!-- Youtube Modal -->
     <div x-show="showYoutube" x-transition.opacity class="modal-dim" @click="showYoutube = false">
-        <div class="w-full max-w-4xl aspect-video px-4" @click.stop>
-            <iframe :src="`https://www.youtube.com/embed/${getYoutubeId()}?autoplay=1`" class="w-full h-full rounded-2xl shadow-2xl" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <div class="w-full max-w-4xl aspect-video px-6" @click.stop>
+            <iframe :src="`https://www.youtube.com/embed/${getYoutubeId()}?autoplay=1`" class="w-full h-full rounded-[2rem] shadow-2xl" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         </div>
     </div>
 
-    <!-- Gallery Modal -->
     <div x-show="showGalModal" x-transition.opacity class="modal-dim" @click="showGalModal = false">
-        <img :src="activeImg" class="max-w-[95%] max-h-[90vh] object-contain rounded-xl shadow-2xl animate__animated animate__zoomIn">
+        <img :src="activeImg" class="max-w-[95%] max-h-[90vh] object-contain rounded-3xl shadow-2xl animate__animated animate__zoomIn">
     </div>
 
     <!-- RSVP Modal -->
-    <div x-show="showRsvpModal" x-transition class="modal-dim z-[2000]" @click="showRsvpModal = false">
-        <div class="bg-white w-[90%] max-w-md p-10 rounded-3xl space-y-8" @click.stop>
-            <h3 class="text-2xl font-bold text-center">참석 여부 전달</h3>
-            <div class="flex gap-2">
-                <button @click="rsvpSide = 'groom'" class="flex-1 py-3 rounded-lg border font-bold" :class="rsvpSide === 'groom' ? 'bg-blue-50 border-blue-200 text-blue-600' : 'bg-white'">신랑측</button>
-                <button @click="rsvpSide = 'bride'" class="flex-1 py-3 rounded-lg border font-bold" :class="rsvpSide === 'bride' ? 'bg-pink-50 border-pink-200 text-pink-600' : 'bg-white'">신부측</button>
+    <div x-show="showRsvpModal" x-transition class="modal-dim z-[3000]" @click="showRsvpModal = false">
+        <div class="bg-white w-[92%] max-w-md p-10 rounded-[2.5rem] space-y-8 max-h-[90vh] overflow-y-auto" @click.stop>
+            <h3 class="text-3xl font-bold text-center">참석 여부</h3>
+            <div class="flex gap-3">
+                <button @click="rsvpSide = 'groom'" class="flex-1 py-4 rounded-2xl border-2 font-bold transition-all" :class="rsvpSide === 'groom' ? 'bg-blue-50 border-blue-200 text-blue-600' : 'bg-white border-gray-100 text-gray-300'">신랑측</button>
+                <button @click="rsvpSide = 'bride'" class="flex-1 py-4 rounded-2xl border-2 font-bold transition-all" :class="rsvpSide === 'bride' ? 'bg-pink-50 border-pink-200 text-pink-600' : 'bg-white border-gray-100 text-gray-300'">신부측</button>
             </div>
-            <div class="space-y-4">
+            <div class="space-y-6">
                 <div class="flex gap-4">
-                    <label class="flex-1 flex items-center justify-center border p-4 rounded-xl cursor-pointer" :class="rsvpForm.attend ? 'bg-gray-800 text-white' : ''">
+                    <label class="flex-1 flex items-center justify-center border-2 p-5 rounded-2xl cursor-pointer transition-all" :class="rsvpForm.attend ? 'bg-gray-800 text-white border-gray-800' : 'border-gray-100'">
                         <input type="radio" x-model="rsvpForm.attend" :value="true" class="hidden"> 참석
                     </label>
-                    <label class="flex-1 flex items-center justify-center border p-4 rounded-xl cursor-pointer" :class="!rsvpForm.attend ? 'bg-gray-800 text-white' : ''">
+                    <label class="flex-1 flex items-center justify-center border-2 p-5 rounded-2xl cursor-pointer transition-all" :class="!rsvpForm.attend ? 'bg-gray-800 text-white border-gray-800' : 'border-gray-100'">
                         <input type="radio" x-model="rsvpForm.attend" :value="false" class="hidden"> 불참
                     </label>
                 </div>
-                <input type="text" x-model="rsvpForm.name" placeholder="성함 입력" class="w-full p-5 bg-gray-50 rounded-xl outline-none focus:ring-2 ring-pink-100">
-                <input type="text" x-model="rsvpForm.phone" placeholder="010-0000-0000" class="w-full p-5 bg-gray-50 rounded-xl outline-none focus:ring-2 ring-pink-100">
+                <input type="text" x-model="rsvpForm.name" placeholder="성함 입력" class="w-full p-6 bg-gray-50 rounded-2xl outline-none focus:ring-2 ring-pink-100 text-lg">
+                <input type="text" x-model="rsvpForm.phone" placeholder="010-0000-0000" class="w-full p-6 bg-gray-50 rounded-2xl outline-none focus:ring-2 ring-pink-100 text-lg">
+                
                 <template x-if="rsvpForm.attend">
-                    <div class="space-y-4">
+                    <div class="space-y-6 animate__animated animate__fadeIn">
                         <div class="flex gap-4">
-                            <label class="flex-1 flex items-center justify-center border p-4 rounded-xl cursor-pointer" :class="rsvpForm.meal ? 'bg-gray-800 text-white' : ''">
+                            <label class="flex-1 flex items-center justify-center border-2 p-5 rounded-2xl cursor-pointer transition-all" :class="rsvpForm.meal ? 'bg-gray-800 text-white border-gray-800' : 'border-gray-100'">
                                 <input type="radio" x-model="rsvpForm.meal" :value="true" class="hidden"> 식사 예정
                             </label>
-                            <label class="flex-1 flex items-center justify-center border p-4 rounded-xl cursor-pointer" :class="!rsvpForm.meal ? 'bg-gray-800 text-white' : ''">
+                            <label class="flex-1 flex items-center justify-center border-2 p-5 rounded-2xl cursor-pointer transition-all" :class="!rsvpForm.meal ? 'bg-gray-800 text-white border-gray-800' : 'border-gray-100'">
                                 <input type="radio" x-model="rsvpForm.meal" :value="false" class="hidden"> 식사 미예정
                             </label>
                         </div>
-                        <div x-show="rsvpForm.meal" class="flex items-center gap-4">
-                            <span class="text-sm">본인 포함</span>
-                            <input type="number" x-model="rsvpForm.plusOnes" class="w-20 p-4 border rounded-xl text-center">
-                            <span class="text-sm">명</span>
+                        <div x-show="rsvpForm.meal" class="flex items-center justify-between bg-gray-50 p-5 rounded-2xl">
+                            <span class="text-sm font-bold text-gray-500 uppercase tracking-tighter">본인 포함 인원</span>
+                            <div class="flex items-center gap-4">
+                                <button @click="rsvpForm.plusOnes = Math.max(1, rsvpForm.plusOnes-1)" class="w-10 h-10 bg-white rounded-full shadow-sm font-bold">-</button>
+                                <span class="text-xl font-bold w-6 text-center" x-text="rsvpForm.plusOnes"></span>
+                                <button @click="rsvpForm.plusOnes++" class="w-10 h-10 bg-white rounded-full shadow-sm font-bold">+</button>
+                            </div>
                         </div>
                     </div>
                 </template>
             </div>
-            <button @click="submitRsvp()" class="w-full py-5 bg-pink-400 text-white rounded-xl font-bold shadow-xl shadow-pink-100">전달하기</button>
+            <button @click="submitRsvp()" class="w-full py-6 bg-pink-400 text-white rounded-2xl font-bold text-xl shadow-2xl shadow-pink-100">참석 정보 전달</button>
         </div>
     </div>
 
     <!-- Guestbook Write Modal -->
-    <div x-show="showGuestbookModal" x-transition class="modal-dim z-[2000]" @click="showGuestbookModal = false">
-        <div class="bg-white w-[90%] max-w-md p-10 rounded-3xl space-y-6" @click.stop>
-            <h3 class="text-2xl font-bold">축복의 메시지</h3>
-            <input type="text" x-model="gbForm.name" placeholder="성함을 입력해주세요." maxlength="20" class="w-full p-5 bg-gray-50 rounded-xl outline-none">
-            <textarea x-model="gbForm.content" placeholder="내용을 입력해주세요. (최대 255자)" maxlength="255" rows="5" class="w-full p-5 bg-gray-50 rounded-xl outline-none resize-none"></textarea>
-            <p class="text-[10px] text-gray-400">비방이나 욕설 등 부적절한 내용은 관리자에 의해 삭제될 수 있습니다.</p>
-            <button @click="submitGuestbook()" class="w-full py-5 bg-gray-800 text-white rounded-xl font-bold">작성하기</button>
+    <div x-show="showGuestbookModal" x-transition class="modal-dim z-[3000]" @click="showGuestbookModal = false">
+        <div class="bg-white w-[92%] max-w-md p-10 rounded-[2.5rem] space-y-6" @click.stop>
+            <h3 class="text-2xl font-bold text-center">축하 메시지</h3>
+            <input type="text" x-model="gbForm.name" placeholder="성함을 입력해주세요." maxlength="20" class="w-full p-6 bg-gray-50 rounded-2xl outline-none text-lg">
+            <textarea x-model="gbForm.content" placeholder="축복의 내용을 입력해주세요. (최대 255자)" maxlength="255" rows="5" class="w-full p-6 bg-gray-50 rounded-2xl outline-none resize-none text-lg"></textarea>
+            <p class="text-[11px] text-gray-300 leading-relaxed">작성하신 내용은 공개되며, 부적절한 내용은 관리자에 의해 삭제될 수 있습니다.</p>
+            <button @click="submitGuestbook()" class="w-full py-6 bg-gray-900 text-white rounded-2xl font-bold text-xl">메시지 등록</button>
         </div>
     </div>
 
@@ -391,7 +385,6 @@
                     this.data = saved ? JSON.parse(saved) : this.getInitialState();
                     this.sortedSections = [...this.data.sections].sort((a, b) => a.order - b.order);
                     
-                    window.dispatchEvent(new Event('alpine:init-done'));
                     document.title = `§${this.data.groom.name}§ ♥ §${this.data.bride.name}§의 모바일 청첩장`;
 
                     this.initPetals();
@@ -400,6 +393,7 @@
                     this.initReveal();
                     
                     this.isLoaded = true;
+                    // Gallery Loop
                     setInterval(() => { this.galIdx = (this.galIdx + 1) % this.data.gallery.length; }, 5000);
                 },
 
@@ -411,8 +405,8 @@
                         mainMessage: '조현우 그리고 류하영\n\n2026년 05월 02일 토요일 PM 13시 00분\n강남 마리아쥬 스퀘어\n\n영원히 함께할\n사랑의 맹세\n같이 축복해주세요.',
                         weddingDate: '2026-05-02T13:00:00',
                         youtubeLink: 'https://youtu.be/UmdCDfXQ8wQ?si=IirtVYdyD2qBEybR',
-                        groom: { name: '조현우', father: '조복래', mother: '나선희', rank: '장남', phone: '010-3366-4848', accLabel: '조현우', acc: '040-086067-01-014', bank: '기업' },
-                        bride: { name: '류하영', father: '류민석', mother: '고우희', rank: '장녀', phone: '010-6556-7525', accLabel: '류하영', acc: '926-54-7559-46', bank: '국민' },
+                        groom: { name: '조현우', father: '조복래', mother: '나선희', rank: '장남', phone: '010-3366-4848', acc: '040-086067-01-014', bank: '기업' },
+                        bride: { name: '류하영', father: '류민석', mother: '고우희', rank: '장녀', phone: '010-6556-7525', acc: '926-54-7559-46', bank: '국민' },
                         groomParents: { fPhone: '010-9090-0824', mPhone: '010-9877-0824', fAcc: '109-08-072450', fBank: '우리', mAcc: '110-587-170868', mBank: '신한' },
                         brideParents: { fPhone: '010-5356-7558', mPhone: '010-9858-7551', fAcc: '302-5356-7558-41', fBank: '농협', mAcc: '339-06-063092', mBank: '신한' },
                         gallery: [
@@ -431,19 +425,19 @@
                             guideText: '셔틀운행\n7호선, 분당선 강남구청역 3번출구 셔틀버스 이용\n\n지하철\n강남구청역 3-1번 출구 도보 600M'
                         },
                         sections: [
-                            { id: 'names', title: 'WHO WE ARE', isVisible: true, isFolded: false, order: 1 },
-                            { id: 'calendar', title: 'DATE', isVisible: true, isFolded: false, order: 2 },
-                            { id: 'youtube', title: 'CINEMA', isVisible: true, isFolded: true, order: 3 },
-                            { id: 'gallery', title: 'GALLERY', isVisible: true, isFolded: true, order: 4 },
-                            { id: 'phone', title: 'CONTACT', isVisible: true, isFolded: true, order: 5 },
-                            { id: 'accounts', title: 'GIFT', isVisible: true, isFolded: true, order: 6 },
-                            { id: 'location', title: 'LOCATION', isVisible: true, isFolded: false, order: 7 },
-                            { id: 'guestbook', title: 'GUESTBOOK', isVisible: true, isFolded: true, order: 8 },
+                            { id: 'names', title: 'Eternal Promise', isVisible: true, isFolded: false, order: 1 },
+                            { id: 'calendar', title: 'The Day', isVisible: true, isFolded: false, order: 2 },
+                            { id: 'youtube', title: 'Memory Film', isVisible: true, isFolded: true, order: 3 },
+                            { id: 'gallery', title: 'Gallery', isVisible: true, isFolded: true, order: 4 },
+                            { id: 'phone', title: 'Contact', isVisible: true, isFolded: true, order: 5 },
+                            { id: 'accounts', title: 'Gift', isVisible: true, isFolded: true, order: 6 },
+                            { id: 'location', title: 'Location', isVisible: true, isFolded: false, order: 7 },
+                            { id: 'guestbook', title: 'Guestbook', isVisible: true, isFolded: true, order: 8 },
                             { id: 'rsvp', title: 'RSVP', isVisible: true, isFolded: false, order: 9 },
-                            { id: 'share', title: 'SHARE', isVisible: true, isFolded: true, order: 10 }
+                            { id: 'share', title: 'Share', isVisible: true, isFolded: true, order: 10 }
                         ],
                         guestbook: [
-                            { name: '조현우', content: '방문해주셔서 감사합니다!', date: '2026.01.01' }
+                            { name: '조현우', content: '방문해주셔서 감사합니다. 행복하게 잘 살겠습니다!', date: '2026.01.01' }
                         ]
                     };
                 },
@@ -470,12 +464,12 @@
                         constructor() {
                             this.x = Math.random() * canvas.width;
                             this.y = -20;
-                            this.size = Math.random() * 8 + 4;
-                            this.vX = Math.random() * 1.5 - 0.5;
+                            this.size = Math.random() * 10 + 5;
+                            this.vX = Math.random() * 2 - 1;
                             this.vY = Math.random() * 1.5 + 1;
                             this.angle = Math.random() * 360;
-                            this.vAngle = Math.random() * 1 - 0.5;
-                            this.opacity = Math.random() * 0.4 + 0.3;
+                            this.vAngle = Math.random() * 2 - 1;
+                            this.opacity = Math.random() * 0.5 + 0.2;
                         }
                         update() {
                             this.x += this.vX; this.y += this.vY; this.angle += this.vAngle;
@@ -494,7 +488,7 @@
                         }
                     }
 
-                    for(let i=0; i<30; i++) petals.push(new Petal());
+                    for(let i=0; i<35; i++) petals.push(new Petal());
                     const loop = () => {
                         ctx.clearRect(0, 0, canvas.width, canvas.height);
                         petals.forEach(p => { p.update(); p.draw(); });
@@ -555,7 +549,7 @@
                 },
                 openYoutube() { this.showYoutube = true; },
                 openGallery(img) { this.activeImg = img; this.showGalModal = true; },
-                copy(txt) { navigator.clipboard.writeText(txt); alert('계좌번호가 복사되었습니다.'); },
+                copy(txt) { navigator.clipboard.writeText(txt); alert('클립보드에 복사되었습니다.'); },
                 copyLink() { navigator.clipboard.writeText(window.location.href); alert('클립보드에 주소가 복사되었습니다.'); },
 
                 getCalTitle() { const d = new Date(this.data.weddingDate); return `${d.getFullYear()} . ${d.getMonth()+1}`; },
@@ -566,26 +560,26 @@
 
                 getGroomPhones() {
                     let res = [{ label: this.data.groom.name, val: this.data.groom.phone }];
-                    if(this.data.groomParents.fPhone) res.push({ label: '아버지 ' + this.data.groom.father, val: this.data.groomParents.fPhone });
-                    if(this.data.groomParents.mPhone) res.push({ label: '어머니 ' + this.data.groom.mother, val: this.data.groomParents.mPhone });
+                    if(this.data.groomParents.fPhone) res.push({ label: '부친 ' + this.data.groom.father, val: this.data.groomParents.fPhone });
+                    if(this.data.groomParents.mPhone) res.push({ label: '모친 ' + this.data.groom.mother, val: this.data.groomParents.mPhone });
                     return res;
                 },
                 getBridePhones() {
                     let res = [{ label: this.data.bride.name, val: this.data.bride.phone }];
-                    if(this.data.brideParents.fPhone) res.push({ label: '아버지 ' + this.data.bride.father, val: this.data.brideParents.fPhone });
-                    if(this.data.brideParents.mPhone) res.push({ label: '어머니 ' + this.data.bride.mother, val: this.data.brideParents.mPhone });
+                    if(this.data.brideParents.fPhone) res.push({ label: '부친 ' + this.data.bride.father, val: this.data.brideParents.fPhone });
+                    if(this.data.brideParents.mPhone) res.push({ label: '모친 ' + this.data.bride.mother, val: this.data.brideParents.mPhone });
                     return res;
                 },
                 getGroomAccounts() {
-                    let res = [{ label: this.data.groom.name, val: this.data.groom.acc, bank: this.data.groom.bank }];
-                    if(this.data.groomParents.fAcc) res.push({ label: '아버지 ' + this.data.groom.father, val: this.data.groomParents.fAcc, bank: this.data.groomParents.fBank });
-                    if(this.data.groomParents.mAcc) res.push({ label: '어머니 ' + this.data.groom.mother, val: this.data.groomParents.mAcc, bank: this.data.groomParents.mBank });
+                    let res = [{ label: '신랑 ' + this.data.groom.name, val: this.data.groom.acc, bank: this.data.groom.bank }];
+                    if(this.data.groomParents.fAcc) res.push({ label: '부친 ' + this.data.groom.father, val: this.data.groomParents.fAcc, bank: this.data.groomParents.fBank });
+                    if(this.data.groomParents.mAcc) res.push({ label: '모친 ' + this.data.groom.mother, val: this.data.groomParents.mAcc, bank: this.data.groomParents.mBank });
                     return res;
                 },
                 getBrideAccounts() {
-                    let res = [{ label: this.data.bride.name, val: this.data.bride.acc, bank: this.data.bride.bank }];
-                    if(this.data.brideParents.fAcc) res.push({ label: '아버지 ' + this.data.bride.father, val: this.data.brideParents.fAcc, bank: this.data.brideParents.fBank });
-                    if(this.data.brideParents.mAcc) res.push({ label: '어머니 ' + this.data.bride.mother, val: this.data.brideParents.mAcc, bank: this.data.brideParents.mBank });
+                    let res = [{ label: '신부 ' + this.data.bride.name, val: this.data.bride.acc, bank: this.data.bride.bank }];
+                    if(this.data.brideParents.fAcc) res.push({ label: '부친 ' + this.data.bride.father, val: this.data.brideParents.fAcc, bank: this.data.brideParents.fBank });
+                    if(this.data.brideParents.mAcc) res.push({ label: '모친 ' + this.data.bride.mother, val: this.data.brideParents.mAcc, bank: this.data.brideParents.mBank });
                     return res;
                 },
 
@@ -594,7 +588,7 @@
                     const existing = JSON.parse(localStorage.getItem('rsvp_data') || '[]');
                     existing.push({ ...this.rsvpForm, side: this.rsvpSide, date: new Date().toLocaleString() });
                     localStorage.setItem('rsvp_data', JSON.stringify(existing));
-                    alert('참석 여부가 전달되었습니다.');
+                    alert('참석 여부가 정성스럽게 전달되었습니다. 감사합니다.');
                     this.showRsvpModal = false;
                 },
 
@@ -604,15 +598,14 @@
                     localStorage.setItem('wedding_v2_data', JSON.stringify(this.data));
                     this.gbForm = { name: '', content: '' };
                     this.showGuestbookModal = false;
+                    alert('축하 메시지가 등록되었습니다.');
                 },
 
-                openExternalMap(type) {
-                    const urls = {
-                        naver: 'https://map.naver.com/p/entry/place/21413303',
-                        kakao: 'https://map.kakao.com/?itemId=17416438',
-                        tmap: 'https://poi.tmobiweb.com/app/share/position?poiId=2906804'
-                    };
-                    window.open(urls[type]);
+                share(type) {
+                    const url = window.location.href;
+                    if(type === 'kakao') alert('카카오톡 API 연동 필요');
+                    else if(type === 'facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`);
+                    else if(type === 'x') window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`);
                 }
             };
         }
