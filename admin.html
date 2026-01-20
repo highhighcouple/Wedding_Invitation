@@ -1,233 +1,227 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wedding Admin Dashboard</title>
+    <title>Wedding Admin Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
-        body { background-color: #1b2838; color: #c7d5e0; font-family: 'Segoe UI', sans-serif; }
-        .steam-card { background-color: #2a475e; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .sidebar-btn { background: rgba(0,0,0,0.2); transition: 0.2s; }
-        .sidebar-btn.active { background: #66c0f4; color: #fff; }
+        body { background-color: #171a21; color: #c7d5e0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .steam-card { background: #1b2838; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .steam-input { background: #101822; border: 1px solid #000; color: #fff; padding: 10px; border-radius: 3px; outline: none; }
+        .steam-input:focus { border-color: #66c0f4; }
+        .steam-btn { background: linear-gradient(to right, #47bfff 0%, #1a44c2 100%); color: white; padding: 10px 20px; border-radius: 3px; font-weight: bold; }
+        .steam-btn:hover { brightness: 1.1; }
+        .sidebar-item { padding: 12px 20px; cursor: pointer; border-left: 4px solid transparent; transition: 0.2s; }
+        .sidebar-item.active { background: #2a475e; border-left-color: #66c0f4; color: #fff; }
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body x-data="adminApp()" x-cloak>
+<body x-data="adminApp()" x-init="init()">
 
-    <!-- Login Screen -->
-    <div x-show="!isLoggedIn" class="fixed inset-0 bg-[#171a21] flex items-center justify-center z-50 p-6">
+    <!-- Login Layer -->
+    <div x-show="!isLoggedIn" class="fixed inset-0 bg-[#171a21] z-[100] flex items-center justify-center p-6">
         <div class="steam-card w-full max-w-sm p-8 space-y-6">
-            <h1 class="text-2xl font-black text-white text-center tracking-tighter uppercase italic">Wedding Project</h1>
-            <input type="password" x-model="password" placeholder="Password" class="w-full bg-[#171a21] border-none p-3 rounded text-white outline-none focus:ring-2 ring-sky-500">
-            <button @click="login()" class="w-full bg-gradient-to-r from-sky-600 to-sky-400 text-white font-bold py-3 rounded shadow-lg hover:brightness-110">SIGN IN</button>
+            <h1 class="text-2xl font-black text-white italic tracking-tighter italic">WEDDING_PROJECT v2.0</h1>
+            <div class="space-y-4">
+                <p class="text-xs text-gray-500 uppercase tracking-widest">Administrator Login</p>
+                <input type="password" x-model="loginPass" placeholder="Password" class="w-full steam-input" @keyup.enter="login()">
+                <button @click="login()" class="w-full steam-btn">SIGN IN</button>
+            </div>
         </div>
     </div>
 
     <!-- Main Dashboard -->
-    <div x-show="isLoggedIn" class="flex h-screen overflow-hidden">
+    <div x-show="isLoggedIn" class="flex h-screen overflow-hidden" x-cloak>
         
         <!-- Sidebar -->
-        <aside class="w-72 bg-[#171a21] flex flex-col border-r border-black/30">
-            <div class="p-6">
-                <div class="text-sky-400 font-black text-xl italic uppercase">Admin Panel</div>
-                <div class="text-[10px] text-gray-500 uppercase mt-1 tracking-widest">Version 2.0.1 Stable</div>
+        <aside class="w-64 bg-[#171a21] border-r border-black/30 flex flex-col">
+            <div class="p-6 border-b border-white/5">
+                <div class="text-sky-400 font-bold text-sm tracking-widest">DASHBOARD</div>
             </div>
-            <nav class="flex-1 p-4 space-y-1">
-                <template x-for="tab in tabs" :key="tab.id">
-                    <button @click="activeTab = tab.id" 
-                            :class="activeTab === tab.id ? 'active' : ''"
-                            class="sidebar-btn w-full text-left p-4 rounded text-sm font-bold flex items-center gap-3">
-                        <span x-text="tab.icon"></span>
-                        <span x-text="tab.name"></span>
-                    </button>
+            <nav class="flex-1 py-4">
+                <template x-for="tab in tabs">
+                    <div @click="activeTab = tab.id" :class="activeTab === tab.id ? 'active' : ''" class="sidebar-item text-sm font-bold flex items-center gap-3">
+                        <span x-text="tab.icon"></span> <span x-text="tab.name"></span>
+                    </div>
                 </template>
             </nav>
             <div class="p-4 border-t border-white/5">
-                <button @click="save()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded text-sm">SAVE ALL CHANGES</button>
-                <a href="index.html" class="w-full text-center block mt-3 text-xs text-gray-500 hover:text-white transition">Back to Public View</a>
+                <button @click="saveAll()" class="w-full steam-btn text-xs">SAVE CHANGES</button>
+                <button @click="logout()" class="w-full mt-2 text-[10px] text-gray-600 hover:text-white">LOGOUT</button>
             </div>
         </aside>
 
-        <!-- Main Content -->
+        <!-- Content Area -->
         <main class="flex-1 overflow-y-auto bg-gradient-to-b from-[#2a475e] to-[#1b2838] p-10">
-            <div class="max-w-4xl mx-auto">
+            <div class="max-w-4xl mx-auto space-y-8">
                 
-                <!-- General Settings -->
-                <div x-show="activeTab === 'general'" class="space-y-8">
-                    <h2 class="text-3xl font-black text-white uppercase italic">General Information</h2>
+                <!-- Tab: General -->
+                <div x-show="activeTab === 'general'" class="space-y-6 animate__animated animate__fadeIn">
+                    <h2 class="text-3xl font-black text-white italic uppercase">General Information</h2>
+                    
                     <div class="grid grid-cols-2 gap-6">
                         <div class="steam-card p-6 space-y-4">
-                            <h3 class="text-sky-400 text-xs font-bold uppercase">Groom Side</h3>
-                            <input x-model="data.groom.name" class="w-full bg-[#171a21] p-3 rounded text-sm text-white" placeholder="Name">
-                            <input x-model="data.groom.bank" class="w-full bg-[#171a21] p-3 rounded text-sm text-white" placeholder="Bank">
-                            <input x-model="data.groom.account" class="w-full bg-[#171a21] p-3 rounded text-sm text-white" placeholder="Account">
+                            <label class="text-[10px] text-sky-400 font-bold uppercase">Main Visual Image</label>
+                            <input type="text" x-model="data.mainImage" class="w-full steam-input text-xs" placeholder="URL">
+                            <label class="text-[10px] text-sky-400 font-bold uppercase">Overlay Text</label>
+                            <input type="text" x-model="data.overlayText" class="w-full steam-input text-xs">
                         </div>
                         <div class="steam-card p-6 space-y-4">
-                            <h3 class="text-rose-400 text-xs font-bold uppercase">Bride Side</h3>
-                            <input x-model="data.bride.name" class="w-full bg-[#171a21] p-3 rounded text-sm text-white" placeholder="Name">
-                            <input x-model="data.bride.bank" class="w-full bg-[#171a21] p-3 rounded text-sm text-white" placeholder="Bank">
-                            <input x-model="data.bride.account" class="w-full bg-[#171a21] p-3 rounded text-sm text-white" placeholder="Account">
+                            <label class="text-[10px] text-sky-400 font-bold uppercase">Wedding Date & Time</label>
+                            <input type="datetime-local" x-model="data.weddingDate" class="w-full steam-input text-xs">
                         </div>
                     </div>
+
                     <div class="steam-card p-6 space-y-4">
-                        <h3 class="text-sky-400 text-xs font-bold uppercase">Main Invitation Text</h3>
-                        <textarea x-model="data.mainText" class="w-full h-40 bg-[#171a21] p-4 rounded text-sm text-white resize-none outline-none focus:ring-1 ring-sky-500"></textarea>
+                        <label class="text-[10px] text-sky-400 font-bold uppercase">Invitation Message</label>
+                        <textarea x-model="data.mainText" class="w-full h-40 steam-input text-xs leading-relaxed"></textarea>
                     </div>
                 </div>
 
-                <!-- Section Order -->
-                <div x-show="activeTab === 'sections'" class="space-y-6">
-                    <h2 class="text-3xl font-black text-white uppercase italic">Section Library</h2>
+                <!-- Tab: Sections -->
+                <div x-show="activeTab === 'sections'" class="space-y-6 animate__animated animate__fadeIn">
+                    <h2 class="text-3xl font-black text-white italic uppercase">Section Management</h2>
+                    <p class="text-xs text-gray-400">Drag to reorder and toggle visibility/folding.</p>
+                    
                     <div class="space-y-2">
-                        <template x-for="(sec, index) in data.sections" :key="sec.id">
+                        <template x-for="(section, index) in data.sections" :key="section.id">
                             <div class="steam-card p-4 flex items-center justify-between group">
                                 <div class="flex items-center gap-4">
-                                    <span class="text-gray-500 font-mono" x-text="index + 1"></span>
-                                    <span class="text-white font-bold text-sm" x-text="sec.title"></span>
+                                    <span class="text-gray-600 font-mono" x-text="String(index+1).padStart(2,'0')"></span>
+                                    <input type="text" x-model="section.title" class="bg-transparent border-none text-white font-bold outline-none">
                                 </div>
                                 <div class="flex items-center gap-4">
-                                    <button @click="toggleVisibility(sec.id)" 
-                                            :class="sec.isVisible ? 'bg-sky-600' : 'bg-red-900'"
-                                            class="text-[10px] px-3 py-1 rounded font-black text-white" 
-                                            x-text="sec.isVisible ? 'ACTIVE' : 'HIDDEN'"></button>
+                                    <button @click="moveSection(index, -1)" class="p-1 hover:text-white">↑</button>
+                                    <button @click="moveSection(index, 1)" class="p-1 hover:text-white">↓</button>
+                                    <label class="flex items-center gap-2 text-[10px]">
+                                        <input type="checkbox" x-model="section.isVisible"> SHOW
+                                    </label>
+                                    <label class="flex items-center gap-2 text-[10px]">
+                                        <input type="checkbox" x-model="section.isFolded"> FOLD
+                                    </label>
                                 </div>
                             </div>
                         </template>
                     </div>
                 </div>
 
-                <!-- RSVP List -->
-                <div x-show="activeTab === 'rsvp'" class="space-y-6">
-                    <h2 class="text-3xl font-black text-white uppercase italic">RSVP Registry</h2>
+                <!-- Tab: RSVP -->
+                <div x-show="activeTab === 'rsvp'" class="space-y-6 animate__animated animate__fadeIn">
+                    <h2 class="text-3xl font-black text-white italic uppercase">RSVP Registry</h2>
                     <div class="steam-card overflow-hidden">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-black/20 text-sky-400 uppercase font-bold text-[10px] tracking-widest">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-black/20 text-sky-400 font-bold">
                                 <tr>
-                                    <th class="p-4">Name</th>
-                                    <th class="p-4">Side</th>
-                                    <th class="p-4">Phone</th>
-                                    <th class="p-4">Actions</th>
+                                    <th class="p-4">DATE</th>
+                                    <th class="p-4">NAME</th>
+                                    <th class="p-4">SIDE</th>
+                                    <th class="p-4">COUNT</th>
+                                    <th class="p-4">ACTION</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-white/5">
-                                <template x-for="r in rsvpList" :key="r.id">
-                                    <tr class="hover:bg-white/5">
+                            <tbody>
+                                <template x-for="r in rsvpList">
+                                    <tr class="border-b border-white/5 hover:bg-white/5">
+                                        <td class="p-4 text-gray-500" x-text="new Date(r.date).toLocaleDateString()"></td>
                                         <td class="p-4 font-bold text-white" x-text="r.name"></td>
-                                        <td class="p-4"><span :class="r.side === 'groom' ? 'text-sky-400' : 'text-rose-400'" x-text="r.side === 'groom' ? 'Groom' : 'Bride'"></span></td>
-                                        <td class="p-4 text-gray-400" x-text="r.phone"></td>
+                                        <td class="p-4" x-text="r.side"></td>
+                                        <td class="p-4" x-text="r.count"></td>
                                         <td class="p-4">
-                                            <button @click="deleteRSVP(r.id)" class="text-red-500 hover:underline">Remove</button>
+                                            <button @click="deleteRSVP(r.id)" class="text-red-500 hover:underline">Delete</button>
                                         </td>
                                     </tr>
                                 </template>
                             </tbody>
                         </table>
-                        <div x-show="rsvpList.length === 0" class="p-10 text-center text-gray-500 uppercase italic">No entries found</div>
                     </div>
-                </div>
-
-                <!-- Guestbook List -->
-                <div x-show="activeTab === 'guestbook'" class="space-y-6">
-                    <h2 class="text-3xl font-black text-white uppercase italic">Guestbook Logs</h2>
-                    <div class="grid grid-cols-1 gap-4">
-                        <template x-for="g in guestbook" :key="g.id">
-                            <div class="steam-card p-4 flex justify-between items-start">
-                                <div>
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <span class="text-sky-400 font-bold" x-text="g.name"></span>
-                                        <span class="text-[10px] text-gray-500" x-text="new Date(g.date).toLocaleString()"></span>
-                                    </div>
-                                    <p class="text-sm text-gray-300" x-text="g.content"></p>
-                                </div>
-                                <button @click="deleteGuestbook(g.id)" class="text-red-500 text-xs">Delete</button>
-                            </div>
-                        </template>
-                    </div>
+                    <button @click="exportCSV()" class="steam-btn text-xs">EXPORT CSV</button>
                 </div>
 
             </div>
         </main>
-
     </div>
 
     <script>
-        const DEFAULT_WEDDING_DATA = {
-            mainImage: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80',
-            overlayText: 'Our Wedding Day',
-            overlayPos: 'top',
-            mainText: '조현우 그리고 류하영\n\n2026년 05월 02일 토요일 PM 13시 00분\n강남 마리아쥬 스퀘어\n\n서로가 마주 보며 걸어온 길을\n이제는 같은 곳을 바라보며 함께 가려 합니다.\n귀한 걸음 하시어 축복해 주시면 감사하겠습니다.',
-            groom: { name: '조현우', father: '조복래', mother: '나선희', rank: '장남', phone: '010-1234-5678', bank: '신한', account: '110-123-456789', bankName: '조현우' },
-            bride: { name: '류하영', father: '류민석', mother: '고우희', rank: '장녀', phone: '010-8765-4321', bank: '국민', account: '926502-01-123456', bankName: '류하영' },
-            weddingDate: '2026-05-02T13:00:00',
-            youtubeLink: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-            galleryImages: ['https://picsum.photos/800/1200?wedding=1','https://picsum.photos/800/1200?wedding=2','https://picsum.photos/800/1200?wedding=3','https://picsum.photos/800/1200?wedding=4','https://picsum.photos/800/1200?wedding=5'],
-            venue: { name: '마리아쥬 스퀘어', address: '서울특별시 강남구 도산대로 318 SB타워 G층', phone: '02-541-5007', guideText: '지하철 7호선 강남구청역 3번출구 셔틀버스 상시운행' },
-            sections: [
-                { id: 'names', order: 0, isVisible: true, title: '소개' },
-                { id: 'calendar', order: 1, isVisible: true, title: '달력' },
-                { id: 'gallery', order: 2, isVisible: true, title: '갤러리' },
-                { id: 'location', order: 3, isVisible: true, title: '오시는 길' },
-                { id: 'guestbook', order: 4, isVisible: true, title: '방명록' },
-                { id: 'rsvp', order: 5, isVisible: true, title: '참석의사' }
-            ],
-            adminPassword: 'admin1234!',
-            effectStyle: 'PETAL'
-        };
-
-        const WeddingStore = {
-            get: () => JSON.parse(localStorage.getItem('wedding_v2_data')) || DEFAULT_WEDDING_DATA,
-            save: (d) => localStorage.setItem('wedding_v2_data', JSON.stringify(d)),
-            getGuestbook: () => JSON.parse(localStorage.getItem('wedding_guestbook')) || [],
-            getRSVP: () => JSON.parse(localStorage.getItem('wedding_rsvp')) || [],
-            saveGuestbook: (l) => localStorage.setItem('wedding_guestbook', JSON.stringify(l)),
-            saveRSVP: (l) => localStorage.setItem('wedding_rsvp', JSON.stringify(l))
-        };
-
         function adminApp() {
             return {
                 isLoggedIn: false,
-                password: '',
+                loginPass: '',
                 activeTab: 'general',
-                data: WeddingStore.get(),
-                rsvpList: WeddingStore.getRSVP(),
-                guestbook: WeddingStore.getGuestbook(),
                 tabs: [
                     { id: 'general', name: 'Information', icon: '📝' },
                     { id: 'sections', name: 'Sections', icon: '↕️' },
-                    { id: 'rsvp', name: 'RSVP List', icon: '👥' },
-                    { id: 'guestbook', name: 'Guestbook', icon: '💬' }
+                    { id: 'rsvp', name: 'RSVP Data', icon: '👥' },
+                    { id: 'settings', name: 'Settings', icon: '⚙️' }
                 ],
+                data: {},
+                rsvpList: [],
+
+                init() {
+                    const saved = localStorage.getItem('wedding_v2_data');
+                    this.data = saved ? JSON.parse(saved) : this.getDefaultData();
+                    this.rsvpList = JSON.parse(localStorage.getItem('wedding_rsvp_data') || '[]');
+                },
 
                 login() {
-                    if(this.password === this.data.adminPassword) {
+                    if (this.loginPass === (this.data.adminPassword || 'admin1234!')) {
                         this.isLoggedIn = true;
                     } else {
-                        alert('Incorrect password');
+                        alert('Access Denied: Invalid Serial');
                     }
                 },
 
-                toggleVisibility(id) {
-                    const sec = this.data.sections.find(s => s.id === id);
-                    if(sec) sec.isVisible = !sec.isVisible;
+                logout() { this.isLoggedIn = false; this.loginPass = ''; },
+
+                moveSection(index, dir) {
+                    const newIndex = index + dir;
+                    if (newIndex < 0 || newIndex >= this.data.sections.length) return;
+                    const temp = this.data.sections[index];
+                    this.data.sections.splice(index, 1);
+                    this.data.sections.splice(newIndex, 0, temp);
+                    this.data.sections.forEach((s, i) => s.order = i);
                 },
 
-                deleteRSVP(id) {
-                    if(!confirm('삭제하시겠습니까?')) return;
-                    this.rsvpList = this.rsvpList.filter(r => r.id !== id);
-                    WeddingStore.saveRSVP(this.rsvpList);
+                saveAll() {
+                    localStorage.setItem('wedding_v2_data', JSON.stringify(this.data));
+                    alert('Data synchronized with Local Storage.');
                 },
 
-                deleteGuestbook(id) {
-                    if(!confirm('삭제하시겠습니까?')) return;
-                    this.guestbook = this.guestbook.filter(g => g.id !== id);
-                    WeddingStore.saveGuestbook(this.guestbook);
+                exportCSV() {
+                    let csv = "Date,Name,Side,Count\n";
+                    this.rsvpList.forEach(r => {
+                        csv += `${r.date},${r.name},${r.side},${r.count}\n`;
+                    });
+                    const blob = new Blob([csv], { type: 'text/csv' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.setAttribute('href', url);
+                    a.setAttribute('download', 'wedding_rsvp.csv');
+                    a.click();
                 },
 
-                save() {
-                    WeddingStore.save(this.data);
-                    alert('All changes saved to local database.');
+                getDefaultData() {
+                    return {
+                        adminPassword: 'admin1234!',
+                        mainImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070',
+                        overlayText: 'Wedding Invitation',
+                        mainText: '조현우 그리고 류하영\n\n2026년 05월 02일 토요일 PM 13시 00분\n강남 마리아쥬 스퀘어\n\n영원히 함께할 사랑의 맹세\n같이 축복해주세요.',
+                        groom: { name: '조현우', father: '조복래', mother: '나선희', rank: '장남', phone: '010-3366-4848' },
+                        bride: { name: '류하영', father: '류민석', mother: '고우희', rank: '장녀', phone: '010-6556-7525' },
+                        weddingDate: '2026-05-02T13:00:00',
+                        galleryImages: ['https://picsum.photos/800/1200?w=1', 'https://picsum.photos/800/1200?w=2', 'https://picsum.photos/800/1200?w=3'],
+                        venue: { name: '마리아쥬 스퀘어', address: '서울특별시 강남구 도산대로 318', phone: '02-541-5007', guideText: '셔틀운행: 7호선 강남구청역 3번출구 상시운행' },
+                        effectStyle: 'PETAL',
+                        sections: [
+                            { id: 'mainText', title: '초대합니다', isVisible: true, isFolded: false, order: 0 },
+                            { id: 'names', title: '소개', isVisible: true, isFolded: false, order: 1 },
+                            { id: 'calendar', title: '일정', isVisible: true, isFolded: false, order: 2 },
+                            { id: 'gallery', title: '갤러리', isVisible: true, isFolded: true, order: 3 },
+                            { id: 'location', title: '오시는 길', isVisible: true, isFolded: false, order: 4 }
+                        ]
+                    };
                 }
             }
         }
