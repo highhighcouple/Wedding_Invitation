@@ -4,38 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title x-text="`${data.groom.name} ♥ ${data.bride.name}의 모바일 청첩장`"></title>
+    <title x-text="data.groom && data.bride ? `${data.groom.name} ♥ ${data.bride.name}의 모바일 청첩장` : '모바일 청첩장'"></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Noto+Serif+KR:wght@200;400;700&family=Nanum+Myeongjo&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-        :root { --main-bg: #ffffff; --text-color: #333333; }
-        body { font-family: 'Noto Serif KR', serif; background-color: var(--main-bg); color: var(--text-color); overflow-x: hidden; }
+        :root { --main-bg: #ffffff; --text-color: #333333; --accent: #d4af37; }
+        body { font-family: 'Noto Serif KR', serif; background-color: var(--main-bg); color: var(--text-color); overflow-x: hidden; scroll-behavior: smooth; }
         .font-cursive { font-family: 'Dancing Script', cursive; }
         [x-cloak] { display: none !important; }
         
-        /* Interactive Background */
         #interactive-canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 60; }
-        
-        /* Floating Animations */
-        .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
+        .section-content { max-height: 0; overflow: hidden; transition: max-height 0.8s ease-in-out; }
+        .section-content.open { max-height: 3000px; }
 
-        /* Foldable Section */
-        .section-content { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0, 1, 0, 1); }
-        .section-content.open { max-height: 2000px; transition: max-height 1s ease-in-out; }
-
-        /* Intro Layer */
         .intro-layer { background: #fff; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        
-        /* BGM Player Mini */
-        .bgm-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .bgm-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.3s; }
+        .bgm-btn:hover { transform: scale(1.1); }
+
+        .btn-action { @apply px-4 py-2 border border-gray-100 rounded-full text-[11px] bg-white/80 backdrop-blur hover:bg-gray-50 transition-all shadow-sm; }
+        .star-dust { position: absolute; background: white; border-radius: 50%; pointer-events: none; animation: float 3s infinite linear; }
+        @keyframes float { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-100px) scale(0); opacity: 0; } }
     </style>
 </head>
 <body x-data="weddingApp()" x-init="init()" @mousemove="handleMouseMove($event)" @touchstart="handleTouchMove($event)">
@@ -43,33 +36,33 @@
     <canvas id="interactive-canvas"></canvas>
 
     <!-- Intro Layer -->
-    <div x-show="showIntro" x-transition.opacity.duration.1000ms class="fixed inset-0 intro-layer cursor-pointer" @click="closeIntro()">
-        <div class="text-center space-y-8 animate__animated animate__fadeIn">
-            <h2 class="font-cursive text-4xl text-gray-400">Wedding Invitation</h2>
+    <div x-show="showIntro" x-transition.opacity.duration.1000ms class="fixed inset-0 intro-layer" @click="closeIntro()" @wheel="closeIntro()">
+        <div class="text-center space-y-10 animate__animated animate__fadeIn">
+            <h2 class="font-cursive text-5xl text-gray-400">Our Special Day</h2>
             <div class="flex flex-col items-center">
-                <div class="w-px h-20 bg-gray-200 animate-bounce"></div>
-                <p class="mt-4 text-[10px] tracking-[0.5em] text-gray-400 uppercase">Scroll to Open</p>
+                <div class="w-px h-24 bg-gradient-to-b from-gray-200 to-transparent animate-bounce"></div>
+                <p class="mt-6 text-[10px] tracking-[0.6em] text-gray-400 uppercase">Scroll to Celebrate</p>
             </div>
         </div>
     </div>
 
-    <!-- Header Menu -->
-    <header class="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center pointer-events-none">
-        <div class="flex items-center gap-2 pointer-events-auto">
+    <!-- Header Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 p-6 flex justify-between items-center pointer-events-none">
+        <div class="flex items-center gap-3 pointer-events-auto">
             <button @click="toggleBgm()" class="bgm-btn">
-                <span x-show="!bgmPlaying">▶</span>
-                <span x-show="bgmPlaying" class="animate-pulse">♫</span>
+                <template x-if="!bgmPlaying"><span>▶</span></template>
+                <template x-if="bgmPlaying"><span class="animate-pulse">♫</span></template>
             </button>
         </div>
         <div class="flex items-center gap-3 pointer-events-auto">
-            <button @click="speakText()" class="text-xs text-gray-400 border border-gray-100 px-3 py-1 rounded-full bg-white/80 backdrop-blur">TTS</button>
+            <button @click="runTTS()" class="btn-action">TTS</button>
             <div class="relative" x-data="{ open: false }">
-                <button @click="open = !open" class="flex items-center gap-1 text-xs border border-gray-100 px-3 py-1 rounded-full bg-white/80 backdrop-blur">
+                <button @click="open = !open" class="btn-action flex items-center gap-2">
                     <span x-text="currentLang.flag"></span> <span x-text="currentLang.name"></span>
                 </button>
-                <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 bg-white border border-gray-100 rounded-xl shadow-xl p-2 w-32 space-y-1">
+                <div x-show="open" @click.away="open = false" class="absolute right-0 mt-3 bg-white border border-gray-100 rounded-2xl shadow-2xl p-3 w-40 space-y-1">
                     <template x-for="lang in languages">
-                        <button @click="changeLang(lang); open = false" class="w-full text-left px-3 py-2 text-[10px] hover:bg-gray-50 rounded-lg flex items-center gap-2">
+                        <button @click="changeLang(lang); open = false" class="w-full text-left px-4 py-2 text-xs hover:bg-rose-50 rounded-xl flex items-center gap-3 transition-colors">
                             <span x-text="lang.flag"></span> <span x-text="lang.name"></span>
                         </button>
                     </template>
@@ -78,143 +71,122 @@
         </div>
     </header>
 
-    <!-- Background Effects -->
-    <template x-if="data.effectStyle === 'PETAL'">
-        <div class="fixed inset-0 pointer-events-none z-10 overflow-hidden">
-            <template x-for="i in 20">
-                <div class="absolute animate__animated animate__infinite animate__fadeOutDown" 
-                     :style="`left: ${Math.random()*100}%; top: -5%; animation-duration: ${5 + Math.random()*10}s; animation-delay: ${Math.random()*5}s; opacity: 0.6; font-size: 20px;`">🌸</div>
-            </template>
-        </div>
-    </template>
-
-    <!-- Main Content -->
-    <main class="relative z-20">
-        
-        <!-- Section 1: Main Visual -->
+    <main class="relative z-20" x-show="data.groom">
+        <!-- Section 1: Hero -->
         <section class="h-screen relative flex items-center justify-center overflow-hidden">
-            <img :src="data.mainImage" class="absolute inset-0 w-full h-full object-cover transition-transform duration-[10s] scale-110" id="main-img">
-            <div class="absolute inset-0 bg-white/10"></div>
-            <div class="relative z-10 text-center space-y-6 px-10">
-                <h1 class="font-cursive text-6xl md:text-8xl text-white drop-shadow-2xl reveal animate__animated animate__fadeInUp" x-text="data.overlayText"></h1>
-                <div class="w-12 h-px bg-white/50 mx-auto reveal" style="transition-delay: 0.5s"></div>
+            <img :src="data.mainImage" class="absolute inset-0 w-full h-full object-cover transition-transform duration-[20s] scale-110" style="filter: brightness(0.9);">
+            <div class="absolute inset-0 bg-black/10"></div>
+            <div class="relative z-10 text-center text-white space-y-8 px-6">
+                <h1 class="font-cursive text-7xl md:text-9xl reveal animate__animated animate__fadeInDown" x-text="data.overlayText"></h1>
+                <div class="space-y-2 reveal" style="transition-delay: 0.6s">
+                    <p class="text-xl md:text-2xl font-light tracking-widest" x-text="`${data.groom.name} & ${data.bride.name}`"></p>
+                    <p class="text-xs uppercase tracking-[0.4em] opacity-80" x-text="formatDateKST(data.weddingDate)"></p>
+                </div>
             </div>
         </section>
 
-        <!-- Dynamic Sections -->
+        <!-- Dynamic Content Sections -->
         <template x-for="section in sortedSections" :key="section.id">
-            <div x-show="section.isVisible" class="max-w-xl mx-auto py-20 px-6 text-center reveal">
+            <div x-show="section.isVisible" class="max-w-2xl mx-auto py-24 px-8 text-center reveal">
                 
-                <!-- Section Header (Foldable) -->
-                <div @click="section.isFolded = !section.isFolded" class="cursor-pointer group">
-                    <h2 class="text-[10px] tracking-[0.4em] text-gray-300 uppercase mb-8 group-hover:text-gray-500 transition-colors" x-text="section.title"></h2>
+                <div @click="section.isFolded = !section.isFolded" class="cursor-pointer mb-12 inline-block">
+                    <h2 class="text-[11px] tracking-[0.5em] text-gray-300 uppercase hover:text-rose-300 transition-colors" x-text="section.title"></h2>
+                    <div class="w-8 h-px bg-gray-100 mx-auto mt-4"></div>
                 </div>
 
                 <div class="section-content" :class="!section.isFolded ? 'open' : ''">
                     
-                    <!-- 1.3 Main Text -->
+                    <!-- Main Text Section -->
                     <template x-if="section.id === 'mainText'">
-                        <div class="py-10 space-y-6">
-                            <pre class="whitespace-pre-wrap leading-relaxed text-gray-600 font-light text-lg md:text-xl" x-text="data.mainText"></pre>
+                        <div class="py-12 space-y-8">
+                            <pre class="whitespace-pre-wrap leading-loose text-gray-600 font-light text-lg italic" x-text="data.mainText"></pre>
                         </div>
                     </template>
 
-                    <!-- 2. Names -->
+                    <!-- Profile Section -->
                     <template x-if="section.id === 'names'">
-                        <div class="py-10 space-y-12">
-                            <div class="flex flex-col md:flex-row justify-center items-center gap-8">
-                                <div class="space-y-2">
-                                    <p class="text-xs text-gray-400">GROOM</p>
-                                    <p class="text-2xl font-bold" x-text="data.groom.name"></p>
-                                    <p class="text-xs text-gray-400">
+                        <div class="py-12 space-y-16">
+                            <div class="grid md:grid-cols-2 gap-12 items-center">
+                                <div class="space-y-4">
+                                    <p class="text-xs text-rose-300 tracking-widest">GROOM</p>
+                                    <h3 class="text-3xl font-bold" x-text="data.groom.name"></h3>
+                                    <div class="text-sm text-gray-400">
                                         <span x-text="data.groom.father"></span> · <span x-text="data.groom.mother"></span>의 <span x-text="data.groom.rank"></span>
-                                    </p>
+                                    </div>
+                                    <div class="flex justify-center gap-4 mt-4">
+                                        <a :href="`tel:${data.groom.phone}`" class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 text-gray-400 hover:text-rose-300">📞</a>
+                                    </div>
                                 </div>
-                                <div class="text-rose-200 text-3xl">♥</div>
-                                <div class="space-y-2">
-                                    <p class="text-xs text-gray-400">BRIDE</p>
-                                    <p class="text-2xl font-bold" x-text="data.bride.name"></p>
-                                    <p class="text-xs text-gray-400">
+                                <div class="space-y-4">
+                                    <p class="text-xs text-rose-300 tracking-widest">BRIDE</p>
+                                    <h3 class="text-3xl font-bold" x-text="data.bride.name"></h3>
+                                    <div class="text-sm text-gray-400">
                                         <span x-text="data.bride.father"></span> · <span x-text="data.bride.mother"></span>의 <span x-text="data.bride.rank"></span>
-                                    </p>
+                                    </div>
+                                    <div class="flex justify-center gap-4 mt-4">
+                                        <a :href="`tel:${data.bride.phone}`" class="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 text-gray-400 hover:text-rose-300">📞</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </template>
 
-                    <!-- 3. Calendar -->
+                    <!-- Calendar Section (KST Optimized) -->
                     <template x-if="section.id === 'calendar'">
-                        <div class="py-10">
-                            <div class="inline-block p-10 bg-gray-50/50 rounded-3xl border border-gray-100 shadow-sm">
-                                <p class="text-xl font-bold mb-8" x-text="formatWeddingMonth()"></p>
-                                <div class="grid grid-cols-7 gap-2 text-center text-sm">
+                        <div class="py-12">
+                            <div class="inline-block p-12 bg-gray-50/30 rounded-[3rem] border border-gray-100/50 backdrop-blur-sm shadow-xl shadow-rose-50/20">
+                                <p class="text-2xl font-bold mb-10 tracking-tighter" x-text="getKSTMonthYear()"></p>
+                                <div class="grid grid-cols-7 gap-4 text-center">
                                     <template x-for="day in ['일','월','화','수','목','금','토']">
-                                        <div :class="day === '일' ? 'text-rose-400' : (day === '토' ? 'text-sky-400' : 'text-gray-300')" x-text="day"></div>
+                                        <div class="text-[10px] font-bold" :class="day === '일' ? 'text-rose-400' : (day === '토' ? 'text-sky-400' : 'text-gray-300')" x-text="day"></div>
                                     </template>
                                     <template x-for="empty in Array(new Date(data.weddingDate).getDay()).fill(0)"><div></div></template>
-                                    <template x-for="d in daysInMonth()">
-                                        <div class="w-10 h-10 flex items-center justify-center rounded-full"
-                                             :class="d === new Date(data.weddingDate).getDate() ? 'bg-rose-400 text-white font-bold' : 'text-gray-600'"
+                                    <template x-for="d in getDaysInMonth()">
+                                        <div class="w-10 h-10 flex items-center justify-center text-sm rounded-full transition-all"
+                                             :class="isWeddingDay(d) ? 'bg-rose-400 text-white font-bold scale-110 shadow-lg' : 'text-gray-600'"
                                              x-text="d"></div>
                                     </template>
                                 </div>
-                                <div class="mt-10 pt-6 border-t border-gray-200">
-                                    <p class="text-rose-400 font-bold" x-text="dDay()"></p>
+                                <div class="mt-12 pt-8 border-t border-gray-100">
+                                    <p class="text-rose-400 font-bold tracking-widest text-lg" x-text="calculateDDayKST()"></p>
                                 </div>
                             </div>
                         </div>
                     </template>
 
-                    <!-- 5. Gallery -->
-                    <template x-if="section.id === 'gallery'">
-                        <div class="py-10 grid grid-cols-2 md:grid-cols-3 gap-2">
-                            <template x-for="(img, idx) in data.galleryImages">
-                                <div class="aspect-[3/4] overflow-hidden rounded-lg cursor-pointer" @click="openGallery(idx)">
-                                    <img :src="img" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
-                                </div>
-                            </template>
-                        </div>
-                    </template>
-
-                    <!-- 8. Location -->
-                    <template x-if="section.id === 'location'">
-                        <div class="py-10 space-y-6 text-left">
-                            <div class="space-y-2">
-                                <p class="text-xl font-bold" x-text="data.venue.name"></p>
-                                <p class="text-sm text-gray-500" x-text="data.venue.address"></p>
-                                <a :href="`tel:${data.venue.phone}`" class="text-xs text-rose-400" x-text="data.venue.phone"></a>
-                            </div>
-                            <div class="aspect-video bg-gray-100 rounded-2xl overflow-hidden shadow-inner">
-                                <!-- Kakao Map Simulation -->
-                                <div class="w-full h-full flex items-center justify-center text-gray-400 text-xs italic">
-                                    Map API Loading (Address: <span x-text="data.venue.address"></span>)
+                    <!-- Account Section -->
+                    <template x-if="section.id === 'accounts'">
+                        <div class="py-12 space-y-6">
+                            <div class="bg-gray-50 rounded-3xl p-8 text-left space-y-4 border border-gray-100">
+                                <p class="text-xs font-bold text-gray-400 uppercase">Groom's Family Account</p>
+                                <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+                                    <div class="text-sm">
+                                        <p class="font-bold" x-text="data.accounts.groom.name"></p>
+                                        <p class="text-gray-500" x-text="`${data.accounts.groom.bank} ${data.accounts.groom.number}`"></p>
+                                    </div>
+                                    <button @click="copyClipboard(data.accounts.groom.number)" class="text-[10px] text-rose-400 border border-rose-100 px-3 py-1 rounded-full">COPY</button>
                                 </div>
                             </div>
-                            <pre class="text-xs leading-relaxed text-gray-500 bg-gray-50 p-6 rounded-2xl" x-text="data.venue.guideText"></pre>
                         </div>
                     </template>
 
                 </div>
             </div>
         </template>
-
     </main>
 
-    <footer class="py-20 bg-gray-50 text-center">
-        <p class="text-[10px] text-gray-300 tracking-widest">COPYRIGHT(C) JOE ALL RIGHT RESERVED</p>
-        <a href="admin.html" class="text-[10px] text-gray-200 mt-4 inline-block hover:text-gray-400">ADMINISTRATION</a>
+    <footer class="py-24 bg-gray-50/50 text-center border-t border-gray-100">
+        <p class="text-[10px] text-gray-300 tracking-[0.5em] mb-4">LOVE & ETERNITY</p>
+        <p class="text-[10px] text-gray-300">COPYRIGHT(C) JOE ALL RIGHT RESERVED</p>
+        <a href="admin.html" class="mt-8 inline-block text-[9px] text-gray-200 hover:text-gray-400 transition-colors">MANAGEMENT HUB</a>
     </footer>
 
     <script>
-        // Internationalization Data
-        const LANG_DATA = {
+        const LANG_LIST = {
             ko: { name: '한국어', flag: '🇰🇷' },
-            en: { name: 'English', flag: '🇬🇧🇺🇸' },
+            en: { name: 'English', flag: '🇬🇧' },
             jp: { name: '日本語', flag: '🇯🇵' },
-            cn: { name: '简体中文', flag: '🇨🇳' },
-            tw: { name: '繁體中文', flag: '🇹🇼' },
-            fr: { name: 'Français', flag: '🇫🇷' },
-            de: { name: 'Deutsch', flag: '🇩🇪' }
+            cn: { name: '简体中文', flag: '🇨🇳' }
         };
 
         function weddingApp() {
@@ -222,51 +194,77 @@
                 showIntro: true,
                 bgmPlaying: false,
                 audio: null,
-                currentLang: LANG_DATA.ko,
-                languages: Object.values(LANG_DATA),
+                currentLang: LANG_LIST.ko,
+                languages: Object.values(LANG_LIST),
                 data: {},
                 sortedSections: [],
                 
-                init() {
-                    const savedData = localStorage.getItem('wedding_v2_data');
-                    this.data = savedData ? JSON.parse(savedData) : this.getDefaultData();
+                async init() {
+                    const saved = localStorage.getItem('wedding_v2_data');
+                    this.data = saved ? JSON.parse(saved) : this.getDefaultData();
                     this.sortedSections = [...this.data.sections].sort((a, b) => a.order - b.order);
                     
-                    // Intersection Observer for Reveal
+                    // Interaction Observer for Scroll Effects
                     const observer = new IntersectionObserver((entries) => {
                         entries.forEach(entry => {
                             if (entry.isIntersecting) entry.target.classList.add('active');
                         });
                     }, { threshold: 0.1 });
                     
-                    setTimeout(() => {
+                    this.$nextTick(() => {
                         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
                         this.initCanvas();
-                    }, 500);
+                    });
 
-                    // IP based Lang (Mock)
-                    this.detectLanguage();
+                    // Pre-load audio to avoid AbortError on fast interactions
+                    this.setupAudio();
                 },
 
                 getDefaultData() {
                     return {
                         mainImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070',
-                        overlayText: 'Wedding Invitation',
-                        mainText: '조현우 그리고 류하영\n\n2026년 05월 02일 토요일 PM 13시 00분\n강남 마리아쥬 스퀘어\n\n영원히 함께할 사랑의 맹세\n같이 축복해주세요.',
+                        overlayText: 'Wedding Day',
+                        mainText: '영원히 함께할 사랑의 맹세,\n그 첫 발걸음에 여러분을 초대합니다.',
                         groom: { name: '조현우', father: '조복래', mother: '나선희', rank: '장남', phone: '010-3366-4848' },
                         bride: { name: '류하영', father: '류민석', mother: '고우희', rank: '장녀', phone: '010-6556-7525' },
                         weddingDate: '2026-05-02T13:00:00',
-                        galleryImages: ['https://picsum.photos/800/1200?w=1', 'https://picsum.photos/800/1200?w=2', 'https://picsum.photos/800/1200?w=3'],
-                        venue: { name: '마리아쥬 스퀘어', address: '서울특별시 강남구 도산대로 318', phone: '02-541-5007', guideText: '셔틀운행: 7호선 강남구청역 3번출구 상시운행' },
-                        effectStyle: 'PETAL',
+                        accounts: {
+                            groom: { name: '조현우', bank: '우리은행', number: '1002-123-456789' }
+                        },
                         sections: [
-                            { id: 'mainText', title: '초대합니다', isVisible: true, isFolded: false, order: 0 },
-                            { id: 'names', title: '소개', isVisible: true, isFolded: false, order: 1 },
-                            { id: 'calendar', title: '일정', isVisible: true, isFolded: false, order: 2 },
-                            { id: 'gallery', title: '갤러리', isVisible: true, isFolded: true, order: 3 },
-                            { id: 'location', title: '오시는 길', isVisible: true, isFolded: false, order: 4 }
+                            { id: 'mainText', title: 'INVITATION', isVisible: true, isFolded: false, order: 0 },
+                            { id: 'names', title: 'WHO WE ARE', isVisible: true, isFolded: false, order: 1 },
+                            { id: 'calendar', title: 'SCHEDULE', isVisible: true, isFolded: false, order: 2 },
+                            { id: 'accounts', title: 'ACCOUNTS', isVisible: true, isFolded: true, order: 3 }
                         ]
                     };
+                },
+
+                setupAudio() {
+                    this.audio = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+                    this.audio.loop = true;
+                    this.audio.preload = 'auto';
+                },
+
+                async toggleBgm() {
+                    if (!this.audio) this.setupAudio();
+                    
+                    try {
+                        if (this.bgmPlaying) {
+                            this.audio.pause();
+                            this.bgmPlaying = false;
+                        } else {
+                            // Catching the "Aborted by user agent" or Autoplay block errors
+                            const playPromise = this.audio.play();
+                            if (playPromise !== undefined) {
+                                await playPromise;
+                                this.bgmPlaying = true;
+                            }
+                        }
+                    } catch (err) {
+                        console.warn("BGM Playback was interrupted or blocked:", err.message);
+                        this.bgmPlaying = false;
+                    }
                 },
 
                 closeIntro() {
@@ -274,77 +272,68 @@
                     document.body.style.overflow = 'auto';
                 },
 
-                formatWeddingMonth() {
-                    const d = new Date(this.data.weddingDate);
-                    return d.getFullYear() + '. ' + (d.getMonth() + 1);
+                formatDateKST(iso) {
+                    const d = new Date(iso);
+                    return d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
                 },
 
-                daysInMonth() {
+                getKSTMonthYear() {
+                    const d = new Date(this.data.weddingDate);
+                    return `${d.getFullYear()} / ${d.getMonth() + 1}`;
+                },
+
+                getDaysInMonth() {
                     const d = new Date(this.data.weddingDate);
                     return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
                 },
 
-                dDay() {
+                isWeddingDay(day) {
+                    return day === new Date(this.data.weddingDate).getDate();
+                },
+
+                calculateDDayKST() {
                     const now = new Date();
+                    // Korea Standard Time (UTC+9)
+                    const kstNow = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (9 * 60 * 60 * 1000));
                     const target = new Date(this.data.weddingDate);
-                    const diff = target - now;
+                    const diff = target - kstNow;
                     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                    return days >= 0 ? `D-${days}` : `D+${Math.abs(days)}`;
+                    return days > 0 ? `D-${days}` : (days === 0 ? 'D-DAY' : `D+${Math.abs(days)}`);
                 },
 
-                speakText() {
+                runTTS() {
                     const synth = window.speechSynthesis;
-                    const utter = new SpeechSynthesisUtterance(this.data.mainText);
-                    utter.lang = 'ko-KR';
-                    utter.pitch = 1.2;
-                    synth.speak(utter);
+                    if (synth.speaking) { synth.cancel(); return; }
+                    const msg = new SpeechSynthesisUtterance(this.data.mainText);
+                    msg.lang = 'ko-KR';
+                    msg.pitch = 1.1;
+                    msg.rate = 0.9;
+                    synth.speak(msg);
                 },
 
-                toggleBgm() {
-                    if (!this.audio) {
-                        this.audio = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
-                        this.audio.loop = true;
-                    }
-                    this.bgmPlaying ? this.audio.pause() : this.audio.play();
-                    this.bgmPlaying = !this.bgmPlaying;
-                },
-
-                detectLanguage() {
-                    // Logic to detect by IP (Simulation)
-                    this.currentLang = LANG_DATA.ko;
-                },
-
-                changeLang(lang) {
-                    this.currentLang = lang;
-                    // Trigger Google Translate API or manual mapping
+                copyClipboard(text) {
+                    navigator.clipboard.writeText(text).then(() => alert('계좌번호가 복사되었습니다.'));
                 },
 
                 initCanvas() {
                     const canvas = document.getElementById('interactive-canvas');
                     const ctx = canvas.getContext('2d');
                     let particles = [];
-                    
-                    const resize = () => {
-                        canvas.width = window.innerWidth;
-                        canvas.height = window.innerHeight;
-                    };
+                    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
                     window.addEventListener('resize', resize);
                     resize();
 
                     class Particle {
                         constructor(x, y) {
                             this.x = x; this.y = y;
-                            this.size = Math.random() * 3 + 1;
-                            this.speedX = Math.random() * 3 - 1.5;
-                            this.speedY = Math.random() * 3 - 1.5;
+                            this.size = Math.random() * 2 + 0.5;
+                            this.speedX = Math.random() * 2 - 1;
+                            this.speedY = Math.random() * 2 - 1;
                             this.opacity = 1;
                         }
-                        update() {
-                            this.x += this.speedX; this.y += this.speedY;
-                            this.opacity -= 0.02;
-                        }
+                        update() { this.x += this.speedX; this.y += this.speedY; this.opacity -= 0.015; }
                         draw() {
-                            ctx.fillStyle = `rgba(255, 215, 0, ${this.opacity})`;
+                            ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
                             ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
                         }
                     }
@@ -357,13 +346,11 @@
                     };
                     animate();
 
-                    this.addParticle = (x, y) => {
-                        for(let i=0; i<5; i++) particles.push(new Particle(x, y));
-                    };
+                    this.addParticle = (x, y) => { for(let i=0; i<3; i++) particles.push(new Particle(x, y)); };
                 },
 
-                handleMouseMove(e) { this.addParticle && this.addParticle(e.clientX, e.clientY); },
-                handleTouchMove(e) { this.addParticle && this.addParticle(e.touches[0].clientX, e.touches[0].clientY); }
+                handleMouseMove(e) { this.addParticle?.(e.clientX, e.clientY); },
+                handleTouchMove(e) { this.addParticle?.(e.touches[0].clientX, e.touches[0].clientY); }
             }
         }
     </script>
