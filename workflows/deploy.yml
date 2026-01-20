@@ -1,18 +1,15 @@
+
 name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
-  # 배포 탭에서 수동으로 실행할 수 있도록 허용
-  workflow_dispatch:
+    branches: ["main"] # 또는 사용 중인 기본 브랜치 이름
 
-# GITHUB_TOKEN의 권한 설정
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# 하나의 배포만 실행되도록 설정
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -26,16 +23,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup Pages
         uses: actions/configure-pages@v4
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # 프로젝트 루트 디렉토리의 모든 파일 업로드
+          # 루트 디렉토리의 index.html을 배포
           path: '.'
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
