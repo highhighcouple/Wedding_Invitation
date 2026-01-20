@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>모바일 청첩장</title>
+    <title
+        x-text="data.groom?.name && data.bride?.name ? data.groom.name + ' ♥ ' + data.bride.name + '의 모바일 청첩장' : '모바일 청첩장'">
+    </title>
     <!-- Fonts -->
     <link
         href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Sans+KR:wght@300;400;500&display=swap"
@@ -213,14 +215,11 @@
                 <div class="section-wrap relative" :id="section.id" :class="section.id === 'names' ? 'pt-0' : ''">
 
                     <!-- Toggle Header (Except Names) -->
-                    <div x-show="section.id !== 'names'"
-                        @click="if(section.isFolded) section.isFolded = !section.isFolded"
-                        class="p-6 flex justify-between items-center bg-white z-10 relative"
-                        :class="section.isFolded ? 'cursor-pointer' : 'cursor-default'">
+                    <div x-show="section.id !== 'names'" @click="section.isFolded = !section.isFolded"
+                        class="p-6 flex justify-between items-center bg-white z-10 relative cursor-pointer">
                         <h2 class="text-lg lux-font font-bold text-gray-700 tracking-wide"
                             x-text="t(section.id) === section.id ? section.title : t(section.id)"></h2>
-                        <span x-show="section.isFolded" class="text-gray-300 text-xs"
-                            x-text="section.isFolded ? '▼' : '▲'"></span>
+                        <span class="text-gray-300 text-xs" x-text="section.isFolded ? '▼' : '▲'"></span>
                     </div>
 
                     <!-- Body -->
@@ -241,20 +240,20 @@
                                 <div class="whitespace-pre-line leading-8 text-sm text-gray-600 mb-8 lux-font"
                                     x-text="data.text.mainMessage"></div>
 
-                                <!-- Names Section UI Modification -->
+                                <!-- Names Section UI Restoration -->
                                 <div class="space-y-6 pt-10">
                                     <div class="flex flex-col items-center gap-1">
-                                        <span
-                                            class="text-[10px] text-pink-400 font-bold tracking-widest uppercase">신랑</span>
                                         <h1 class="text-3xl tracking-[0.2em] font-light flex items-center"
                                             x-text="data.groom.name"></h1>
+                                        <span
+                                            class="text-[10px] text-pink-400 font-bold tracking-widest uppercase">신랑</span>
                                     </div>
                                     <div class="lux-font text-2xl text-pink-200 mt-[-10px]">&</div>
                                     <div class="flex flex-col items-center gap-1">
-                                        <span
-                                            class="text-[10px] text-pink-400 font-bold tracking-widest uppercase">신부</span>
                                         <h1 class="text-3xl tracking-[0.2em] font-light flex items-center"
                                             x-text="data.bride.name"></h1>
+                                        <span
+                                            class="text-[10px] text-pink-400 font-bold tracking-widest uppercase">신부</span>
                                     </div>
                                 </div>
 
@@ -679,9 +678,9 @@
                 },
 
                 initCal() {
-                    const dateVal = this.data.config?.date;
+                    const dateVal = this.data.config?.weddingDate;
                     if (!dateVal) return;
-                    const d = new Date(dateVal + 'T00:00:00'); // Ensure KST baseline
+                    const d = new Date(dateVal);
                     this.calTitle = `${d.getFullYear()}. ${d.getMonth() + 1}`;
 
                     const y = d.getFullYear(), m = d.getMonth();
@@ -702,13 +701,13 @@
                 },
 
                 updateTimer() {
-                    if (!this.data.config.date) return;
+                    if (!this.data.config.weddingDate) return;
 
                     // KST (UTC+9) Calculation
                     const now = new Date();
                     const localeNow = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (9 * 3600000));
 
-                    const target = new Date(this.data.config.date);
+                    const target = new Date(this.data.config.weddingDate);
                     const localeTarget = new Date(target.getTime() + (target.getTimezoneOffset() * 60000) + (9 * 3600000));
 
                     const diff = localeTarget - localeNow;
