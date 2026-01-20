@@ -258,14 +258,22 @@
                     </div>
                     <div><label class="label">연락처</label><input x-model="data.groom.phone" class="input">
                     </div>
-                    <div class="p-3 bg-[#12151a] rounded">
-                        <label class="label text-gray-400">부모님 (선택항목)</label>
-                        <div class="grid grid-cols-2 gap-2 mb-2">
+                    <div class="p-3 bg-[#12151a] rounded space-y-2">
+                        <label class="label text-gray-400">부모님 정보</label>
+                        <div class="grid grid-cols-2 gap-2">
                             <input x-model="data.groom.parents.father" placeholder="아버지 성함" class="input">
-                            <input x-model="data.groom.parents.mother" placeholder="어머니 성함" class="input">
+                            <input x-model="data.groom.parents.fBank" placeholder="은행" class="input">
                         </div>
-                        <input x-model="data.groom.parents.fPhone" placeholder="아버지 연락처" class="input mb-1">
-                        <input x-model="data.groom.parents.mPhone" placeholder="어머니 연락처" class="input">
+                        <input x-model="data.groom.parents.fAccount" placeholder="계좌번호" class="input">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input x-model="data.groom.parents.mother" placeholder="어머니 성함" class="input">
+                            <input x-model="data.groom.parents.mBank" placeholder="은행" class="input">
+                        </div>
+                        <input x-model="data.groom.parents.mAccount" placeholder="계좌번호" class="input">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input x-model="data.groom.parents.fPhone" placeholder="부친 연락처" class="input">
+                            <input x-model="data.groom.parents.mPhone" placeholder="모친 연락처" class="input">
+                        </div>
                     </div>
                 </div>
                 <!-- Bride -->
@@ -284,14 +292,22 @@
                     </div>
                     <div><label class="label">연락처</label><input x-model="data.bride.phone" class="input">
                     </div>
-                    <div class="p-3 bg-[#12151a] rounded">
-                        <label class="label text-gray-400">부모님 (선택항목)</label>
-                        <div class="grid grid-cols-2 gap-2 mb-2">
+                    <div class="p-3 bg-[#12151a] rounded space-y-2">
+                        <label class="label text-gray-400">부모님 정보</label>
+                        <div class="grid grid-cols-2 gap-2">
                             <input x-model="data.bride.parents.father" placeholder="아버지 성함" class="input">
-                            <input x-model="data.bride.parents.mother" placeholder="어머니 성함" class="input">
+                            <input x-model="data.bride.parents.fBank" placeholder="은행" class="input">
                         </div>
-                        <input x-model="data.bride.parents.fPhone" placeholder="아버지 연락처" class="input mb-1">
-                        <input x-model="data.bride.parents.mPhone" placeholder="어머니 연락처" class="input">
+                        <input x-model="data.bride.parents.fAccount" placeholder="계좌번호" class="input">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input x-model="data.bride.parents.mother" placeholder="어머니 성함" class="input">
+                            <input x-model="data.bride.parents.mBank" placeholder="은행" class="input">
+                        </div>
+                        <input x-model="data.bride.parents.mAccount" placeholder="계좌번호" class="input">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input x-model="data.bride.parents.fPhone" placeholder="부친 연락처" class="input">
+                            <input x-model="data.bride.parents.mPhone" placeholder="모친 연락처" class="input">
+                        </div>
                     </div>
                 </div>
             </div>

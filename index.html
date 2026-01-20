@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title
-        x-text="data.groom?.name && data.bride?.name ? data.groom.name + ' ♥ ' + data.bride.name + '의 모바일 청첩장' : '모바일 청첩장'">
+        x-text="data.groom?.name && data.bride?.name ? '§' + data.groom.name + '§ ♥ §' + data.bride.name + '§의 모바일 청첩장' : '모바일 청첩장'">
     </title>
     <!-- Fonts -->
     <link
@@ -252,11 +252,11 @@
                                         <div class="flex flex-col items-center">
                                             <div class="text-[12px] text-gray-500 mb-6 lux-font">
                                                 <span x-text="data.groom.parents.father"></span>·<span
-                                                    x-text="data.groom.parents.mother"></span><span
-                                                    class="mx-1">의</span><span x-text="data.groom.rank"></span>
+                                                    x-text="data.groom.parents.mother"></span><span class="">의</span>
+                                                <span x-text="data.groom.rank"></span>
                                             </div>
                                             <div class="flex flex-col items-center">
-                                                <span class="text-[0.7em] text-pink-400 font-bold mb-1"
+                                                <span class="text-[0.7em] text-blue-400 font-bold mb-1"
                                                     :style="`font-size: calc(1.875rem * 0.7)`">신랑</span>
                                                 <h1 class="text-3xl tracking-[0.1em] font-light"
                                                     x-text="data.groom.name"></h1>
@@ -270,8 +270,8 @@
                                         <div class="flex flex-col items-center">
                                             <div class="text-[12px] text-gray-500 mb-6 lux-font">
                                                 <span x-text="data.bride.parents.father"></span>·<span
-                                                    x-text="data.bride.parents.mother"></span><span
-                                                    class="mx-1">의</span><span x-text="data.bride.rank"></span>
+                                                    x-text="data.bride.parents.mother"></span><span class="">의</span>
+                                                <span x-text="data.bride.rank"></span>
                                             </div>
                                             <div class="flex flex-col items-center">
                                                 <span class="text-[0.7em] text-pink-400 font-bold mb-1"
@@ -341,72 +341,79 @@
 
                         <!-- 5. Contact -->
                         <template x-if="section.id === 'phone'">
-                            <div class="px-8 pb-10 space-y-6">
-                                <div class="grid grid-cols-2 gap-8 text-center text-sm">
-                                    <div class="space-y-3">
-                                        <div class="font-bold text-blue-900 border-b pb-2 mb-2">GROOM</div>
-                                        <template x-for="p in getPhones('groom')">
-                                            <div class="flex justify-between items-center text-xs text-gray-500">
-                                                <span x-text="p.label"></span>
-                                                <a :href="`tel:${p.phone}`">📞</a>
+                            <div class="px-8 pb-10 space-y-8">
+                                <div class="space-y-4">
+                                    <div class="font-bold text-blue-900 border-b pb-2 mb-4 text-center">신랑측</div>
+                                    <template x-for="p in getPhones('groom')">
+                                        <div @click="window.location.href='tel:'+p.phone"
+                                            class="flex justify-between items-center p-3 bg-gray-50 rounded-lg cursor-pointer active:bg-gray-100 transition-colors">
+                                            <div class="flex items-center gap-3">
+                                                <span class="font-medium text-gray-700" x-text="p.label"></span>
+                                                <span class="text-xs text-gray-400" x-text="p.phone"></span>
                                             </div>
-                                        </template>
-                                    </div>
-                                    <div class="space-y-3">
-                                        <div class="font-bold text-pink-900 border-b pb-2 mb-2">BRIDE</div>
-                                        <template x-for="p in getPhones('bride')">
-                                            <div class="flex justify-between items-center text-xs text-gray-500">
-                                                <span x-text="p.label"></span>
-                                                <a :href="`tel:${p.phone}`">📞</a>
+                                            <div class="text-blue-500 text-lg">📞</div>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="font-bold text-pink-900 border-b pb-2 mb-4 text-center">신부측</div>
+                                    <template x-for="p in getPhones('bride')">
+                                        <div @click="window.location.href='tel:'+p.phone"
+                                            class="flex justify-between items-center p-3 bg-gray-50 rounded-lg cursor-pointer active:bg-gray-100 transition-colors">
+                                            <div class="flex items-center gap-3">
+                                                <span class="font-medium text-gray-700" x-text="p.label"></span>
+                                                <span class="text-xs text-gray-400" x-text="p.phone"></span>
                                             </div>
-                                        </template>
-                                    </div>
+                                            <div class="text-pink-500 text-lg">📞</div>
+                                        </div>
+                                    </template>
                                 </div>
                             </div>
                         </template>
 
                         <!-- 6. Accounts -->
                         <template x-if="section.id === 'accounts'">
-                            <div class="px-8 pb-10 space-y-4">
-                                <div class="text-center text-xs text-gray-400 mb-6">마음을 전하실 곳</div>
-                                <!-- Accordions for Groom/Bride sides -->
-                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"
-                                    @click="copy(data.groom.accounts[0]?.num)">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-xl">
-                                            🤵</div>
-                                        <div>
-                                            <div class="font-bold text-sm">신랑 <span x-text="data.groom.name"></span>
+                            <div class="px-8 pb-10 space-y-6">
+                                <div class="text-center text-xs text-gray-400 mb-6">계좌번호</div>
+
+                                <div class="space-y-4">
+                                    <div class="text-[11px] font-bold text-blue-600 mb-2">&lt;신랑측&gt;</div>
+                                    <template x-for="acc in getAllAccounts('groom')">
+                                        <div @click="copyAccount(acc)"
+                                            class="flex justify-between items-center p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors border border-gray-100">
+                                            <div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="font-bold text-sm text-gray-700"
+                                                        x-text="acc.name"></span>
+                                                    <span class="text-[10px] text-gray-400"
+                                                        x-text="`(${acc.bank})`"></span>
+                                                </div>
+                                                <div class="text-xs text-gray-500 mt-1" x-text="acc.num"></div>
                                             </div>
-                                            <div class="text-xs text-blue-500 font-medium">연락 및 축하 마음 전하기</div>
+                                            <button
+                                                class="px-3 py-1.5 bg-white border border-gray-200 text-[10px] rounded-lg shadow-sm font-bold text-gray-600">복사</button>
                                         </div>
-                                    </div>
-                                    <div class="flex gap-2">
-                                        <button @click.stop="window.location.href='tel:'+data.groom.phone"
-                                            class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-sm">📞</button>
-                                        <button
-                                            class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-sm">💳</button>
-                                    </div>
+                                    </template>
                                 </div>
-                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"
-                                    @click="copy(data.bride.accounts[0]?.num)">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-xl">
-                                            👰</div>
-                                        <div>
-                                            <div class="font-bold text-sm">신부 <span x-text="data.bride.name"></span>
+
+                                <div class="space-y-4">
+                                    <div class="text-[11px] font-bold text-pink-600 mb-2">&lt;신부측&gt;</div>
+                                    <template x-for="acc in getAllAccounts('bride')">
+                                        <div @click="copyAccount(acc)"
+                                            class="flex justify-between items-center p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors border border-gray-100">
+                                            <div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="font-bold text-sm text-gray-700"
+                                                        x-text="acc.name"></span>
+                                                    <span class="text-[10px] text-gray-400"
+                                                        x-text="`(${acc.bank})`"></span>
+                                                </div>
+                                                <div class="text-xs text-gray-500 mt-1" x-text="acc.num"></div>
                                             </div>
-                                            <div class="text-xs text-pink-500 font-medium">연락 및 축하 마음 전하기</div>
+                                            <button
+                                                class="px-3 py-1.5 bg-white border border-gray-200 text-[10px] rounded-lg shadow-sm font-bold text-gray-600">복사</button>
                                         </div>
-                                    </div>
-                                    <div class="flex gap-2">
-                                        <button @click.stop="window.location.href='tel:'+data.bride.phone"
-                                            class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-sm">📞</button>
-                                        <button
-                                            class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-sm">💳</button>
-                                    </div>
+                                    </template>
                                 </div>
                             </div>
                         </template>
@@ -532,7 +539,7 @@
                         <!-- 10. Share -->
                         <template x-if="section.id === 'share'">
                             <div class="px-8 pb-10 flex flex-col items-center gap-6">
-                                <div class="grid grid-cols-4 gap-6 w-full">
+                                <div class="flex flex-wrap justify-center gap-6 w-full">
                                     <button @click="shareKakao" class="flex flex-col items-center gap-2">
                                         <div
                                             class="w-12 h-12 bg-[#FEE500] rounded-full flex items-center justify-center text-xl shadow-sm">
@@ -612,9 +619,11 @@
         </div>
     </div>
 
-    <div x-show="lightbox" class="fixed inset-0 z-[100] bg-black flex items-center justify-center" x-cloak
+    <div x-show="lightbox" class="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4" x-cloak
         @click="lightbox=null">
-        <img :src="lightbox" class="max-w-full max-h-screen object-contain">
+        <button @click="lightbox = null"
+            class="absolute top-6 right-6 text-white text-3xl font-light hover:text-gray-300 transition-colors">✕</button>
+        <img :src="lightbox" class="max-w-full max-h-[90vh] object-contain shadow-2xl rounded" @click.stop>
     </div>
 
     <!-- Scripts -->
@@ -667,6 +676,13 @@
                                 sec._isFolded = !!sec.isFolded;
                             });
                             this.sortedSections = [...this.data.sections].sort((a, b) => a.order - b.order);
+                        }
+
+                        // Fixed Default States
+                        const rsvpIdx = this.data.sections.findIndex(s => s.id === 'rsvp');
+                        if (rsvpIdx !== -1) {
+                            this.data.sections[rsvpIdx]._canFold = true;
+                            this.data.sections[rsvpIdx]._isFolded = true;
                         }
 
                         this.initCal();
@@ -908,17 +924,13 @@
                     return list;
                 },
 
-                getAccounts(side) {
-                    const p = this.data[side];
-                    const pp = p.parents;
-                    let list = [{ label: p.name, bank: p.bank, account: p.account }];
-                    if (pp.father) list.push({ label: pp.father, bank: pp.fBank, account: pp.fAccount });
-                    if (pp.mother) list.push({ label: pp.mother, bank: pp.mBank, account: pp.mAccount });
-                    return list;
-                },
+
 
                 copy(txt) {
-                    navigator.clipboard.writeText(txt).then(() => alert('Copied!'));
+                    navigator.clipboard.writeText(txt).then(() => {
+                        // Global copy feedback can be added here if needed,
+                        // but most specific copy functions now have their own alerts.
+                    });
                 },
 
                 async saveBbs() {
@@ -970,29 +982,45 @@
                     }
                 },
 
+                getAllAccounts(side) {
+                    const person = this.data[side];
+                    if (!person) return [];
+                    let res = [];
+                    // Parents
+                    if (person.parents.father && person.parents.fAccount) {
+                        res.push({ name: person.parents.father, bank: person.parents.fBank || '은행', num: person.parents.fAccount });
+                    }
+                    if (person.parents.mother && person.parents.mAccount) {
+                        res.push({ name: person.parents.mother, bank: person.parents.mBank || '은행', num: person.parents.mAccount });
+                    }
+                    // Self
+                    if (person.account) {
+                        res.push({ name: person.name, bank: person.bank || '은행', num: person.account });
+                    }
+                    return res;
+                },
+
+                copyAccount(acc) {
+                    this.copy(acc.num);
+                    alert(`${acc.name} ${acc.num} (${acc.bank}) 이 클립보드에 복사되었습니다.`);
+                },
+
                 shareKakao() {
                     if (typeof Kakao !== 'undefined' && Kakao.isInitialized()) {
-                        Kakao.Share.sendDefault({
-                            objectType: 'feed',
-                            content: {
-                                title: `${this.data.groom.name} ♥ ${this.data.bride.name}의 결혼식에 초대합니다`,
-                                description: this.data.config.venue.name + ' ' + this.data.config.weddingDate,
-                                imageUrl: this.data.images.main,
-                                link: {
-                                    mobileWebUrl: window.location.href,
-                                    webUrl: window.location.href,
+                        try {
+                            Kakao.Share.sendDefault({
+                                objectType: 'feed',
+                                content: {
+                                    title: `§${this.data.groom.name}§ ♥ §${this.data.bride.name}§의 결혼식에 초대합니다`,
+                                    description: this.data.config.venue.name + ' ' + this.data.config.weddingDate,
+                                    imageUrl: this.data.images.main || 'https://highhighcouple.github.io/Wedding_Invitation/og_image.png',
+                                    link: { mobileWebUrl: window.location.href, webUrl: window.location.href },
                                 },
-                            },
-                            buttons: [
-                                {
-                                    title: '모바일 청첩장 보기',
-                                    link: {
-                                        mobileWebUrl: window.location.href,
-                                        webUrl: window.location.href,
-                                    },
-                                },
-                            ],
-                        });
+                                buttons: [{ title: '모바일 청첩장 보기', link: { mobileWebUrl: window.location.href, webUrl: window.location.href } }],
+                            });
+                        } catch (e) {
+                            this.copyLink();
+                        }
                     } else {
                         this.copyLink();
                     }
