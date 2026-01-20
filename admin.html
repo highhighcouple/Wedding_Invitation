@@ -7,7 +7,6 @@
     <title>Wedding Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script src="store.js"></script>
     <style>
         body { background-color: #1b2838; color: #c7d5e0; font-family: 'Segoe UI', sans-serif; }
         .steam-card { background-color: #2a475e; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
@@ -37,7 +36,7 @@
                 <div class="text-[10px] text-gray-500 uppercase mt-1 tracking-widest">Version 2.0.1 Stable</div>
             </div>
             <nav class="flex-1 p-4 space-y-1">
-                <template x-for="tab in tabs">
+                <template x-for="tab in tabs" :key="tab.id">
                     <button @click="activeTab = tab.id" 
                             :class="activeTab === tab.id ? 'active' : ''"
                             class="sidebar-btn w-full text-left p-4 rounded text-sm font-bold flex items-center gap-3">
@@ -155,14 +154,46 @@
     </div>
 
     <script>
+        const DEFAULT_WEDDING_DATA = {
+            mainImage: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80',
+            overlayText: 'Our Wedding Day',
+            overlayPos: 'top',
+            mainText: '조현우 그리고 류하영\n\n2026년 05월 02일 토요일 PM 13시 00분\n강남 마리아쥬 스퀘어\n\n서로가 마주 보며 걸어온 길을\n이제는 같은 곳을 바라보며 함께 가려 합니다.\n귀한 걸음 하시어 축복해 주시면 감사하겠습니다.',
+            groom: { name: '조현우', father: '조복래', mother: '나선희', rank: '장남', phone: '010-1234-5678', bank: '신한', account: '110-123-456789', bankName: '조현우' },
+            bride: { name: '류하영', father: '류민석', mother: '고우희', rank: '장녀', phone: '010-8765-4321', bank: '국민', account: '926502-01-123456', bankName: '류하영' },
+            weddingDate: '2026-05-02T13:00:00',
+            youtubeLink: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+            galleryImages: ['https://picsum.photos/800/1200?wedding=1','https://picsum.photos/800/1200?wedding=2','https://picsum.photos/800/1200?wedding=3','https://picsum.photos/800/1200?wedding=4','https://picsum.photos/800/1200?wedding=5'],
+            venue: { name: '마리아쥬 스퀘어', address: '서울특별시 강남구 도산대로 318 SB타워 G층', phone: '02-541-5007', guideText: '지하철 7호선 강남구청역 3번출구 셔틀버스 상시운행' },
+            sections: [
+                { id: 'names', order: 0, isVisible: true, title: '소개' },
+                { id: 'calendar', order: 1, isVisible: true, title: '달력' },
+                { id: 'gallery', order: 2, isVisible: true, title: '갤러리' },
+                { id: 'location', order: 3, isVisible: true, title: '오시는 길' },
+                { id: 'guestbook', order: 4, isVisible: true, title: '방명록' },
+                { id: 'rsvp', order: 5, isVisible: true, title: '참석의사' }
+            ],
+            adminPassword: 'admin1234!',
+            effectStyle: 'PETAL'
+        };
+
+        const Store = {
+            get: () => JSON.parse(localStorage.getItem('wedding_v2_data')) || DEFAULT_WEDDING_DATA,
+            save: (d) => localStorage.setItem('wedding_v2_data', JSON.stringify(d)),
+            getGuestbook: () => JSON.parse(localStorage.getItem('wedding_guestbook')) || [],
+            getRSVP: () => JSON.parse(localStorage.getItem('wedding_rsvp')) || [],
+            saveGuestbook: (l) => localStorage.setItem('wedding_guestbook', JSON.stringify(l)),
+            saveRSVP: (l) => localStorage.setItem('wedding_rsvp', JSON.stringify(l))
+        };
+
         function adminApp() {
             return {
                 isLoggedIn: false,
                 password: '',
                 activeTab: 'general',
-                data: WeddingStore.get(),
-                rsvpList: WeddingStore.getRSVP(),
-                guestbook: WeddingStore.getGuestbook(),
+                data: Store.get(),
+                rsvpList: Store.getRSVP(),
+                guestbook: Store.getGuestbook(),
                 tabs: [
                     { id: 'general', name: 'Information', icon: '📝' },
                     { id: 'sections', name: 'Sections', icon: '↕️' },
@@ -186,17 +217,17 @@
                 deleteRSVP(id) {
                     if(!confirm('삭제하시겠습니까?')) return;
                     this.rsvpList = this.rsvpList.filter(r => r.id !== id);
-                    WeddingStore.saveRSVP(this.rsvpList);
+                    Store.saveRSVP(this.rsvpList);
                 },
 
                 deleteGuestbook(id) {
                     if(!confirm('삭제하시겠습니까?')) return;
                     this.guestbook = this.guestbook.filter(g => g.id !== id);
-                    WeddingStore.saveGuestbook(this.guestbook);
+                    Store.saveGuestbook(this.guestbook);
                 },
 
                 save() {
-                    WeddingStore.save(this.data);
+                    Store.save(this.data);
                     alert('All changes saved to local database.');
                 }
             }

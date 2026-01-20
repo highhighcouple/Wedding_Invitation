@@ -10,7 +10,6 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Noto+Serif+KR:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <script src="store.js"></script>
     <style>
         body { font-family: 'Noto Serif KR', serif; scroll-behavior: smooth; background-color: #fff; }
         .font-cursive { font-family: 'Dancing Script', cursive; }
@@ -25,17 +24,8 @@
             100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
         }
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "framer-motion": "https://esm.sh/framer-motion@^12.27.1"
-  }
-}
-</script>
 </head>
-<body x-data="weddingApp()" x-cloak>
+<body x-data="weddingApp()" x-init="init()" x-cloak>
 
     <!-- Intro Overlay -->
     <div x-show="showIntro" x-transition.opacity.duration.1000ms 
@@ -48,9 +38,9 @@
     </div>
 
     <!-- Particles -->
-    <template x-for="i in 15">
+    <template x-for="i in 15" :key="i">
         <div class="petal" 
-             :style="`left: ${Math.random()*100}%; animation: fall ${10 + Math.random()*10}s linear infinite; animation-delay: ${Math.random()*10}s;`"
+             :style="`left: ${Math.random()*100}%; animation: fall ${10 + Math.random()*10}s linear infinite; animation-delay: ${Math.random()*10}s;` text-align: center;"
              x-text="'🌸'"></div>
     </template>
 
@@ -206,21 +196,52 @@
     </footer>
 
     <script>
+        // Data Store Logic Embedded
+        const DEFAULT_WEDDING_DATA = {
+            mainImage: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80',
+            overlayText: 'Our Wedding Day',
+            overlayPos: 'top',
+            mainText: '조현우 그리고 류하영\n\n2026년 05월 02일 토요일 PM 13시 00분\n강남 마리아쥬 스퀘어\n\n서로가 마주 보며 걸어온 길을\n이제는 같은 곳을 바라보며 함께 가려 합니다.\n귀한 걸음 하시어 축복해 주시면 감사하겠습니다.',
+            groom: { name: '조현우', father: '조복래', mother: '나선희', rank: '장남', phone: '010-1234-5678', bank: '신한', account: '110-123-456789', bankName: '조현우' },
+            bride: { name: '류하영', father: '류민석', mother: '고우희', rank: '장녀', phone: '010-8765-4321', bank: '국민', account: '926502-01-123456', bankName: '류하영' },
+            weddingDate: '2026-05-02T13:00:00',
+            youtubeLink: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+            galleryImages: ['https://picsum.photos/800/1200?wedding=1','https://picsum.photos/800/1200?wedding=2','https://picsum.photos/800/1200?wedding=3','https://picsum.photos/800/1200?wedding=4','https://picsum.photos/800/1200?wedding=5'],
+            venue: { name: '마리아쥬 스퀘어', address: '서울특별시 강남구 도산대로 318 SB타워 G층', phone: '02-541-5007', guideText: '지하철 7호선 강남구청역 3번출구 셔틀버스 상시운행' },
+            sections: [
+                { id: 'names', order: 0, isVisible: true, title: '소개' },
+                { id: 'calendar', order: 1, isVisible: true, title: '달력' },
+                { id: 'gallery', order: 2, isVisible: true, title: '갤러리' },
+                { id: 'location', order: 3, isVisible: true, title: '오시는 길' },
+                { id: 'guestbook', order: 4, isVisible: true, title: '방명록' },
+                { id: 'rsvp', order: 5, isVisible: true, title: '참석의사' }
+            ],
+            adminPassword: 'admin1234!',
+            effectStyle: 'PETAL'
+        };
+
+        const Store = {
+            get: () => JSON.parse(localStorage.getItem('wedding_v2_data')) || DEFAULT_WEDDING_DATA,
+            getGuestbook: () => JSON.parse(localStorage.getItem('wedding_guestbook')) || [],
+            getRSVP: () => JSON.parse(localStorage.getItem('wedding_rsvp')) || [],
+            saveGuestbook: (l) => localStorage.setItem('wedding_guestbook', JSON.stringify(l)),
+            saveRSVP: (l) => localStorage.setItem('wedding_rsvp', JSON.stringify(l))
+        };
+
         function weddingApp() {
             return {
-                data: WeddingStore.get(),
+                data: Store.get(),
                 showIntro: true,
                 selectedImg: null,
                 showGuestbookModal: false,
-                guestbook: WeddingStore.getGuestbook(),
+                guestbook: Store.getGuestbook(),
                 newEntry: { name: '', content: '' },
                 rsvpForm: { side: 'groom', name: '', phone: '' },
                 
                 init() {
-                    // 데이터 동기화
                     window.addEventListener('storage', () => {
-                        this.data = WeddingStore.get();
-                        this.guestbook = WeddingStore.getGuestbook();
+                        this.data = Store.get();
+                        this.guestbook = Store.getGuestbook();
                     });
                 },
 
@@ -246,9 +267,9 @@
 
                 submitGuestbook() {
                     if(!this.newEntry.name || !this.newEntry.content) return alert('내용을 입력해주세요.');
-                    const list = WeddingStore.getGuestbook();
+                    const list = Store.getGuestbook();
                     list.unshift({ ...this.newEntry, id: Date.now(), date: new Date().toISOString() });
-                    WeddingStore.saveGuestbook(list);
+                    Store.saveGuestbook(list);
                     this.guestbook = list;
                     this.newEntry = { name: '', content: '' };
                     this.showGuestbookModal = false;
@@ -256,9 +277,10 @@
                 },
 
                 submitRSVP() {
-                    const list = WeddingStore.getRSVP();
+                    if(!this.rsvpForm.name) return alert('성함을 입력해주세요.');
+                    const list = Store.getRSVP();
                     list.push({ ...this.rsvpForm, id: Date.now(), date: new Date().toISOString() });
-                    WeddingStore.saveRSVP(list);
+                    Store.saveRSVP(list);
                     this.rsvpForm = { side: 'groom', name: '', phone: '' };
                     alert('참석 의사가 전달되었습니다.');
                 }
