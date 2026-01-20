@@ -447,6 +447,54 @@
                 </div>
             </div>
 
+            <!-- TAB: DATA MANAGEMENT -->
+            <div x-show="tab === 'data_mgmt'" class="space-y-6">
+                <div class="flex gap-4 mb-4">
+                    <button @click="loadExternalData" class="btn-blue text-xs">🔄 데이터 새로고침</button>
+                </div>
+
+                <!-- Guestbook -->
+                <div class="card p-6 rounded-lg">
+                    <h3 class="text-[#66c0f4] font-bold mb-4 flex items-center gap-2">📝 방명록 메시지 (<span
+                            x-text="bbs.length"></span>)</h3>
+                    <div class="space-y-2 max-h-[300px] overflow-y-auto pr-2">
+                        <template x-for="(b, idx) in bbs" :key="idx">
+                            <div
+                                class="p-3 bg-[#0e141b] border border-[#2a475e] rounded flex justify-between items-center group">
+                                <div class="flex-1">
+                                    <div class="text-sm font-bold text-white" x-text="b.name"></div>
+                                    <div class="text-xs text-gray-400 mt-1" x-text="b.message"></div>
+                                    <div class="text-[9px] text-gray-600 mt-1" x-text="b.date"></div>
+                                </div>
+                                <button @click="deleteItem('bbs', idx)"
+                                    class="btn-gray text-[10px] text-red-500 hover:bg-red-900/20">삭제</button>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- RSVP -->
+                <div class="card p-6 rounded-lg">
+                    <h3 class="text-pink-400 font-bold mb-4 flex items-center gap-2">📋 참석자 명단 (<span
+                            x-text="joins.length"></span>)</h3>
+                    <div class="space-y-2 max-h-[300px] overflow-y-auto pr-2">
+                        <template x-for="(j, idx) in joins" :key="idx">
+                            <div
+                                class="p-3 bg-[#0e141b] border border-[#2a475e] rounded flex justify-between items-center group">
+                                <div class="flex-1">
+                                    <div class="text-sm font-bold text-white"><span x-text="j.name"></span> (<span
+                                            x-text="j.side === 'groom' ? '신랑측' : '신부측'"></span>)</div>
+                                    <div class="text-xs text-gray-400 mt-1">인원: <span x-text="j.count"></span>명 / 식사:
+                                        <span x-text="j.meal ? '예' : '아니오'"></span></div>
+                                </div>
+                                <button @click="deleteItem('joins', idx)"
+                                    class="btn-gray text-[10px] text-red-500 hover:bg-red-900/20">삭제</button>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
             <!-- TAB: SETTINGS & SECRETS -->
             <div x-show="tab === 'settings'" class="space-y-6">
                 <div class="p-4 border border-red-900 bg-red-900/10 rounded">
@@ -504,8 +552,10 @@
                     { id: 'content', name: '문구 설정(Text & Content)', icon: '📝' },
                     { id: 'visuals', name: '디자인/업로드(Visuals & Effects)', icon: '🎨' },
                     { id: 'logistics', name: '일시/장소(Logistics)', icon: '📍' },
+                    { id: 'data_mgmt', name: '방명록/참석자 관리(Data)', icon: '📂' },
                     { id: 'settings', name: '고급 설정(Global Settings)', icon: '⚙️' },
                 ],
+                bbs: [], joins: [],
                 effects: [
                     { val: 'petals', icon: '🌸', label: '벚꽃' }, { val: 'snow', icon: '❄️', label: '눈' },
                     { val: 'leaves', icon: '🍂', label: '단풍' }, { val: 'stars', icon: '✨', label: '별빛' },
@@ -554,6 +604,49 @@
                     if (!this.data.sections || !this.data.sections.length) this.data.sections = this.defaultSections;
                     if (!this.data.media) this.data.media = { bgm: [] };
                     if (!this.data.media.bgm) this.data.media.bgm = [];
+
+                    // Auto load token
+                    const token = localStorage.getItem('ghToken');
+                    if (token) this.data.config.secrets.githubToken = token;
+
+                    this.loadExternalData();
+                },
+
+                async loadExternalData() {
+                    try {
+                        const r1 = await fetch('bbs.json'); if (r1.ok) this.bbs = await r1.json();
+                        const r2 = await fetch('join.json'); if (r2.ok) this.joins = await r2.json();
+                    } catch (e) { }
+                },
+
+                async deleteItem(type, idx) {
+                    if (!confirm('정말 삭제하시겠습니까? (서버에 즉시 반영됩니다)')) return;
+
+                    const token = this.data.config.secrets.githubToken;
+                    if (!token) return alert('GitHub 토큰이 필요합니다.');
+
+                    const list = type === 'bbs' ? [...this.bbs] : [...this.joins];
+                    list.splice(idx, 1);
+                    const filename = type === 'bbs' ? 'bbs.json' : 'join.json';
+
+                    const content = btoa(unescape(encodeURIComponent(JSON.stringify(list, null, 2))));
+                    try {
+                        const r = await fetch(`https://api.github.com/repos/highhighcouple/Wedding_Invitation/contents/${filename}`, {
+                            headers: { 'Authorization': `token ${token}` }
+                        });
+                        const d = await r.json();
+                        const sha = d.sha;
+
+                        const res = await fetch(`https://api.github.com/repos/highhighcouple/Wedding_Invitation/contents/${filename}`, {
+                            method: 'PUT',
+                            headers: { 'Authorization': `token ${token}` },
+                            body: JSON.stringify({ message: `Delete entry from ${filename}`, content, sha })
+                        });
+                        if (res.ok) {
+                            if (type === 'bbs') this.bbs = list; else this.joins = list;
+                            alert('삭제되었습니다.');
+                        }
+                    } catch (e) { alert('삭제 실패'); }
                 },
 
                 login() {
