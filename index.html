@@ -433,7 +433,8 @@
                                     <div class="font-bold text-lg" x-text="data.config.venue.name"></div>
                                     <div class="text-sm text-gray-500 mt-1" x-text="data.config.venue.address"></div>
                                 </div>
-                                <div id="map" class="w-full h-64 bg-gray-100 rounded mb-4"></div>
+                                <div id="map" class="w-full h-64 bg-gray-100 rounded mb-4"
+                                    x-init="$nextTick(() => initMap())"></div>
                                 <div class="text-left text-sm md:text-base leading-relaxed bg-[#fff9f9] p-6 md:p-10 rounded-2xl shadow-sm border border-pink-50 sun-editor-common mb-8"
                                     x-html="data.config.venue.guideText"></div>
 
@@ -701,7 +702,6 @@
 
                         this.initCal();
                         this.initEffects();
-                        this.initMap();
 
                         // Load BBS & Join
                         try { this.bbs = await (await fetch('bbs.json')).json(); } catch (e) { }
@@ -954,36 +954,50 @@
 
                 initMap() {
                     const key = this.data.config.secrets.kakaoApiKey || 'dacffa882aa3284870d06afa02bd5947';
+                    const container = document.getElementById('map');
+                    if (!container) return;
 
-                    const loadKakaoSDK = () => {
-                        return new Promise((resolve) => {
-                            if (typeof kakao !== 'undefined' && kakao.maps) return resolve();
-                            const script = document.createElement('script');
-                            script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${key}&libraries=services&autoload=false`;
-                            script.onload = () => kakao.maps.load(resolve);
-                            document.head.appendChild(script);
-                        });
-                    };
+                    const runSearch = () => {
+                        const geocoder = new kakao.maps.services.Geocoder();
+                        const addr = this.data.config.venue.address;
+                        const venueName = this.data.config.venue.name;
 
-                    loadKakaoSDK().then(() => {
-                        const check = setInterval(() => {
-                            const container = document.getElementById('map');
-                            if (typeof kakao !== 'undefined' && kakao.maps && container && this.data.config) {
-                                clearInterval(check);
-                                const geocoder = new kakao.maps.services.Geocoder();
-                                const addr = this.data.config.venue.address;
-                                if (!addr) return;
-                                geocoder.addressSearch(addr, (res, status) => {
-                                    if (status === kakao.maps.services.Status.OK) {
-                                        const coords = new kakao.maps.LatLng(res[0].y, res[0].x);
-                                        const map = new kakao.maps.Map(container, { center: coords, level: 3 });
-                                        new kakao.maps.Marker({ map: map, position: coords });
-                                        setTimeout(() => map.relayout(), 1000);
+                        const drawMap = (y, x) => {
+                            const coords = new kakao.maps.LatLng(y, x);
+                            const options = { center: coords, level: 3 };
+                            const map = new kakao.maps.Map(container, options);
+                            new kakao.maps.Marker({ position: coords, map: map });
+                            setTimeout(() => map.relayout(), 500);
+                        };
+
+                        // Phase 1: Address Search
+                        geocoder.addressSearch(addr, (result, status) => {
+                            if (status === kakao.maps.services.Status.OK) {
+                                drawMap(result[0].y, result[0].x);
+                            } else {
+                                // Phase 2: Keyword/Venue Name fallback (simplified)
+                                geocoder.addressSearch(addr.split(' ').slice(0, 3).join(' '), (res2, stat2) => {
+                                    if (stat2 === kakao.maps.services.Status.OK) {
+                                        drawMap(res2[0].y, res2[0].x);
+                                    } else if (venueName) {
+                                        // Final Fallback: Mariage Square hardcoded if all fails
+                                        drawMap(37.521503, 127.037492);
                                     }
                                 });
                             }
-                        }, 500);
-                    });
+                        });
+                    };
+
+                    if (typeof kakao !== 'undefined' && kakao.maps && kakao.maps.services) {
+                        runSearch();
+                    } else {
+                        const script = document.createElement('script');
+                        script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${key}&libraries=services&autoload=false`;
+                        script.onload = () => {
+                            kakao.maps.load(() => runSearch());
+                        };
+                        document.head.appendChild(script);
+                    }
                 },
 
                 initObserver() {
