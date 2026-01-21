@@ -228,6 +228,11 @@
                     <span x-text="t.name"></span>
                 </div>
             </template>
+            <div class="nav-item border-t border-white/5 mt-2 pt-2" :class="tab === 'preview' ? 'active' : ''"
+                @click="tab = 'preview'">
+                <span>📱</span>
+                <span>사이트 시뮬레이션 (Preview)</span>
+            </div>
         </nav>
         <div class="p-4 border-t border-[#2a475e] space-y-2">
             <button @click="saveLocal" class="btn-gray w-full text-[10px]">임시 저장 (로컬)</button>
@@ -374,28 +379,62 @@
                     <label class="label text-[#66c0f4]">오시는 길 안내 (Venue Guide)</label>
                     <div id="editor-venueGuide"></div>
                 </div>
-
-                <!-- PREVIEW SECTION -->
-                <div class="mt-12 p-8 bg-white text-gray-800 rounded-xl space-y-10 shadow-2xl">
-                    <h4 class="text-center text-sm font-bold text-gray-400 uppercase tracking-widest border-b pb-4">
-                        Real-time Site Preview</h4>
-
-                    <div class="text-center space-y-6">
-                        <div class="lux-font text-2xl sun-editor-common" x-html="data.text.mainOverlay"></div>
-                        <div class="w-12 h-[1px] bg-gray-200 mx-auto"></div>
-                        <div class="text-sm leading-relaxed whitespace-pre-wrap sun-editor-common"
-                            x-html="data.text.mainMessage"></div>
-                    </div>
-
-                    <div class="pt-10 border-t border-gray-100">
-                        <p class="text-[10px] font-bold text-gray-400 mb-4">VENUE GUIDE PREVIEW</p>
-                        <div class="text-xs leading-relaxed bg-gray-50 p-6 rounded-xl sun-editor-common"
-                            style="white-space: pre-wrap; word-break: break-word;" x-html="data.config.venue.guideText">
-                        </div>
-                    </div>
-                </div>
             </div>
 
+            <!-- TAB: PREVIEW (Simulation) -->
+            <div x-show="tab === 'preview'" class="space-y-8 animate__animated animate__fadeIn">
+                <div class="flex flex-col items-center">
+                    <div
+                        class="w-full max-w-[375px] bg-white text-gray-800 rounded-[3rem] shadow-[0_0_60px_rgba(0,0,0,0.5)] border-[8px] border-[#2a475e] overflow-hidden relative">
+                        <!-- Top Speaker Notch Simulation -->
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#2a475e] rounded-b-2xl z-20">
+                        </div>
+
+                        <div class="h-[667px] overflow-y-auto scrollbar-hide bg-[#fffcfc] sun-editor-common"
+                            id="simulation-container">
+                            <!-- Hero Simulation -->
+                            <div class="relative w-full overflow-hidden">
+                                <img :src="data.images.main" class="w-full h-[400px] object-cover block">
+                                <div class="absolute inset-0 flex flex-col items-center justify-center p-8 bg-black/10">
+                                    <div class="eng-font text-white text-3xl mb-2 drop-shadow-lg"
+                                        x-html="data.text.mainOverlay"></div>
+                                    <div class="w-12 h-[1px] bg-white/40"></div>
+                                </div>
+                            </div>
+
+                            <!-- Message Simulation -->
+                            <div class="p-8 text-center space-y-6">
+                                <div class="text-sm leading-relaxed whitespace-pre-line lux-font text-gray-600"
+                                    :style="`font-size: ${data.theme.style.fontSize}; line-height: ${data.theme.style.lineHeight}; letter-spacing: ${data.theme.style.letterSpacing}; text-align: ${data.theme.style.textAlign}`"
+                                    x-html="data.text.mainMessage"></div>
+
+                                <div class="w-full flex justify-center py-6">
+                                    <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-4 text-center">
+                                        <div>
+                                            <p class="text-[10px] text-gray-400 mb-1">신랑</p>
+                                            <p class="text-xl font-light" x-text="data.groom.name"></p>
+                                        </div>
+                                        <div class="text-pink-200 text-lg">&</div>
+                                        <div>
+                                            <p class="text-[10px] text-gray-400 mb-1">신부</p>
+                                            <p class="text-xl font-light" x-text="data.bride.name"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Venue Guide Simulation -->
+                            <div class="p-8 border-t border-gray-50">
+                                <h3 class="lux-font text-sm font-bold text-gray-700 mb-4">오시는 길</h3>
+                                <div class="p-4 bg-gray-50 rounded-xl text-xs leading-relaxed text-gray-500"
+                                    style="white-space: pre-wrap; word-break: break-word;"
+                                    x-html="data.config.venue.guideText"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-xs text-gray-500 italic">※ 실제 모바일 화면을 시뮬레이션한 예시입니다.</p>
+                </div>
+            </div>
             <!-- TAB: VISUALS (Uploads) -->
             <div x-show="tab === 'visuals'" class="space-y-8">
                 <!-- Main Image -->
@@ -793,6 +832,18 @@
                         editor.onChange = (content) => {
                             _.set(this, ed.key, content);
                         };
+
+                        // Store editor instance for manual sync
+                        if (!this._editors) this._editors = {};
+                        this._editors[ed.key] = editor;
+                    });
+                },
+
+                syncEditors() {
+                    if (!this._editors) return;
+                    Object.keys(this._editors).forEach(key => {
+                        const content = this._editors[key].getContents();
+                        _.set(this, key, content);
                     });
                 },
 
@@ -920,6 +971,8 @@
                 },
 
                 publishGithub(silent = false) {
+                    this.syncEditors(); // ENSURE RICH TEXT SYNC
+
                     const token = this.data.config.secrets.githubToken;
                     if (!token) {
                         if (!silent) {
@@ -936,7 +989,6 @@
                     if (cleanData.config.secrets) {
                         cleanData.config.secrets.githubToken = "";
                         cleanData.config.secrets.kakaoApiKey = "";
-                        // Keep adminPassword empty/standard too if needed
                     }
 
                     const content = btoa(unescape(encodeURIComponent(JSON.stringify(cleanData, null, 2))));
@@ -960,7 +1012,7 @@
                         })
                         .then(r => {
                             if (r.ok) {
-                                if (!silent) alert('🎉 성공적으로 배포되었습니다! 수 분 내에 반영됩니다.');
+                                if (!silent) alert('🎉 배포가 성공적으로 완료되었습니다!\n방금 수정한 내용이 수 분 내에 실제 사이트에 반영됩니다.');
                                 else console.log('Auto-apply: Successful');
                             } else {
                                 return r.json().then(err => {
@@ -976,6 +1028,7 @@
                     localStorage.setItem('wedding_v2_data', JSON.stringify(this.data));
                 },
                 saveLocal() {
+                    this.syncEditors(); // ENSURE RICH TEXT SYNC
                     localStorage.setItem('wedding_v2_data', JSON.stringify(this.data));
                     alert('로컬에 임시 저장되었습니다.');
                 }

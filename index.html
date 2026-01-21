@@ -18,6 +18,9 @@
         integrity="sha384-l6I7YpLAnpS8mXdfzD4pUnVqB3kS+Yn0yW4I3oR6K7CizK6G/h6y3J3LzW9p+G2J"
         crossorigin="anonymous"></script>
 
+    <!-- SunEditor CSS for Rich Text Rendering -->
+    <link href="https://cdn.jsdelivr.net/npm/suneditor@latest/dist/css/suneditor.min.css" rel="stylesheet">
+
     <style>
         :root {
             --accent: #f2aebc;
@@ -235,18 +238,21 @@
                         <template x-if="section.id === 'names'">
                             <div class="text-center pb-12 bg-white">
                                 <div class="relative w-full mb-12 overflow-hidden">
-                                    <img :src="data.images.main" @click="openLightbox(data.images.main)"
+                                    <img :src="data.images.main" @click="lightbox = data.images.main"
                                         class="w-full min-h-[500px] h-[75vh] object-cover block shadow-inner cursor-pointer">
                                     <div
                                         class="absolute inset-0 flex flex-col items-center justify-center p-12 bg-black/10 pointer-events-none">
-                                        <div class="eng-font text-white text-5xl mb-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
+                                        <div class="eng-font text-white text-5xl md:text-7xl mb-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] sun-editor-common"
                                             x-html="data.text.mainOverlay"></div>
                                         <div class="w-16 h-[1px] bg-white/50"></div>
                                     </div>
                                 </div>
 
-                                <div class="whitespace-pre-line leading-8 text-sm text-gray-600 mb-8 lux-font px-8"
-                                    x-html="data.text.mainMessage"></div>
+                                <div class="max-w-md mx-auto space-y-8">
+                                    <div class="text-sm md:text-base leading-relaxed whitespace-pre-line lux-font sun-editor-common px-8"
+                                        :style="`font-size: ${data.theme?.style?.fontSize || '14px'}; line-height: ${data.theme?.style?.lineHeight || '1.8'}; letter-spacing: ${data.theme?.style?.letterSpacing || '0px'}; text-align: ${data.theme?.style?.textAlign || 'center'}`"
+                                        x-html="data.text.mainMessage"></div>
+                                </div>
 
                                 <!-- Names Section UI Restoration & Improvement -->
                                 <div class="max-w-lg mx-auto px-8 pt-10 pb-12 bg-white flex justify-center">
@@ -431,7 +437,7 @@
                                     <div class="text-sm text-gray-500 mt-1" x-text="data.config.venue.address"></div>
                                 </div>
                                 <div id="map" class="w-full h-64 bg-gray-100 rounded mb-4"></div>
-                                <div class="text-xs text-gray-500 leading-relaxed bg-gray-50 p-6 rounded-xl mb-6 sun-editor-common"
+                                <div class="text-sm md:text-base leading-relaxed bg-[#fff9f9] p-6 md:p-10 rounded-2xl shadow-sm border border-pink-50 sun-editor-common"
                                     style="white-space: pre-wrap; word-break: break-word;"
                                     x-html="data.config.venue.guideText"></div>
 
@@ -667,9 +673,10 @@
                     // Check Session for Intro
                     if (sessionStorage.getItem('visited')) this.showIntro = false;
 
-                    // Fetch Data
+                    // Fetch Data with Cache Busting
+                    const timestamp = new Date().getTime();
                     try {
-                        this.data = await (await fetch('data.json')).json();
+                        this.data = await (await fetch(`data.json?v=${timestamp}`)).json();
 
                         // Kakao Init for Share
                         const kKey = this.data.config.secrets.kakaoApiKey || 'dacffa882aa3284870d06afa02bd5947';
