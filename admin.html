@@ -574,12 +574,27 @@
                 </div>
             </div>
 
-            <div class="space-y-2">
-                <label class="steam-label">예식장 주소</label>
-                <div class="flex gap-2">
-                    <input x-model="data.config.venue.address" class="steam-input" readonly>
-                    <button class="btn-gray whitespace-nowrap" @click="searchAddr">🔍 주소 검색</button>
+            <div class="space-y-4">
+                <div class="space-y-2">
+                    <label class="steam-label">예식장 주소</label>
+                    <div class="flex gap-2">
+                        <input x-model="data.config.venue.address" class="steam-input" readonly>
+                        <button class="btn-gray whitespace-nowrap" @click="searchAddr">🔍 주소 검색</button>
+                    </div>
                 </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] text-gray-400 mb-1 uppercase">위도 (Lat)</label>
+                        <input type="number" x-model.number="data.config.venue.lat" step="0.000001"
+                            class="steam-input w-full" placeholder="37.xxxxxx">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] text-gray-400 mb-1 uppercase">경도 (Lng)</label>
+                        <input type="number" x-model.number="data.config.venue.lng" step="0.000001"
+                            class="steam-input w-full" placeholder="127.xxxxxx">
+                    </div>
+                </div>
+                <p class="text-[10px] text-gray-500 italic">※ 주소 검색이 정확하지 않을 경우 위도/경도를 직접 입력할 수 있습니다.</p>
             </div>
 
             <div class="space-y-4 pt-4 border-t border-[#3d4450]">
