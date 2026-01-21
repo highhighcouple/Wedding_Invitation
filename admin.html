@@ -815,6 +815,12 @@
                     this.$watch('data.config.venue.address', () => {
                         this.initSimulationMap();
                     });
+                    this.$watch('data.config.venue.lat', () => {
+                        this.initSimulationMap();
+                    });
+                    this.$watch('data.config.venue.lng', () => {
+                        this.initSimulationMap();
+                    });
                 },
 
                 initSunEditor() {
@@ -1069,36 +1075,46 @@
                     const container = document.getElementById('map-simulation');
                     if (!container) return;
 
-                    const runSearch = () => {
+                    const drawMap = (lat, lng) => {
+                        const coords = new kakao.maps.LatLng(lat, lng);
+                        const options = { center: coords, level: 3 };
+                        const map = new kakao.maps.Map(container, options);
+                        new kakao.maps.Marker({ position: coords, map: map });
+                        setTimeout(() => map.relayout(), 500);
+                        setTimeout(() => map.setCenter(coords), 600);
+                    };
+
+                    const startEngine = () => {
+                        const venue = this.data.config.venue;
+                        if (venue.lat && venue.lng) {
+                            return drawMap(venue.lat, venue.lng);
+                        }
+
                         const geocoder = new kakao.maps.services.Geocoder();
-                        const addr = this.data.config.venue.address;
-                        if (!addr) return;
-
-                        const drawMap = (y, x) => {
-                            const coords = new kakao.maps.LatLng(y, x);
-                            const options = { center: coords, level: 3 };
-                            const map = new kakao.maps.Map(container, options);
-                            new kakao.maps.Marker({ position: coords, map: map });
-                            setTimeout(() => map.relayout(), 500);
-                        };
-
-                        geocoder.addressSearch(addr, (result, status) => {
+                        if (!venue.address) return;
+                        geocoder.addressSearch(venue.address, (result, status) => {
                             if (status === kakao.maps.services.Status.OK) {
                                 drawMap(result[0].y, result[0].x);
                             } else {
-                                // Fallback: Mariage Square
                                 drawMap(37.521503, 127.037492);
                             }
                         });
                     };
 
                     if (typeof kakao !== 'undefined' && kakao.maps && kakao.maps.services) {
-                        runSearch();
+                        startEngine();
                     } else {
+                        if (window.kakaoMapLoading) return;
+                        window.kakaoMapLoading = true;
+
                         const script = document.createElement('script');
+                        script.type = 'text/javascript';
                         script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${key}&libraries=services&autoload=false`;
                         script.onload = () => {
-                            kakao.maps.load(() => runSearch());
+                            kakao.maps.load(() => {
+                                window.kakaoMapLoading = false;
+                                startEngine();
+                            });
                         };
                         document.head.appendChild(script);
                     }
