@@ -16,7 +16,7 @@
         "kakao": "https://map.kakao.com/?map_type=TYPE_MAP&itemId=17416438",
         "tmap": "https://poi.tmobiweb.com/app/share/position?contents=cGtleT0yOTA2ODA0MDAmcG9pSWQ9MjkwNjgwNCZuYXZTZXE9MCZ0eXBlPTImcG9pTmFtZT0lRUIlQTclODglRUIlQTYlQUMlRUMlOTUlODQlRUMlQTUlQUMlRUMlOEElQTQlRUQlODAlOTglRUMlOTYlQjQmY2VudGVyWD00NTczMzkzJmNlbnRlclk9MTM1MDY4MyZ0aW1lPTIwMjUlRUIlODUlODQrMDklRUMlOUIlOTQrMjYlRUMlOUQlQkMrMDclM0EzNSZ0ZWw9MDItNTQxLTUwMDcmYWRkcj0lRUMlODQlOUMlRUMlOUElQjgrJUVBJUIwJTk1JUVCJTgyJUE4JUVBJUI1JUFDKyVFQiU4RiU4NCVFQyU4MiVCMCVFQiU4QyU4MCVFQiVBMSU5QyszMTg"
       },
-      "mapImage": "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/map/1768982037300_마리아쥬스퀘어_약도.pdf"
+      "mapImage": "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/map/1768983348773_약도.png"
     },
     "secrets": {
       "kakaoApiKey": "dacffa882aa3284870d06afa02bd5947",
@@ -58,7 +58,7 @@
     }
   },
   "images": {
-    "main": "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/bg/1768970712628_01.png",
+    "main": "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/bg/1768983395225_03.png",
     "gallery": [
       "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974811293_KakaoTalk_20260120_232644976.jpg",
       "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974825974_KakaoTalk_20260120_232644976_02.jpg",
