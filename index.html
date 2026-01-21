@@ -240,20 +240,21 @@
                                     <div
                                         class="absolute inset-0 flex flex-col items-center justify-center p-12 bg-black/10 pointer-events-none">
                                         <div class="eng-font text-white text-5xl mb-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
-                                            x-text="data.text.mainOverlay"></div>
+                                            x-html="data.text.mainOverlay"></div>
                                         <div class="w-16 h-[1px] bg-white/50"></div>
                                     </div>
                                 </div>
 
                                 <div class="whitespace-pre-line leading-8 text-sm text-gray-600 mb-8 lux-font px-8"
-                                    x-text="data.text.mainMessage"></div>
+                                    x-html="data.text.mainMessage"></div>
 
                                 <!-- Names Section UI Restoration & Improvement -->
-                                <div class="px-8 pt-10 pb-12 bg-white">
-                                    <div class="grid grid-cols-[1fr_auto_1fr] items-end gap-2 text-center">
+                                <div class="max-w-lg mx-auto px-8 pt-10 pb-12 bg-white flex justify-center">
+                                    <div
+                                        class="grid grid-cols-[auto_auto_auto] items-end gap-x-4 sm:gap-x-12 text-center">
                                         <!-- Groom Column -->
-                                        <div class="flex flex-col items-center">
-                                            <div class="text-[12px] text-gray-500 mb-6 lux-font">
+                                        <div class="flex flex-col items-center min-w-[100px]">
+                                            <div class="text-[12px] text-gray-500 mb-4 lux-font whitespace-nowrap">
                                                 <span x-text="data.groom.parents.father"></span>·<span
                                                     x-text="data.groom.parents.mother"></span><span class="">의</span>
                                                 <span x-text="data.groom.rank"></span>
@@ -261,17 +262,18 @@
                                             <div class="flex flex-col items-center">
                                                 <span class="text-[0.7em] text-blue-400 font-bold mb-1"
                                                     :style="`font-size: calc(1.875rem * 0.7)`">신랑</span>
-                                                <h1 class="text-3xl tracking-[0.1em] font-light"
+                                                <h1 class="text-3xl tracking-[0.1em] font-light lux-font"
                                                     x-text="data.groom.name"></h1>
                                             </div>
                                         </div>
 
                                         <!-- Divider -->
-                                        <div class="lux-font text-2xl text-pink-200 pb-2">&</div>
+                                        <div class="lux-font text-2xl text-pink-200 pb-2 flex items-center h-full">&
+                                        </div>
 
                                         <!-- Bride Column -->
-                                        <div class="flex flex-col items-center">
-                                            <div class="text-[12px] text-gray-500 mb-6 lux-font">
+                                        <div class="flex flex-col items-center min-w-[100px]">
+                                            <div class="text-[12px] text-gray-500 mb-4 lux-font whitespace-nowrap">
                                                 <span x-text="data.bride.parents.father"></span>·<span
                                                     x-text="data.bride.parents.mother"></span><span class="">의</span>
                                                 <span x-text="data.bride.rank"></span>
@@ -279,7 +281,7 @@
                                             <div class="flex flex-col items-center">
                                                 <span class="text-[0.7em] text-pink-400 font-bold mb-1"
                                                     :style="`font-size: calc(1.875rem * 0.7)`">신부</span>
-                                                <h1 class="text-3xl tracking-[0.1em] font-light"
+                                                <h1 class="text-3xl tracking-[0.1em] font-light lux-font"
                                                     x-text="data.bride.name"></h1>
                                             </div>
                                         </div>
@@ -429,8 +431,8 @@
                                     <div class="text-sm text-gray-500 mt-1" x-text="data.config.venue.address"></div>
                                 </div>
                                 <div id="map" class="w-full h-64 bg-gray-100 rounded mb-4"></div>
-                                <div class="whitespace-pre-line text-xs text-gray-500 leading-6 bg-gray-50 p-4 rounded mb-6"
-                                    x-text="data.config.venue.guideText"></div>
+                                <div class="text-xs text-gray-500 leading-6 bg-gray-50 p-4 rounded mb-6"
+                                    x-html="data.config.venue.guideText"></div>
 
                                 <!-- Map Apps -->
                                 <div class="grid grid-cols-4 gap-4 mb-8">
@@ -669,8 +671,9 @@
                         this.data = await (await fetch('data.json')).json();
 
                         // Kakao Init for Share
+                        const kKey = this.data.config.secrets.kakaoApiKey || 'dacffa882aa3284870d06afa02bd5947';
                         if (typeof Kakao !== 'undefined' && !Kakao.isInitialized()) {
-                            Kakao.init('dacffa882aa3284870d06afa02bd5947');
+                            Kakao.init(kKey);
                         }
 
                         // Process Sections with Internal State
@@ -680,6 +683,9 @@
                                 sec._isFolded = !!sec.isFolded;
                             });
                             this.sortedSections = [...this.data.sections].sort((a, b) => a.order - b.order);
+
+                            // Dynamic Title
+                            document.title = `§${this.data.groom.name}§ ♥ §${this.data.bride.name}§의 청첩장`;
                         }
 
                         // Fixed Default States
@@ -1009,10 +1015,11 @@
                 async saveJoin() {
                     if (!this.newJoin.name) return alert('성함을 입력해주세요.');
                     const entry = { ...this.newJoin, date: new Date().toISOString() };
-                    const newList = [...this.join, entry];
+                    const currentList = this.join || [];
+                    const newList = [...currentList, entry];
                     if (await this.pushToGithub('join.json', newList)) {
                         this.join = newList;
-                        this.newJoin = { side: 'groom', name: '', count: 0, meal: true };
+                        this.newJoin = { side: 'groom', name: '', count: 1, meal: true };
                         alert('참석 정보가 전달되었습니다.');
                     }
                 },
