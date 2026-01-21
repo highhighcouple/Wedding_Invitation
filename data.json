@@ -1,163 +1,163 @@
 {
-    "config": {
-        "weddingDate": "2026-05-02T13:00:00",
-        "venue": {
-            "name": "마리아쥬 스퀘어",
-            "phone": "02-541-5007",
-            "address": "서울특별시 강남구 도산대로 318 SB타워 G층",
-            "guideText": "셔틀운행\n\n7호선, 분당선 강남구청역 3번출구 셔틀버스 이용\nㄴ예식 있을 시 수시 운행\n\n지하철\n\n7호선, 분당선 강남구청역 하차\n강남구청역 3-1번 출구\nㄴ[도보] 3-1번출구 좌측 학동사거리 방향 600M 도보 후 학동사거리에서 좌회전 200M\n\n분당선 압구정로데오역 하차\n압구정로데오역 5번 출구\nㄴ[도보] 400M 도보 후 학동사거리 횡단보도 건너 우측 200M\n\n버스\n\n정류장_도산공원사거리.호림아트센터 [정류장 번호-23125]\nㄴ간선버스_145, 440\nㄴ지선버스_3011, 4212\n\n정류장_영동119안전센터 [정류장 번호-23126]\nㄴ지선버스_3011, 4212",
-            "mapLinks": {
-                "naver": "https://map.naver.com/p/entry/place/21413303",
-                "kakao": "https://map.kakao.com/?map_type=TYPE_MAP&itemId=17416438",
-                "tmap": "https://poi.tmobiweb.com/app/share/position?contents=cGtleT0yOTA2ODA0MDAmcG9pSWQ9MjkwNjgwNCZuYXZTZXE9MCZ0eXBlPTImcG9pTmFtZT0lRUIlQTclODglRUIlQTYlQUMlRUMlOTUlODQlRUMlQTUlQUMlRUMlOEElQTQlRUQlODAlOTglRUMlOTYlQjQmY2VudGVyWD00NTczMzkzJmNlbnRlclk9MTM1MDY4MyZ0aW1lPTIwMjUlRUIlODUlODQrMDklRUMlOUIlOTQrMjYlRUMlOUQlQkMrMDclM0EzNSZ0ZWw9MDItNTQxLTUwMDcmYWRkcj0lRUMlODQlOUMlRUMlOUElQjgrJUVBJUIwJTk1JUVCJTgyJUE4JUVBJUI1JUFDKyVFQiU4RiU4NCVFQyU4MiVCMCVFQiU4QyU4MCVFQiVBMSU5QyszMTg",
-                "google": "https://maps.app.goo.gl/iQ5VbCdJjo3anBcx6"
-            },
-            "navLinks": {
-                "kakao": "https://map.kakao.com/?map_type=TYPE_MAP&itemId=17416438",
-                "tmap": "https://poi.tmobiweb.com/app/share/position?contents=cGtleT0yOTA2ODA0MDAmcG9pSWQ9MjkwNjgwNCZuYXZTZXE9MCZ0eXBlPTImcG9pTmFtZT0lRUIlQTclODglRUIlQTYlQUMlRUMlOTUlODQlRUMlQTUlQUMlRUMlOEElQTQlRUQlODAlOTglRUMlOTYlQjQmY2VudGVyWD00NTczMzkzJmNlbnRlclk9MTM1MDY4MyZ0aW1lPTIwMjUlRUIlODUlODQrMDklRUMlOUIlOTQrMjYlRUMlOUQlQkMrMDclM0EzNSZ0ZWw9MDItNTQxLTUwMDcmYWRkcj0lRUMlODQlOUMlRUMlOUElQjgrJUVBJUIwJTk1JUVCJTgyJUE4JUVBJUI1JUFDKyVFQiU4RiU4NCVFQyU4MiVCMCVFQiU4QyU4MCVFQiVBMSU5QyszMTg"
-            }
-        },
-        "secrets": {
-            "kakaoApiKey": "",
-            "githubToken": ""
-        }
+  "config": {
+    "weddingDate": "2026-05-02T13:00:00",
+    "venue": {
+      "name": "마리아쥬 스퀘어",
+      "phone": "02-541-5007",
+      "address": "서울특별시 강남구 도산대로 318 SB타워 G층",
+      "guideText": "<p>내부주차 300대 수용 가능 - 당일 교통혼잡이 예상되는 경우, 지하철 + 셔틀버스 이용을 적극 권장드립니다.\n\n셔틀운행\n\n7호선, 분당선 강남구청역 3번출구 셔틀버스 이용\nㄴ예식 있을 시 수시 운행\n\n지하철\n\n7호선, 분당선 강남구청역 하차\n강남구청역 3-1번 출구\nㄴ[도보] 3-1번출구 좌측 학동사거리 방향 600M 도보 후 학동사거리에서 좌회전 200M\n\n분당선 압구정로데오역 하차\n압구정로데오역 5번 출구\nㄴ[도보] 400M 도보 후 학동사거리 횡단보도 건너 우측 200M\n\n버스\n\n정류장_도산공원사거리.호림아트센터 [정류장 번호-23125]\nㄴ간선버스_145, 440\nㄴ지선버스_3011, 4212\n\n정류장_영동119안전센터 [정류장 번호-23126]\nㄴ지선버스_3011, 4212</p>",
+      "mapLinks": {
+        "naver": "https://map.naver.com/p/entry/place/21413303",
+        "kakao": "https://map.kakao.com/?map_type=TYPE_MAP&itemId=17416438",
+        "tmap": "https://poi.tmobiweb.com/app/share/position?contents=cGtleT0yOTA2ODA0MDAmcG9pSWQ9MjkwNjgwNCZuYXZTZXE9MCZ0eXBlPTImcG9pTmFtZT0lRUIlQTclODglRUIlQTYlQUMlRUMlOTUlODQlRUMlQTUlQUMlRUMlOEElQTQlRUQlODAlOTglRUMlOTYlQjQmY2VudGVyWD00NTczMzkzJmNlbnRlclk9MTM1MDY4MyZ0aW1lPTIwMjUlRUIlODUlODQrMDklRUMlOUIlOTQrMjYlRUMlOUQlQkMrMDclM0EzNSZ0ZWw9MDItNTQxLTUwMDcmYWRkcj0lRUMlODQlOUMlRUMlOUElQjgrJUVBJUIwJTk1JUVCJTgyJUE4JUVBJUI1JUFDKyVFQiU4RiU4NCVFQyU4MiVCMCVFQiU4QyU4MCVFQiVBMSU5QyszMTg",
+        "google": "https://maps.app.goo.gl/iQ5VbCdJjo3anBcx6"
+      },
+      "navLinks": {
+        "kakao": "https://map.kakao.com/?map_type=TYPE_MAP&itemId=17416438",
+        "tmap": "https://poi.tmobiweb.com/app/share/position?contents=cGtleT0yOTA2ODA0MDAmcG9pSWQ9MjkwNjgwNCZuYXZTZXE9MCZ0eXBlPTImcG9pTmFtZT0lRUIlQTclODglRUIlQTYlQUMlRUMlOTUlODQlRUMlQTUlQUMlRUMlOEElQTQlRUQlODAlOTglRUMlOTYlQjQmY2VudGVyWD00NTczMzkzJmNlbnRlclk9MTM1MDY4MyZ0aW1lPTIwMjUlRUIlODUlODQrMDklRUMlOUIlOTQrMjYlRUMlOUQlQkMrMDclM0EzNSZ0ZWw9MDItNTQxLTUwMDcmYWRkcj0lRUMlODQlOUMlRUMlOUElQjgrJUVBJUIwJTk1JUVCJTgyJUE4JUVBJUI1JUFDKyVFQiU4RiU4NCVFQyU4MiVCMCVFQiU4QyU4MCVFQiVBMSU5QyszMTg"
+      }
     },
-    "groom": {
-        "name": "조현우",
-        "rank": "장남",
-        "phone": "010-3366-4848",
-        "bank": "기업",
-        "account": "040-086067-01-014",
-        "parents": {
-            "father": "조복래",
-            "mother": "나선희",
-            "fPhone": "010-9090-0824",
-            "mPhone": "010-8877-0824",
-            "fBank": "우리",
-            "fAccount": "109-08-072450",
-            "mBank": "신한",
-            "mAccount": "110-587-170868"
-        }
-    },
-    "bride": {
-        "name": "류하영",
-        "rank": "장녀",
-        "phone": "010-6556-7525",
-        "bank": "국민",
-        "account": "926-54-7559-46",
-        "parents": {
-            "father": "류민석",
-            "mother": "고우희",
-            "fPhone": "010-5356-7558",
-            "mPhone": "010-9858-7551",
-            "fBank": "농협",
-            "fAccount": "302-5356-7558-41",
-            "mBank": "신한",
-            "mAccount": "339-06-063092"
-        }
-    },
-    "images": {
-        "main": "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2069",
-        "gallery": [
-            "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1000",
-            "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1000",
-            "https://images.unsplash.com/photo-1519741497674-611481863552?w=1000",
-            "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=1000",
-            "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1000",
-            "https://images.unsplash.com/photo-1510076857177-7470076d4098?w=1000"
-        ],
-        "og": {
-            "kakao": "",
-            "facebook": "",
-            "insta": "",
-            "x": "",
-            "blog": ""
-        }
-    },
-    "text": {
-        "mainOverlay": "Wedding Invitation",
-        "mainMessage": "류하영 그리고 조현우\n\n2026년 05월 02일 토요일 PM 13시 00분\n강남 마리아쥬 스퀘어\n\n영원히 함께할\n사랑의 맹세\n같이 축복해주세요."
-    },
-    "media": {
-        "youtube": "UmdCDfXQ8wQ",
-        "bgm": []
-    },
-    "theme": {
-        "effect": "petals",
-        "color": "#f2aebc"
-    },
-    "sections": [
-        {
-            "id": "names",
-            "title": "청첩장 상단(Names)",
-            "isVisible": true,
-            "isFolded": false,
-            "order": 1
-        },
-        {
-            "id": "calendar",
-            "title": "결혼식 날(Calendar)",
-            "isVisible": true,
-            "isFolded": false,
-            "order": 2
-        },
-        {
-            "id": "youtube",
-            "title": "영상(Video)",
-            "isVisible": false,
-            "isFolded": false,
-            "order": 3
-        },
-        {
-            "id": "gallery",
-            "title": "사진 앨범(Gallery)",
-            "isVisible": false,
-            "isFolded": false,
-            "order": 4
-        },
-        {
-            "id": "phone",
-            "title": "연락처(Contact)",
-            "isVisible": true,
-            "isFolded": true,
-            "order": 5
-        },
-        {
-            "id": "accounts",
-            "title": "마음 전하실 곳(Accounts)",
-            "isVisible": true,
-            "isFolded": false,
-            "order": 6
-        },
-        {
-            "id": "location",
-            "title": "오시는 길(Location)",
-            "isVisible": true,
-            "isFolded": false,
-            "order": 7
-        },
-        {
-            "id": "guestbook",
-            "title": "방명록(Guestbook)",
-            "isVisible": false,
-            "isFolded": false,
-            "order": 8
-        },
-        {
-            "id": "rsvp",
-            "title": "참석여부(RSVP)",
-            "isVisible": false,
-            "isFolded": false,
-            "order": 9
-        },
-        {
-            "id": "share",
-            "title": "공유(Share)",
-            "isVisible": true,
-            "isFolded": false,
-            "order": 10
-        }
+    "secrets": {
+      "kakaoApiKey": "",
+      "githubToken": ""
+    }
+  },
+  "groom": {
+    "name": "조현우",
+    "rank": "장남",
+    "phone": "010-3366-4848",
+    "bank": "기업",
+    "account": "040-086067-01-014",
+    "parents": {
+      "father": "조복래",
+      "mother": "나선희",
+      "fPhone": "010-9090-0824",
+      "mPhone": "010-8877-0824",
+      "fBank": "우리",
+      "fAccount": "109-08-072450",
+      "mBank": "신한",
+      "mAccount": "110-587-170868"
+    }
+  },
+  "bride": {
+    "name": "류하영",
+    "rank": "장녀",
+    "phone": "010-6556-7525",
+    "bank": "국민",
+    "account": "926-54-7559-46",
+    "parents": {
+      "father": "류민석",
+      "mother": "고우희",
+      "fPhone": "010-5356-7558",
+      "mPhone": "010-9858-7551",
+      "fBank": "농협",
+      "fAccount": "302-5356-7558-41",
+      "mBank": "신한",
+      "mAccount": "339-06-063092"
+    }
+  },
+  "images": {
+    "main": "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/bg/1768970712628_01.png",
+    "gallery": [
+      "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1000",
+      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1000",
+      "https://images.unsplash.com/photo-1519741497674-611481863552?w=1000",
+      "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=1000",
+      "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1000",
+      "https://images.unsplash.com/photo-1510076857177-7470076d4098?w=1000"
     ],
-    "guestbook": [],
-    "rsvp": []
+    "og": {
+      "kakao": "",
+      "facebook": "",
+      "insta": "",
+      "x": "",
+      "blog": ""
+    }
+  },
+  "text": {
+    "mainOverlay": "<p>Wedding Invitation</p>",
+    "mainMessage": "<p>류하영 그리고 조현우</p><p>2026년 05월 02일 토요일 PM 13시 00분강남 마리아쥬 스퀘어영원히 함께할사랑의 맹세같이 축복해주세요.하객분들을 위해 준비한 무제한 카페와 야외정원이있으니,30분 일찍 오셔서 즐거운 시간을 보내주시길 바랍니다.(12시 30분 개장)</p>"
+  },
+  "media": {
+    "youtube": "UmdCDfXQ8wQ",
+    "bgm": []
+  },
+  "theme": {
+    "effect": "petals",
+    "color": "#f2aebc"
+  },
+  "sections": [
+    {
+      "id": "names",
+      "title": "청첩장 상단(Names)",
+      "isVisible": true,
+      "isFolded": false,
+      "order": 1
+    },
+    {
+      "id": "calendar",
+      "title": "결혼식 날(Calendar)",
+      "isVisible": true,
+      "isFolded": false,
+      "order": 2
+    },
+    {
+      "id": "youtube",
+      "title": "영상(Video)",
+      "isVisible": false,
+      "isFolded": false,
+      "order": 3
+    },
+    {
+      "id": "gallery",
+      "title": "사진 앨범(Gallery)",
+      "isVisible": false,
+      "isFolded": false,
+      "order": 4
+    },
+    {
+      "id": "phone",
+      "title": "연락처(Contact)",
+      "isVisible": true,
+      "isFolded": true,
+      "order": 5
+    },
+    {
+      "id": "accounts",
+      "title": "마음 전하실 곳(Accounts)",
+      "isVisible": true,
+      "isFolded": false,
+      "order": 6
+    },
+    {
+      "id": "location",
+      "title": "오시는 길(Location)",
+      "isVisible": true,
+      "isFolded": false,
+      "order": 7
+    },
+    {
+      "id": "guestbook",
+      "title": "방명록(Guestbook)",
+      "isVisible": false,
+      "isFolded": false,
+      "order": 8
+    },
+    {
+      "id": "rsvp",
+      "title": "참석여부(RSVP)",
+      "isVisible": false,
+      "isFolded": false,
+      "order": 9
+    },
+    {
+      "id": "share",
+      "title": "공유(Share)",
+      "isVisible": true,
+      "isFolded": false,
+      "order": 10
+    }
+  ],
+  "guestbook": [],
+  "rsvp": []
 }
