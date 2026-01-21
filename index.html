@@ -151,7 +151,9 @@
         .gal-main {
             width: 100%;
             aspect-ratio: 3/4;
-            background-size: cover;
+            background-size: contain;
+            background-color: #000;
+            background-repeat: no-repeat;
             background-position: center;
             transition: opacity 0.5s;
             position: relative;
@@ -234,9 +236,9 @@
                         <!-- 1. Names/Hero -->
                         <template x-if="section.id === 'names'">
                             <div class="text-center pb-12 bg-white">
-                                <div class="relative w-full overflow-hidden bg-[#fffcfc]">
+                                <div class="relative w-full overflow-hidden bg-[#fffcfc] h-[75vh]">
                                     <img :src="data.images.main" @click="lightbox = data.images.main"
-                                        class="w-full h-auto object-cover block shadow-inner cursor-pointer">
+                                        class="w-full h-full object-cover block shadow-inner cursor-pointer">
                                     <div
                                         class="absolute inset-0 flex flex-col items-center justify-center p-12 bg-black/5 pointer-events-none">
                                         <div class="eng-font text-white text-5xl md:text-7xl mb-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] sun-editor-common"
@@ -263,8 +265,7 @@
                                                 <span x-text="data.groom.rank"></span>
                                             </div>
                                             <div class="flex flex-col items-center">
-                                                <span class="text-[0.7em] text-blue-400 font-bold mb-1"
-                                                    :style="`font-size: calc(1.875rem * 0.7)`">신랑</span>
+                                                <span class="text-[0.8em] text-gray-400 lux-font mb-1">신랑</span>
                                                 <h1 class="text-3xl tracking-[0.1em] font-light lux-font"
                                                     x-text="data.groom.name"></h1>
                                             </div>
@@ -282,7 +283,7 @@
                                                 <span x-text="data.bride.rank"></span>
                                             </div>
                                             <div class="flex flex-col items-center">
-                                                <span class="text-[0.7em] text-pink-400 font-bold mb-1"
+                                                <span class="text-[0.7em] text-pink-400 font-bold mb-1 lux-font"
                                                     :style="`font-size: calc(1.875rem * 0.7)`">신부</span>
                                                 <h1 class="text-3xl tracking-[0.1em] font-light lux-font"
                                                     x-text="data.bride.name"></h1>
@@ -435,7 +436,6 @@
                                 </div>
                                 <div id="map" class="w-full h-64 bg-gray-100 rounded mb-4"></div>
                                 <div class="text-sm md:text-base leading-relaxed bg-[#fff9f9] p-6 md:p-10 rounded-2xl shadow-sm border border-pink-50 sun-editor-common mb-8"
-                                    :style="`text-align: ${data.theme?.style?.textAlign || 'center'}`"
                                     x-html="data.config.venue.guideText"></div>
 
                                 <!-- Map Apps -->
