@@ -169,8 +169,8 @@
     </style>
 </head>
 
-<body x-data="app()" x-init="init()" class="relative"
-    :style="`font-size: ${data.theme?.style?.fontSize || '14px'}; line-height: ${data.theme?.style?.lineHeight || '1.8'}; letter-spacing: ${data.theme?.style?.letterSpacing || '0px'}; text-align: ${data.theme?.style?.textAlign || 'center'}`"
+<body x-data="app()" x-init="init()" class="relative text-center"
+    :style="`font-size: ${data.theme?.style?.fontSize || '14px'}; line-height: ${data.theme?.style?.lineHeight || '1.8'}; letter-spacing: ${data.theme?.style?.letterSpacing || '0px'}`"
     @mousemove="handleMouseMove($event)" @mousedown="handleMouseDown($event)" @touchstart="handleTouchStart($event)">
 
     <!-- Intro Layer -->
@@ -265,7 +265,7 @@
                                                 <span x-text="data.groom.rank"></span>
                                             </div>
                                             <div class="flex flex-col items-center">
-                                                <span class="text-[0.8em] text-gray-400 lux-font mb-1">신랑</span>
+                                                <span class="text-lg text-blue-600 font-bold mb-1 lux-font">신랑</span>
                                                 <h1 class="text-3xl tracking-[0.1em] font-light lux-font"
                                                     x-text="data.groom.name"></h1>
                                             </div>
@@ -283,7 +283,7 @@
                                                 <span x-text="data.bride.rank"></span>
                                             </div>
                                             <div class="flex flex-col items-center">
-                                                <span class="text-[0.8em] text-gray-400 lux-font mb-1">신부</span>
+                                                <span class="text-lg text-pink-500 font-bold mb-1 lux-font">신부</span>
                                                 <h1 class="text-3xl tracking-[0.1em] font-light lux-font"
                                                     x-text="data.bride.name"></h1>
                                             </div>
@@ -434,7 +434,7 @@
                                     <div class="text-sm text-gray-500 mt-1" x-text="data.config.venue.address"></div>
                                 </div>
                                 <div id="map" class="w-full h-64 bg-gray-100 rounded mb-4"></div>
-                                <div class="text-sm md:text-base leading-relaxed bg-[#fff9f9] p-6 md:p-10 rounded-2xl shadow-sm border border-pink-50 sun-editor-common mb-8"
+                                <div class="text-left text-sm md:text-base leading-relaxed bg-[#fff9f9] p-6 md:p-10 rounded-2xl shadow-sm border border-pink-50 sun-editor-common mb-8"
                                     x-html="data.config.venue.guideText"></div>
 
                                 <!-- Map Apps -->
