@@ -529,6 +529,7 @@
                             <option value="left">왼쪽 정렬</option>
                             <option value="center">가운데 정렬</option>
                             <option value="right">오른쪽 정렬</option>
+                            <option value="justify">양쪽 정렬</option>
                         </select>
                     </div>
                 </div>
@@ -817,11 +818,12 @@
                             lang: SUNEDITOR_LANG['ko'],
                             buttonList: buttonList,
                             width: '100%',
-                            height: 'auto',
+                            height: ed.id === 'editor-venueGuide' ? '300px' : 'auto',
                             minHeight: '200px',
                             stickyToolbar: 0,
                             font: ['Nanum Myeongjo', 'Gowun Batang', 'Noto Sans KR', 'Arial', 'tahoma', 'Courier New,courier'],
-                            fontSize: [8, 10, 12, 14, 16, 18, 20, 24, 28, 36]
+                            fontSize: [8, 10, 12, 14, 16, 18, 20, 24, 28, 36],
+                            placeholder: '내용을 입력해주세요...'
                         });
 
                         // Set Initial Content

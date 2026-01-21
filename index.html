@@ -632,11 +632,11 @@
         </div>
     </div>
 
-    <div x-show="lightbox" class="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4" x-cloak
+    <div x-show="lightbox" class="fixed inset-0 z-[100] bg-black flex items-center justify-center p-0" x-cloak
         @click="lightbox=null">
         <button @click="lightbox = null"
-            class="absolute top-6 right-6 text-white text-3xl font-light hover:text-gray-300 transition-colors">✕</button>
-        <img :src="lightbox" class="max-w-full max-h-[90vh] object-contain shadow-2xl rounded" @click.stop>
+            class="absolute top-6 right-6 text-white text-3xl font-light hover:text-gray-300 transition-colors z-50">✕</button>
+        <img :src="lightbox" class="w-full h-full object-contain" @click.stop>
     </div>
 
     <!-- Scripts -->
