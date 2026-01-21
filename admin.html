@@ -8,10 +8,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <!-- Dependencies: Lodash & Quill -->
+    <!-- Dependencies: Lodash & SunEditor -->
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/suneditor@latest/dist/css/suneditor.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/suneditor@latest/dist/suneditor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/suneditor@latest/src/lang/ko.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 
@@ -94,50 +95,33 @@
             background: #4b5260;
         }
 
-        /* Quill Steam Theme Styling */
-        .ql-toolbar.ql-snow {
+        /* SunEditor Custom Styling */
+        .sun-editor {
             border: 1px solid #2a475e !important;
             background: #1b2838 !important;
-            border-bottom: none !important;
         }
 
-        .ql-container.ql-snow {
-            border: 1px solid #2a475e !important;
-            background: #12151a !important;
+        .sun-editor .se-toolbar {
+            background-color: #1b2838 !important;
+            outline: 1px solid #2a475e !important;
+        }
+
+        .sun-editor .se-resizing-bar {
+            background-color: #1b2838 !important;
+            border-top: 1px solid #2a475e !important;
+        }
+
+        .sun-editor-editable {
+            background-color: #12151a !important;
             color: #fff !important;
-            font-size: 14px !important;
-            min-height: 150px;
         }
 
-        .ql-editor {
-            min-height: 150px;
+        .sun-editor .se-btn-module-border {
+            border: 1px solid #2a475e !important;
         }
 
-        .ql-snow .ql-stroke {
-            stroke: #c6d4df !important;
-        }
-
-        .ql-snow .ql-fill {
-            fill: #c6d4df !important;
-        }
-
-        .ql-snow .ql-picker {
-            color: #c6d4df !important;
-        }
-
-        .ql-snow.ql-toolbar button:hover,
-        .ql-snow.ql-toolbar button.ql-active {
-            color: #66c0f4 !important;
-        }
-
-        .ql-snow.ql-toolbar button:hover .ql-stroke,
-        .ql-snow.ql-toolbar button.ql-active .ql-stroke {
-            stroke: #66c0f4 !important;
-        }
-
-        .ql-snow.ql-toolbar button:hover .ql-fill,
-        .ql-snow.ql-toolbar button.ql-active .ql-fill {
-            fill: #66c0f4 !important;
+        .sun-editor .se-btn-list.default_value {
+            background-color: #2a475e !important;
         }
 
         .sidebar {
@@ -293,69 +277,82 @@
             <div x-show="tab === 'identity'" class="grid grid-cols-2 gap-8">
                 <!-- Groom -->
                 <div class="space-y-4">
-                    <h3 class="text-[#66c0f4] font-bold border-b border-[#3d4450] pb-2">신랑</h3>
-                    <div><label class="label">이름</label><input x-model="data.groom.name" class="input">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="label">이름</label><input x-model="data.groom.name" class="input"></div>
+                        <div><label class="label">관계</label>
+                            <select x-model="data.groom.rank" class="input">
+                                <option>장남</option>
+                                <option>차남</option>
+                                <option>삼남</option>
+                                <option>사남</option>
+                                <option>외동</option>
+                            </select>
+                        </div>
                     </div>
-                    <div><label class="label">관계</label>
-                        <select x-model="data.groom.rank" class="input">
-                            <option>장남</option>
-                            <option>차남</option>
-                            <option>삼남</option>
-                            <option>사남</option>
-                            <option>외동</option>
-                        </select>
+                    <div><label class="label">연락처</label><input x-model="data.groom.phone" class="input"></div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="label">은행</label><input x-model="data.groom.bank" class="input"></div>
+                        <div><label class="label">계좌번호</label><input x-model="data.groom.account" class="input"></div>
                     </div>
-                    <div><label class="label">연락처</label><input x-model="data.groom.phone" class="input">
-                    </div>
-                    <div class="p-3 bg-[#12151a] rounded space-y-2">
+
+                    <div class="p-4 bg-[#12151a] border border-[#2a475e] rounded space-y-3">
                         <label class="label text-gray-400">부모님 정보</label>
-                        <div class="grid grid-cols-2 gap-2">
-                            <input x-model="data.groom.parents.father" placeholder="아버지 성함" class="input">
-                            <input x-model="data.groom.parents.fBank" placeholder="은행" class="input">
-                        </div>
-                        <input x-model="data.groom.parents.fAccount" placeholder="계좌번호" class="input">
-                        <div class="grid grid-cols-2 gap-2">
-                            <input x-model="data.groom.parents.mother" placeholder="어머니 성함" class="input">
-                            <input x-model="data.groom.parents.mBank" placeholder="은행" class="input">
-                        </div>
-                        <input x-model="data.groom.parents.mAccount" placeholder="계좌번호" class="input">
-                        <div class="grid grid-cols-2 gap-2">
-                            <input x-model="data.groom.parents.fPhone" placeholder="부친 연락처" class="input">
-                            <input x-model="data.groom.parents.mPhone" placeholder="모친 연락처" class="input">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <p class="text-[10px] text-blue-400 font-bold">아버지</p>
+                                <input x-model="data.groom.parents.father" placeholder="성함" class="input">
+                                <input x-model="data.groom.parents.fPhone" placeholder="연락처" class="input">
+                                <input x-model="data.groom.parents.fBank" placeholder="은행" class="input">
+                                <input x-model="data.groom.parents.fAccount" placeholder="계좌번호" class="input">
+                            </div>
+                            <div class="space-y-2">
+                                <p class="text-[10px] text-blue-400 font-bold">어머니</p>
+                                <input x-model="data.groom.parents.mother" placeholder="성함" class="input">
+                                <input x-model="data.groom.parents.mPhone" placeholder="연락처" class="input">
+                                <input x-model="data.groom.parents.mBank" placeholder="은행" class="input">
+                                <input x-model="data.groom.parents.mAccount" placeholder="계좌번호" class="input">
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Bride -->
                 <div class="space-y-4">
                     <h3 class="text-pink-400 font-bold border-b border-[#3d4450] pb-2">신부</h3>
-                    <div><label class="label">이름</label><input x-model="data.bride.name" class="input">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="label">이름</label><input x-model="data.bride.name" class="input"></div>
+                        <div><label class="label">관계</label>
+                            <select x-model="data.bride.rank" class="input">
+                                <option>장녀</option>
+                                <option>차녀</option>
+                                <option>삼녀</option>
+                                <option>사녀</option>
+                                <option>외동</option>
+                            </select>
+                        </div>
                     </div>
-                    <div><label class="label">관계</label>
-                        <select x-model="data.bride.rank" class="input">
-                            <option>장녀</option>
-                            <option>차녀</option>
-                            <option>삼녀</option>
-                            <option>사녀</option>
-                            <option>외동</option>
-                        </select>
+                    <div><label class="label">연락처</label><input x-model="data.bride.phone" class="input"></div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="label">은행</label><input x-model="data.bride.bank" class="input"></div>
+                        <div><label class="label">계좌번호</label><input x-model="data.bride.account" class="input"></div>
                     </div>
-                    <div><label class="label">연락처</label><input x-model="data.bride.phone" class="input">
-                    </div>
-                    <div class="p-3 bg-[#12151a] rounded space-y-2">
+
+                    <div class="p-4 bg-[#12151a] border border-[#2a475e] rounded space-y-3">
                         <label class="label text-gray-400">부모님 정보</label>
-                        <div class="grid grid-cols-2 gap-2">
-                            <input x-model="data.bride.parents.father" placeholder="아버지 성함" class="input">
-                            <input x-model="data.bride.parents.fBank" placeholder="은행" class="input">
-                        </div>
-                        <input x-model="data.bride.parents.fAccount" placeholder="계좌번호" class="input">
-                        <div class="grid grid-cols-2 gap-2">
-                            <input x-model="data.bride.parents.mother" placeholder="어머니 성함" class="input">
-                            <input x-model="data.bride.parents.mBank" placeholder="은행" class="input">
-                        </div>
-                        <input x-model="data.bride.parents.mAccount" placeholder="계좌번호" class="input">
-                        <div class="grid grid-cols-2 gap-2">
-                            <input x-model="data.bride.parents.fPhone" placeholder="부친 연락처" class="input">
-                            <input x-model="data.bride.parents.mPhone" placeholder="모친 연락처" class="input">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <p class="text-[10px] text-pink-400 font-bold">아버지</p>
+                                <input x-model="data.bride.parents.father" placeholder="성함" class="input">
+                                <input x-model="data.bride.parents.fPhone" placeholder="연락처" class="input">
+                                <input x-model="data.bride.parents.fBank" placeholder="은행" class="input">
+                                <input x-model="data.bride.parents.fAccount" placeholder="계좌번호" class="input">
+                            </div>
+                            <div class="space-y-2">
+                                <p class="text-[10px] text-pink-400 font-bold">어머니</p>
+                                <input x-model="data.bride.parents.mother" placeholder="성함" class="input">
+                                <input x-model="data.bride.parents.mPhone" placeholder="연락처" class="input">
+                                <input x-model="data.bride.parents.mBank" placeholder="은행" class="input">
+                                <input x-model="data.bride.parents.mAccount" placeholder="계좌번호" class="input">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -422,17 +419,20 @@
                 </div>
 
                 <!-- BGM -->
-                <div class="p-4 bg-[#12151a] rounded space-y-4">
+                <div class="p-4 bg-[#12151a] rounded border border-[#2a475e] space-y-4">
                     <label class="steam-label">배경음악 (MP3)</label>
-                    <template x-for="(song, idx) in data.media.bgm" :key="idx">
-                        <div class="flex gap-2">
-                            <input x-model="data.media.bgm[idx]" class="steam-input">
-                            <button @click="data.media.bgm.splice(idx, 1)" class="text-red-400">X</button>
-                        </div>
-                    </template>
+                    <div class="grid grid-cols-1 gap-2">
+                        <template x-for="(song, idx) in data.media.bgm" :key="idx">
+                            <div class="flex gap-2">
+                                <input x-model="data.media.bgm[idx]" class="steam-input">
+                                <button @click="data.media.bgm.splice(idx, 1)"
+                                    class="text-red-400 hover:bg-red-900/20 px-2 rounded">✕</button>
+                            </div>
+                        </template>
+                    </div>
                     <div class="flex gap-2">
-                        <button class="btn-gray" @click="data.media.bgm.push('')">+ URL 추가</button>
-                        <button class="btn-gray" @click="triggerSimpleUpload('bgm')">📁 파일 업로드</button>
+                        <button class="btn-gray flex-1" @click="data.media.bgm.push('')">+ URL 추가</button>
+                        <button class="btn-blue flex-1" @click="triggerSimpleUpload('bgm')">📁 파일 업로드</button>
                         <input type="file" id="file-bgm" class="hidden" @change="handleFile($event, 'bgm')">
                     </div>
                 </div>
@@ -692,20 +692,24 @@
 
                     this.loadExternalData();
 
-                    // Initialize Quill Editors
+                    // Initialize SunEditor
                     this.$nextTick(() => {
-                        this.initQuill();
+                        this.initSunEditor();
                     });
                 },
 
-                initQuill() {
-                    const toolbarOptions = [
-                        [{ 'header': [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline', 'strike'],
-                        [{ 'color': [] }, { 'background': [] }],
-                        [{ 'align': [] }],
+                initSunEditor() {
+                    const buttonList = [
+                        ['undo', 'redo'],
+                        ['font', 'fontSize', 'formatBlock'],
+                        ['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
+                        ['fontColor', 'hiliteColor'],
+                        ['removeFormat'],
+                        ['outdent', 'indent'],
+                        ['align', 'horizontalRule', 'list', 'lineHeight'],
                         ['link', 'image', 'video'],
-                        ['clean']
+                        ['fullScreen', 'showBlocks', 'codeView'],
+                        ['preview', 'print']
                     ];
 
                     const editors = [
@@ -718,19 +722,28 @@
                         const container = document.getElementById(ed.id);
                         if (!container) return;
 
-                        const quill = new Quill(`#${ed.id}`, {
-                            theme: 'snow',
-                            modules: { toolbar: toolbarOptions }
+                        // Clear existing content to prevent double menu
+                        container.innerHTML = '';
+
+                        const editor = SUNEDITOR.create(ed.id, {
+                            lang: SUNEDITOR_LANG['ko'],
+                            buttonList: buttonList,
+                            width: '100%',
+                            height: 'auto',
+                            minHeight: '200px',
+                            stickyToolbar: 0,
+                            font: ['Nanum Myeongjo', 'Gowun Batang', 'Noto Sans KR', 'Arial', 'tahoma', 'Courier New,courier'],
+                            fontSize: [8, 10, 12, 14, 16, 18, 20, 24, 28, 36]
                         });
 
                         // Set Initial Content
                         const initial = _.get(this, ed.key) || '';
-                        quill.root.innerHTML = initial;
+                        editor.setContents(initial);
 
                         // Sync to Alpine
-                        quill.on('text-change', () => {
-                            _.set(this, ed.key, quill.root.innerHTML);
-                        });
+                        editor.onChange = (content) => {
+                            _.set(this, ed.key, content);
+                        };
                     });
                 },
 
@@ -821,8 +834,7 @@
                             const res = await fetch(`https://api.github.com/repos/highhighcouple/Wedding_Invitation/contents/${path}`, {
                                 method: 'PUT',
                                 headers: {
-                                    'Authorization': `token ${this.data.config.secrets.githubToken}`,
-                                    'Content-Type': 'application/json'
+                                    'Authorization': `token ${this.data.config.secrets.githubToken}`
                                 },
                                 body: JSON.stringify({ message: `upload ${target} file`, content: content })
                             });
@@ -869,7 +881,7 @@
 
                     // 1. Get current SHA to prevent conflicts
                     fetch(`https://api.github.com/repos/highhighcouple/Wedding_Invitation/contents/data.json`, {
-                        headers: { 'Authorization': `token ${token}`, 'Cache-Control': 'no-cache' }
+                        headers: { 'Authorization': `token ${token}` }
                     })
                         .then(r => {
                             if (!r.ok) throw new Error('파일 정보를 불러오는데 실패했습니다.');
