@@ -13,8 +13,7 @@
         rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script type="text/javascript"
-        src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=dacffa882aa3284870d06afa02bd5947&libraries=services"></script>
+    <!-- Kakao SDKs will be loaded dynamically in init() if keys are present -->
     <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js"
         integrity="sha384-l6I7YpLAnpS8mXdfzD4pUnVqB3kS+Yn0yW4I3oR6K7CizK6G/h6y3J3LzW9p+G2J"
         crossorigin="anonymous"></script>
@@ -950,11 +949,23 @@
                 handleTouchStart(e) { if (this._createExplosion) this._createExplosion(e.touches[0].clientX, e.touches[0].clientY); },
 
                 initMap() {
-                    const check = setInterval(() => {
-                        const container = document.getElementById('map');
-                        if (typeof kakao !== 'undefined' && kakao.maps && container && this.data.config) {
-                            clearInterval(check);
-                            const init = () => {
+                    const key = this.data.config.secrets.kakaoApiKey || 'dacffa882aa3284870d06afa02bd5947';
+
+                    const loadKakaoSDK = () => {
+                        return new Promise((resolve) => {
+                            if (typeof kakao !== 'undefined' && kakao.maps) return resolve();
+                            const script = document.createElement('script');
+                            script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${key}&libraries=services&autoload=false`;
+                            script.onload = () => kakao.maps.load(resolve);
+                            document.head.appendChild(script);
+                        });
+                    };
+
+                    loadKakaoSDK().then(() => {
+                        const check = setInterval(() => {
+                            const container = document.getElementById('map');
+                            if (typeof kakao !== 'undefined' && kakao.maps && container && this.data.config) {
+                                clearInterval(check);
                                 const geocoder = new kakao.maps.services.Geocoder();
                                 const addr = this.data.config.venue.address;
                                 if (!addr) return;
@@ -966,11 +977,9 @@
                                         setTimeout(() => map.relayout(), 1000);
                                     }
                                 });
-                            };
-                            if (kakao.maps.services) init();
-                            else kakao.maps.load(init);
-                        }
-                    }, 1000);
+                            }
+                        }, 500);
+                    });
                 },
 
                 initObserver() {

@@ -277,6 +277,7 @@
             <div x-show="tab === 'identity'" class="grid grid-cols-2 gap-8">
                 <!-- Groom -->
                 <div class="space-y-4">
+                    <h3 class="text-blue-400 font-bold border-b border-[#3d4450] pb-2">신랑</h3>
                     <div class="grid grid-cols-2 gap-2">
                         <div><label class="label">이름</label><input x-model="data.groom.name" class="input"></div>
                         <div><label class="label">관계</label>
@@ -372,6 +373,26 @@
                 <div class="space-y-2">
                     <label class="label text-[#66c0f4]">오시는 길 안내 (Venue Guide)</label>
                     <div id="editor-venueGuide"></div>
+                </div>
+
+                <!-- PREVIEW SECTION -->
+                <div class="mt-12 p-8 bg-white text-gray-800 rounded-xl space-y-10 shadow-2xl">
+                    <h4 class="text-center text-sm font-bold text-gray-400 uppercase tracking-widest border-b pb-4">
+                        Real-time Site Preview</h4>
+
+                    <div class="text-center space-y-6">
+                        <div class="lux-font text-2xl sun-editor-common" x-html="data.text.mainOverlay"></div>
+                        <div class="w-12 h-[1px] bg-gray-200 mx-auto"></div>
+                        <div class="text-sm leading-relaxed whitespace-pre-wrap sun-editor-common"
+                            x-html="data.text.mainMessage"></div>
+                    </div>
+
+                    <div class="pt-10 border-t border-gray-100">
+                        <p class="text-[10px] font-bold text-gray-400 mb-4">VENUE GUIDE PREVIEW</p>
+                        <div class="text-xs leading-relaxed bg-gray-50 p-6 rounded-xl sun-editor-common"
+                            style="white-space: pre-wrap; word-break: break-word;" x-html="data.config.venue.guideText">
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -848,6 +869,9 @@
                                 else if (target === 'mapImg') this.data.config.venue.mapImage = url;
 
                                 alert('업로드 성공: ' + path);
+
+                                // Auto Publish on Upload for Instant Apply
+                                this.publishGithub(true);
                             } else {
                                 const err = await res.json();
                                 alert('업로드 실패: ' + err.message);
@@ -867,17 +891,27 @@
                     }).open();
                 },
 
-                publishGithub() {
+                publishGithub(silent = false) {
                     const token = this.data.config.secrets.githubToken;
                     if (!token) {
-                        this.tab = 'settings';
-                        alert('GitHub 토큰이 설정되지 않았습니다. 고급 설정 탭에서 토큰을 먼저 입력해주세요.');
+                        if (!silent) {
+                            this.tab = 'settings';
+                            alert('GitHub 토큰이 설정되지 않았습니까? 고급 설정 탭에서 토큰을 먼저 입력해주세요.');
+                        }
                         return;
                     }
 
-                    if (!confirm('초대장 데이터를 실시간 서버에 배포하시겠습니까?')) return;
+                    if (!silent && !confirm('초대장 데이터를 실시간 서버에 배포하시겠습니까?')) return;
 
-                    const content = btoa(unescape(encodeURIComponent(JSON.stringify(this.data, null, 2))));
+                    // SANITIZE DATA: Remove secrets before publishing to avoid "Secret detected" errors
+                    const cleanData = JSON.parse(JSON.stringify(this.data));
+                    if (cleanData.config.secrets) {
+                        cleanData.config.secrets.githubToken = "";
+                        cleanData.config.secrets.kakaoApiKey = "";
+                        // Keep adminPassword empty/standard too if needed
+                    }
+
+                    const content = btoa(unescape(encodeURIComponent(JSON.stringify(cleanData, null, 2))));
 
                     // 1. Get current SHA to prevent conflicts
                     fetch(`https://api.github.com/repos/highhighcouple/Wedding_Invitation/contents/data.json`, {
@@ -898,7 +932,8 @@
                         })
                         .then(r => {
                             if (r.ok) {
-                                alert('🎉 성공적으로 배포되었습니다! 수 분 내에 반영됩니다.');
+                                if (!silent) alert('🎉 성공적으로 배포되었습니다! 수 분 내에 반영됩니다.');
+                                else console.log('Auto-apply: Successful');
                             } else {
                                 return r.json().then(err => {
                                     throw new Error(err.message || '배포 중 오류 발생');
@@ -906,7 +941,7 @@
                             }
                         })
                         .catch(err => {
-                            alert('❌ 배포 실패: ' + err.message);
+                            if (!silent) alert('❌ 배포 실패: ' + err.message);
                             console.error('Publish Error:', err);
                         });
 
