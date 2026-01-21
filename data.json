@@ -15,7 +15,8 @@
       "navLinks": {
         "kakao": "https://map.kakao.com/?map_type=TYPE_MAP&itemId=17416438",
         "tmap": "https://poi.tmobiweb.com/app/share/position?contents=cGtleT0yOTA2ODA0MDAmcG9pSWQ9MjkwNjgwNCZuYXZTZXE9MCZ0eXBlPTImcG9pTmFtZT0lRUIlQTclODglRUIlQTYlQUMlRUMlOTUlODQlRUMlQTUlQUMlRUMlOEElQTQlRUQlODAlOTglRUMlOTYlQjQmY2VudGVyWD00NTczMzkzJmNlbnRlclk9MTM1MDY4MyZ0aW1lPTIwMjUlRUIlODUlODQrMDklRUMlOUIlOTQrMjYlRUMlOUQlQkMrMDclM0EzNSZ0ZWw9MDItNTQxLTUwMDcmYWRkcj0lRUMlODQlOUMlRUMlOUElQjgrJUVBJUIwJTk1JUVCJTgyJUE4JUVBJUI1JUFDKyVFQiU4RiU4NCVFQyU4MiVCMCVFQiU4QyU4MCVFQiVBMSU5QyszMTg"
-      }
+      },
+      "mapImage": "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/map/1768982037300_마리아쥬스퀘어_약도.pdf"
     },
     "secrets": {
       "kakaoApiKey": "dacffa882aa3284870d06afa02bd5947",
@@ -100,7 +101,7 @@
   },
   "text": {
     "mainOverlay": "<p><br></p><p><br></p><p>Wedding Invitation</p>",
-    "mainMessage": "<p style=\"text-align: center\">류하영 그리고 조현우</p><p style=\"text-align: center\">2026년 05월 02일 토요일 PM 13시 00분</p><p style=\"text-align: center\">강남 마리아쥬 스퀘어</p><p style=\"text-align: center\"><br></p><p style=\"text-align: center\">영원히 함께할</p><p style=\"text-align: center\">사랑의 맹세</p><p style=\"text-align: center\">같이 축복해주세요</p><p style=\"text-align: center\"><br></p><p style=\"text-align: center\"><u>하객분들을 위해 준비한</u></p><p style=\"text-align: center\"><span style=\"color: rgb(103, 0, 0)\"><u>무제한 카페</u></span><u>와 </u><span style=\"color: rgb(107, 153, 0)\"><u>야외정원</u></span><u>이있으니</u></p><p style=\"text-align: center\"><u>30분 일찍 오셔서 즐거운 시간을</u></p><p style=\"text-align: center\"><u>보내주시길 바랍니다</u></p><p style=\"text-align: center\"><u><br></u></p><p style=\"text-align: center\"><span style=\"color: rgb(153, 0, 133)\"><u>(12시 30분 개장)</u></span></p>"
+    "mainMessage": "<p style=\"text-align: center\">류하영 그리고 조현우</p><p style=\"text-align: center\"><br></p><p style=\"text-align: center\">2026년 05월 02일 토요일 PM 13시 00분</p><p style=\"text-align: center\">강남 마리아쥬 스퀘어</p><p style=\"text-align: center\"><br></p><p style=\"text-align: center\">영원히 함께할</p><p style=\"text-align: center\">사랑의 맹세</p><p style=\"text-align: center\">같이 축복해주세요</p><p style=\"text-align: center\"><br></p><p style=\"text-align: center\"><u>하객분들을 위해 준비한</u></p><p style=\"text-align: center\"><span style=\"color: rgb(103, 0, 0)\"><u>무제한 카페</u></span><u>와 </u><span style=\"color: rgb(107, 153, 0)\"><u>야외정원</u></span><u>이있으니</u></p><p style=\"text-align: center\"><u>30분 일찍 오셔서 즐거운 시간을</u></p><p style=\"text-align: center\"><u>보내주시길 바랍니다</u></p><p style=\"text-align: center\"><u><br></u></p><p style=\"text-align: center\"><span style=\"color: rgb(153, 0, 133)\"><u>(12시 30분 개장)</u></span></p>"
   },
   "media": {
     "youtube": "UmdCDfXQ8wQ",
