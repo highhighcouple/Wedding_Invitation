@@ -167,8 +167,9 @@
     </style>
 </head>
 
-<body x-data="app()" x-init="init()" class="relative" @mousemove="handleMouseMove($event)"
-    @mousedown="handleMouseDown($event)" @touchstart="handleTouchStart($event)">
+<body x-data="app()" x-init="init()" class="relative"
+    :style="`font-size: ${data.theme?.style?.fontSize || '14px'}; line-height: ${data.theme?.style?.lineHeight || '1.8'}; letter-spacing: ${data.theme?.style?.letterSpacing || '0px'}; text-align: ${data.theme?.style?.textAlign || 'center'}`"
+    @mousemove="handleMouseMove($event)" @mousedown="handleMouseDown($event)" @touchstart="handleTouchStart($event)">
 
     <!-- Intro Layer -->
     <div id="intro-layer" x-show="showIntro" @click="closeIntro" @wheel.prevent="closeIntro"
@@ -656,7 +657,7 @@
                         accounts: '마음 전하실 곳',
                         location: '오시는 길',
                         guestbook: '방명록',
-                        rsvp: '참석여부',
+                        rsvp: '참석 여부 전달',
                         share: '공유'
                     },
                     en: { names: 'Names', calendar: 'Calendar', of: 'of' }
@@ -1108,12 +1109,44 @@
 
                 shareSns(type) {
                     const url = window.location.href;
-                    let target = '';
-                    if (type === 'facebook') target = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-                    if (type === 'x') target = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`;
-                    if (type === 'line') target = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}`;
-                    if (type === 'telegram') target = `https://t.me/share/url?url=${encodeURIComponent(url)}`;
-                    if (target) window.open(target, '_blank');
+                    const encodedUrl = encodeURIComponent(url);
+                    const title = `§${this.data.groom.name}§ ♥ §${this.data.bride.name}§의 결혼식에 초대합니다`;
+                    const encodedTitle = encodeURIComponent(title);
+
+                    let appUrl = '';
+                    let webUrl = '';
+
+                    switch (type) {
+                        case 'facebook':
+                            appUrl = `fb://facewebmodal/f?href=${encodedUrl}`;
+                            webUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+                            break;
+                        case 'x':
+                            appUrl = `twitter://post?message=${encodedTitle}%20${encodedUrl}`;
+                            webUrl = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`;
+                            break;
+                        case 'line':
+                            appUrl = `line://msg/text/${encodedTitle}%20${encodedUrl}`;
+                            webUrl = `https://social-plugins.line.me/lineit/share?url=${encodedUrl}`;
+                            break;
+                        case 'telegram':
+                            appUrl = `tg://msg_url?url=${encodedUrl}&text=${encodedTitle}`;
+                            webUrl = `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`;
+                            break;
+                    }
+
+                    if (appUrl) {
+                        const start = Date.now();
+                        window.location.href = appUrl;
+
+                        setTimeout(() => {
+                            if (Date.now() - start < 2000) {
+                                window.open(webUrl, '_blank');
+                            }
+                        }, 1500);
+                    } else if (webUrl) {
+                        window.open(webUrl, '_blank');
+                    }
                 },
 
                 copyLink() {

@@ -219,7 +219,7 @@
     <aside x-show="auth" x-cloak class="sidebar shrink-0">
         <div class="p-5 border-b border-[#2a475e]">
             <h2 class="text-white font-bold text-lg">결혼식 프로젝트</h2>
-            <div class="text-xs text-[#66c0f4]">버전 v2.6.5</div>
+            <div class="text-xs text-[#66c0f4]">빌드 Ver.<span x-text="data.version || '0.9.0'"></span></div>
         </div>
         <nav class="flex-1 overflow-y-auto py-2">
             <template x-for="t in tabs" :key="t.id">
@@ -230,8 +230,8 @@
             </template>
         </nav>
         <div class="p-4 border-t border-[#2a475e] space-y-2">
-            <button @click="saveLocal" class="btn-gray w-full">임시 저장 (로컬)</button>
-            <button @click="publishGithub" class="btn-blue w-full">서버에 적용 (배포)</button>
+            <button @click="saveLocal" class="btn-gray w-full text-[10px]">임시 저장 (로컬)</button>
+            <button @click="publishGithub" class="btn-blue w-full font-bold">서버에 적용 (배포)</button>
         </div>
     </aside>
 
@@ -458,179 +458,207 @@
                     </div>
                 </div>
 
-                <!-- Effects -->
-                <div class="space-y-4">
-                    <label class="steam-label">배경 시각 효과</label>
-                    <div class="grid grid-cols-3 gap-2">
-                        <template x-for="eff in effects" :key="eff.val">
-                            <div @click="data.theme.effect = eff.val"
-                                class="p-3 rounded border cursor-pointer flex items-center gap-2"
-                                :class="data.theme.effect === eff.val ? 'bg-[#2a475e] border-[#66c0f4]' : 'bg-[#12151a] border-[#2a475e]'">
-                                <span x-text="eff.icon"></span>
-                                <span class="text-xs" x-text="eff.label"></span>
-                            </div>
-                        </template>
-                    </div>
-                    <input type="color" x-model="data.theme.color" class="h-10 w-full bg-transparent">
-                </div>
+                <input type="color" x-model="data.theme.color" class="h-10 w-full bg-transparent">
             </div>
 
-            <!-- TAB: LOGISTICS -->
-            <div x-show="tab === 'logistics'" class="space-y-8">
-                <div class="grid grid-cols-2 gap-8">
-                    <div class="space-y-2">
-                        <label class="steam-label">예식 일시</label>
-                        <input type="datetime-local" x-model="data.config.weddingDate" class="steam-input">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="steam-label">예식장 이름</label>
-                        <input x-model="data.config.venue.name" class="steam-input">
-                    </div>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="steam-label">예식장 주소</label>
-                    <div class="flex gap-2">
-                        <input x-model="data.config.venue.address" class="steam-input" readonly>
-                        <button class="btn-gray whitespace-nowrap" @click="searchAddr">🔍 주소 검색</button>
-                    </div>
-                </div>
-
-                <div class="space-y-4 pt-4 border-t border-[#3d4450]">
-                    <div class="flex justify-between items-center">
-                        <label class="steam-label">지도 다운로드용 이미지</label>
-                        <button class="btn-gray text-[10px]" @click="triggerUpload('mapImg')">📁 업로드</button>
-                    </div>
-                    <input type="file" id="file-mapImg" class="hidden" @change="handleFile($event, 'mapImg')">
-                    <input x-model="data.config.venue.mapImage" placeholder="지도 이미지 URL (업로드 시 자동 입력)"
-                        class="steam-input">
-                </div>
-
-                <div class="p-4 bg-[#12151a] rounded space-y-4">
-                    <label class="steam-label">지도/길찾기 링크</label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <input x-model="data.config.venue.mapLinks.naver" placeholder="네이버 지도 URL" class="steam-input">
-                        <input x-model="data.config.venue.mapLinks.kakao" placeholder="카카오 맵 URL" class="steam-input">
-                        <input x-model="data.config.venue.mapLinks.tmap" placeholder="티맵 URL" class="steam-input">
-                        <input x-model="data.config.venue.mapLinks.google" placeholder="구글 지도 URL" class="steam-input">
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB: DATA MANAGEMENT -->
-            <div x-show="tab === 'data_mgmt'" class="space-y-6">
-                <div class="flex gap-4 mb-4">
-                    <button @click="loadExternalData" class="btn-blue text-xs">🔄 데이터 새로고침</button>
-                </div>
-
-                <!-- Guestbook -->
-                <div class="card p-6 rounded-lg">
-                    <h3 class="text-[#66c0f4] font-bold mb-4 flex items-center gap-2">📝 방명록 메시지 (<span
-                            x-text="bbs.length"></span>)</h3>
-                    <div class="space-y-2 max-h-[300px] overflow-y-auto pr-2">
-                        <template x-for="(b, idx) in bbs" :key="idx">
-                            <div
-                                class="p-3 bg-[#0e141b] border border-[#2a475e] rounded flex justify-between items-center group">
-                                <div class="flex-1">
-                                    <div class="text-sm font-bold text-white" x-text="b.name"></div>
-                                    <div class="text-xs text-gray-400 mt-1" x-text="b.message"></div>
-                                    <div class="text-[9px] text-gray-600 mt-1" x-text="b.date"></div>
-                                </div>
-                                <button @click="deleteItem('bbs', idx)"
-                                    class="btn-gray text-[10px] text-red-500 hover:bg-red-900/20">삭제</button>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-
-                <!-- RSVP -->
-                <div class="card p-6 rounded-lg">
-                    <h3 class="text-pink-400 font-bold mb-4 flex items-center gap-2">📋 참석자 명단 (<span
-                            x-text="joins.length"></span>)</h3>
-                    <div class="space-y-2 max-h-[300px] overflow-y-auto pr-2">
-                        <template x-for="(j, idx) in joins" :key="idx">
-                            <div
-                                class="p-3 bg-[#0e141b] border border-[#2a475e] rounded flex justify-between items-center group">
-                                <div class="flex-1">
-                                    <div class="text-sm font-bold text-white"><span x-text="j.name"></span> (<span
-                                            x-text="j.side === 'groom' ? '신랑측' : '신부측'"></span>)</div>
-                                    <div class="text-xs text-gray-400 mt-1">인원: <span x-text="j.count"></span>명 / 식사:
-                                        <span x-text="j.meal ? '예' : '아니오'"></span>
-                                    </div>
-                                </div>
-                                <button @click="deleteItem('joins', idx)"
-                                    class="btn-gray text-[10px] text-red-500 hover:bg-red-900/20">삭제</button>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB: SETTINGS & SECRETS -->
-            <div x-show="tab === 'settings'" class="space-y-6">
-                <div class="p-4 border border-red-900 bg-red-900/10 rounded">
-                    <div class="flex justify-between items-center mb-2">
-                        <label class="steam-label text-red-400">GITHUB 토큰 (필수)</label>
-                        <button @click="showTokenGuide = true" class="text-[10px] text-blue-400 underline">토큰 발급 방법
-                            보기</button>
-                    </div>
-                    <input type="password" x-model="data.config.secrets.githubToken"
-                        @input="localStorage.setItem('ghToken', $event.target.value)" class="steam-input"
-                        placeholder="ghp_...">
-                    <p class="text-[10px] text-gray-500 mt-2">※ 파일을 수정하거나 업로드하려면 이 토큰이 반드시 필요합니다.</p>
-                </div>
+            <!-- Typography Sync -->
+            <div class="p-6 bg-[#12151a] rounded border border-[#66c0f4]/30 space-y-6">
+                <h3 class="text-sm font-bold text-[#66c0f4] flex items-center gap-2">
+                    <span>🖋️</span> 타이포그래피 (본문 스타일)
+                </h3>
                 <div class="grid grid-cols-2 gap-6">
-                    <div><label class="steam-label">카카오 API 키 (JavaScript)</label><input
-                            x-model="data.config.secrets.kakaoApiKey" class="steam-input"></div>
-                    <div><label class="steam-label">관리자 비밀번호</label><input x-model="data.config.secrets.adminPassword"
-                            class="steam-input" placeholder="비밀번호 변경">
+                    <div class="space-y-2">
+                        <label class="label">글꼴 크기 (<span x-text="data.theme.style.fontSize"></span>)</label>
+                        <input type="range" min="10" max="24" step="1" x-model="data.theme.style.fontSize"
+                            @input="data.theme.style.fontSize = $event.target.value + 'px'"
+                            class="w-full accent-[#66c0f4]">
                     </div>
-                </div>
-
-                <!-- OG Images -->
-                <div class="space-y-4 pt-4 border-t border-[#3d4450]">
-                    <label class="steam-label">공유용 메타 데이터 (OG Image)</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input x-model="data.images.og.kakao" placeholder="카카오톡 공유 이미지" class="steam-input">
-                        <input x-model="data.images.og.facebook" placeholder="페이스북 공유 이미지" class="steam-input">
-                        <input x-model="data.images.og.insta" placeholder="인스타그램 공유 이미지" class="steam-input">
-                        <input x-model="data.images.og.x" placeholder="X(트위터) 공유 이미지" class="steam-input">
+                    <div class="space-y-2">
+                        <label class="label">줄 간격 (<span x-text="data.theme.style.lineHeight"></span>)</label>
+                        <input type="range" min="1.0" max="2.5" step="0.1" x-model="data.theme.style.lineHeight"
+                            class="w-full accent-[#66c0f4]">
                     </div>
-                </div>
-
-                <!-- GitHub Token Guide Modal -->
-                <div x-show="showTokenGuide"
-                    class="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4" x-cloak>
-                    <div class="card max-w-lg w-full p-8 relative shadow-[0_0_50px_rgba(0,0,0,1)]">
-                        <button @click="showTokenGuide = false"
-                            class="absolute top-4 right-4 text-gray-400 text-2xl hover:text-white">&times;</button>
-                        <h3 class="text-xl text-[#66c0f4] font-bold mb-6 flex items-center gap-2">🔑 GitHub 토큰 발급 가이드
-                        </h3>
-                        <div class="space-y-4 text-sm text-gray-300 leading-relaxed">
-                            <div class="p-4 bg-black/40 rounded border border-gray-700">
-                                <p class="font-bold text-white mb-2">1단계: 설정 페이지 이동</p>
-                                <p>GitHub 로그인 후 <a href="https://github.com/settings/tokens" target="_blank"
-                                        class="text-blue-400 underline font-bold">여기를 클릭</a>하여 토큰 생성 페이지로 이동하세요.</p>
-                            </div>
-                            <div class="p-4 bg-black/40 rounded border border-gray-700">
-                                <p class="font-bold text-white mb-2">2단계: 토큰 생성 (Classic)</p>
-                                <p><b class="text-white">Generate new token (classic)</b> 버튼을 누른 후:</p>
-                                <ul class="list-disc ml-5 mt-2 space-y-2 text-xs">
-                                    <li><b>Note:</b> "Wedding" 입력</li>
-                                    <li><b>Expiration:</b> No expiration 권장</li>
-                                    <li><b class="text-amber-400 underline">Select Scopes: "repo" 항목 전체 체크</b> (필수!)
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="p-4 bg-black/40 rounded border border-gray-700">
-                                <p class="font-bold text-white mb-2">3단계: 복사 및 붙여넣기</p>
-                                <p>하단의 <b>Generate token</b>을 누르면 <code>ghp_...</code> 코드가 보입니다. 복사해서 관리자 페이지에 넣으세요.</p>
-                            </div>
-                        </div>
-                        <button @click="showTokenGuide = false" class="btn-blue w-full mt-6">확인했습니다</button>
+                    <div class="space-y-2">
+                        <label class="label">글자 자간 (<span x-text="data.theme.style.letterSpacing"></span>)</label>
+                        <input type="range" min="-2" max="5" step="0.5" x-model="data.theme.style.letterSpacing"
+                            @input="data.theme.style.letterSpacing = $event.target.value + 'px'"
+                            class="w-full accent-[#66c0f4]">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="label">정렬 방식</label>
+                        <select x-model="data.theme.style.textAlign" class="input">
+                            <option value="left">왼쪽 정렬</option>
+                            <option value="center">가운데 정렬</option>
+                            <option value="right">오른쪽 정렬</option>
+                        </select>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- TAB: LOGISTICS -->
+        <div x-show="tab === 'logistics'" class="space-y-8">
+            <div class="grid grid-cols-2 gap-8">
+                <div class="space-y-2">
+                    <label class="steam-label">예식 일시</label>
+                    <input type="datetime-local" x-model="data.config.weddingDate" class="steam-input">
+                </div>
+                <div class="space-y-2">
+                    <label class="steam-label">예식장 이름</label>
+                    <input x-model="data.config.venue.name" class="steam-input">
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="steam-label">예식장 주소</label>
+                <div class="flex gap-2">
+                    <input x-model="data.config.venue.address" class="steam-input" readonly>
+                    <button class="btn-gray whitespace-nowrap" @click="searchAddr">🔍 주소 검색</button>
+                </div>
+            </div>
+
+            <div class="space-y-4 pt-4 border-t border-[#3d4450]">
+                <div class="flex justify-between items-center">
+                    <label class="steam-label">지도 다운로드용 이미지</label>
+                    <button class="btn-gray text-[10px]" @click="triggerUpload('mapImg')">📁 업로드</button>
+                </div>
+                <input type="file" id="file-mapImg" class="hidden" @change="handleFile($event, 'mapImg')">
+                <input x-model="data.config.venue.mapImage" placeholder="지도 이미지 URL (업로드 시 자동 입력)" class="steam-input">
+            </div>
+
+            <div class="p-4 bg-[#12151a] rounded space-y-4">
+                <label class="steam-label">지도/길찾기 링크</label>
+                <div class="grid grid-cols-2 gap-4">
+                    <input x-model="data.config.venue.mapLinks.naver" placeholder="네이버 지도 URL" class="steam-input">
+                    <input x-model="data.config.venue.mapLinks.kakao" placeholder="카카오 맵 URL" class="steam-input">
+                    <input x-model="data.config.venue.mapLinks.tmap" placeholder="티맵 URL" class="steam-input">
+                    <input x-model="data.config.venue.mapLinks.google" placeholder="구글 지도 URL" class="steam-input">
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: DATA MANAGEMENT -->
+        <div x-show="tab === 'data_mgmt'" class="space-y-6">
+            <div class="flex gap-4 mb-4">
+                <button @click="loadExternalData" class="btn-blue text-xs">🔄 데이터 새로고침</button>
+            </div>
+
+            <!-- Guestbook -->
+            <div class="card p-6 rounded-lg">
+                <h3 class="text-[#66c0f4] font-bold mb-4 flex items-center gap-2">📝 방명록 메시지 (<span
+                        x-text="bbs.length"></span>)</h3>
+                <div class="space-y-2 max-h-[300px] overflow-y-auto pr-2">
+                    <template x-for="(b, idx) in bbs" :key="idx">
+                        <div
+                            class="p-3 bg-[#0e141b] border border-[#2a475e] rounded flex justify-between items-center group">
+                            <div class="flex-1">
+                                <div class="text-sm font-bold text-white" x-text="b.name"></div>
+                                <div class="text-xs text-gray-400 mt-1" x-text="b.message"></div>
+                                <div class="text-[9px] text-gray-600 mt-1" x-text="b.date"></div>
+                            </div>
+                            <button @click="deleteItem('bbs', idx)"
+                                class="btn-gray text-[10px] text-red-500 hover:bg-red-900/20">삭제</button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- RSVP -->
+            <div class="card p-6 rounded-lg">
+                <h3 class="text-pink-400 font-bold mb-4 flex items-center gap-2">📋 참석자 명단 (<span
+                        x-text="joins.length"></span>)</h3>
+                <div class="space-y-2 max-h-[300px] overflow-y-auto pr-2">
+                    <template x-for="(j, idx) in joins" :key="idx">
+                        <div
+                            class="p-3 bg-[#0e141b] border border-[#2a475e] rounded flex justify-between items-center group">
+                            <div class="flex-1">
+                                <div class="text-sm font-bold text-white"><span x-text="j.name"></span> (<span
+                                        x-text="j.side === 'groom' ? '신랑측' : '신부측'"></span>)</div>
+                                <div class="text-xs text-gray-400 mt-1">인원: <span x-text="j.count"></span>명 / 식사:
+                                    <span x-text="j.meal ? '예' : '아니오'"></span>
+                                </div>
+                            </div>
+                            <button @click="deleteItem('joins', idx)"
+                                class="btn-gray text-[10px] text-red-500 hover:bg-red-900/20">삭제</button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: SETTINGS & SECRETS -->
+        <div x-show="tab === 'settings'" class="space-y-6">
+            <div class="p-4 border border-red-900 bg-red-900/10 rounded">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="steam-label text-red-400">GITHUB 토큰 (필수)</label>
+                    <button @click="showTokenGuide = true" class="text-[10px] text-blue-400 underline">토큰 발급 방법
+                        보기</button>
+                </div>
+                <input type="password" x-model="data.config.secrets.githubToken"
+                    @input="localStorage.setItem('ghToken', $event.target.value)" class="steam-input"
+                    placeholder="ghp_...">
+                <p class="text-[10px] text-gray-500 mt-2">※ 파일을 수정하거나 업로드하려면 이 토큰이 반드시 필요합니다.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+                <div><label class="steam-label">카카오 API 키 (JavaScript)</label><input
+                        x-model="data.config.secrets.kakaoApiKey" class="steam-input"></div>
+                <div><label class="steam-label">관리자 비밀번호</label><input x-model="data.config.secrets.adminPassword"
+                        class="steam-input" placeholder="비밀번호 변경">
+                </div>
+            </div>
+
+            <!-- OG Images -->
+            <div class="space-y-4 pt-4 border-t border-[#3d4450]">
+                <label class="steam-label">공유용 메타 데이터 (OG Image)</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <input x-model="data.images.og.kakao" placeholder="카카오톡 공유 이미지" class="steam-input">
+                    <input x-model="data.images.og.facebook" placeholder="페이스북 공유 이미지" class="steam-input">
+                    <input x-model="data.images.og.insta" placeholder="인스타그램 공유 이미지" class="steam-input">
+                    <input x-model="data.images.og.x" placeholder="X(트위터) 공유 이미지" class="steam-input">
+                </div>
+            </div>
+
+            <!-- Kakao Implementation Guide -->
+            <div class="p-6 bg-blue-900/10 border border-blue-900/50 rounded-lg space-y-4">
+                <h3 class="text-blue-400 font-bold flex items-center gap-2">📍 Kakao API 설정 가이드</h3>
+                <div class="text-xs text-gray-400 space-y-3 leading-relaxed">
+                    <div class="p-3 bg-black/40 rounded">
+                        <p class="text-white font-bold mb-1">1. 카카오 개발자 콘솔 접속</p>
+                        <p><a href="https://developers.kakao.com/console/app" target="_blank"
+                                class="text-blue-400 underline">카카오 디벨로퍼스</a>에서 애플리케이션을 생성하세요.</p>
+                    </div>
+                    <div class="p-3 bg-black/40 rounded">
+                        <p class="text-white font-bold mb-1">2. 플랫폼 등록 (중요)</p>
+                        <p><b>[내 애플리케이션] > [플랫폼] > [Web]</b>에서 아래 도메인을 등록해야 기능이 동작합니다:</p>
+                        <code class="block mt-1 text-[#66c0f4]">https://highhighcouple.github.io</code>
+                    </div>
+                    <div class="p-3 bg-black/40 rounded">
+                        <p class="text-white font-bold mb-1">3. 키 입력</p>
+                        <p><b>[앱 키]</b> 메뉴에서 <b class="text-white">JavaScript 키</b>를 복사하여 위 '카카오 API 키' 란에 입력하세요.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Update Log -->
+            <div class="space-y-4 pt-6 border-t border-[#3d4450]">
+                <div class="flex justify-between items-center">
+                    <label class="steam-label text-gray-400">업데이트 기록 (Update Log)</label>
+                    <button
+                        @click="data.updates.push({version: '', date: new Date().toISOString().split('T')[0], notes: ''})"
+                        class="text-[10px] text-[#66c0f4]">+ 기록 추가</button>
+                </div>
+                <div class="space-y-2">
+                    <template x-for="(upd, idx) in data.updates" :key="idx">
+                        <div class="flex gap-2 items-start">
+                            <input x-model="upd.version" placeholder="Ver" class="input w-20">
+                            <input x-model="upd.date" type="date" class="input w-36">
+                            <input x-model="upd.notes" placeholder="변경 내용" class="input flex-1">
+                            <button @click="data.updates.splice(idx, 1)" class="text-red-400 p-2">✕</button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
 
         </div>
     </main>
@@ -641,13 +669,13 @@
                 auth: false, pass: '', tab: 'sections', ip: 'Loading...',
                 dragSrc: null, showTokenGuide: false,
                 tabs: [
-                    { id: 'sections', name: '순서 및 노출(Section Order)', icon: '☰' },
-                    { id: 'identity', name: '인적 사항(Identity)', icon: '👤' },
-                    { id: 'content', name: '문구 설정(Text & Content)', icon: '📝' },
-                    { id: 'visuals', name: '디자인/업로드(Visuals & Effects)', icon: '🎨' },
-                    { id: 'logistics', name: '일시/장소(Logistics)', icon: '📍' },
-                    { id: 'data_mgmt', name: '방명록/참석자 관리(Data)', icon: '📂' },
-                    { id: 'settings', name: '고급 설정(Global Settings)', icon: '⚙️' },
+                    { id: 'sections', name: '페이지 구성 (Sections)', icon: '☰' },
+                    { id: 'identity', name: '초대 인적사항 (Names)', icon: '👤' },
+                    { id: 'content', name: '초대장 문구 (Text)', icon: '📝' },
+                    { id: 'visuals', name: '디자인 설정 (Visuals)', icon: '🎨' },
+                    { id: 'logistics', name: '오시는 길 (Location)', icon: '📍' },
+                    { id: 'data_mgmt', name: '방명록 및 참석여부 (Data)', icon: '📂' },
+                    { id: 'settings', name: '고급 설정 (Settings)', icon: '⚙️' },
                 ],
                 bbs: [], joins: [],
                 effects: [
