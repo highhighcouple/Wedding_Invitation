@@ -1,183 +1,190 @@
 {
-    "config": {
-        "weddingDate": "2026-05-02T13:00:00",
-        "venue": {
-            "name": "마리아쥬 스퀘어",
-            "phone": "02-541-5007",
-            "address": "서울특별시 강남구 도산대로 318 SB타워 G층",
-            "lat": 37.5223,
-            "lng": 127.0388,
-            "guideText": "<p style=\"text-align: center\"><span style=\"font-family: Nanum Myeongjo\"><u>내부주차 300대 수용 가능</u></span></p><p style=\"text-align: center\"><span style=\"font-family: Nanum Myeongjo\"><u>당일 교통혼잡이 예상되는 경우,</u></span></p><p style=\"text-align: center\"><span style=\"color: rgb(241, 95, 95);font-family: Nanum Myeongjo\"><u>지하철</u></span><span style=\"font-family: Nanum Myeongjo\"><u> + </u></span><span style=\"color: rgb(0, 51, 153);font-family: Nanum Myeongjo\"><span style=\"font-family: Nanum Myeongjo\"><u>셔틀버스</u></span></span><span style=\"font-family: Nanum Myeongjo\"><u> 이용을</u></span></p><p style=\"text-align: center\"><span style=\"font-family: Nanum Myeongjo\"><u>적극 권장드립니다.</u></span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p style=\"text-align: center\"><span style=\"font-family: Nanum Myeongjo\"><strong>셔틀운행</strong></span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\">7호선, 분당선 강남구청역 3번출구 셔틀버스 이용</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ예식 있을 시 수시 운행</span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p style=\"text-align: center\"><span style=\"font-family: Nanum Myeongjo\"><strong>지하철</strong></span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\">7호선, 분당선 강남구청역 하차</span></p><p><span style=\"font-family: Nanum Myeongjo\">강남구청역 3-1번 출구</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ[도보] 출구 좌측 학동사거리 방향 600M 도보 이동 후</span></p><p><span style=\"font-family: Nanum Myeongjo\">학동사거리에서 좌회전 200M</span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\">분당선 압구정로데오역</span></p><p><span style=\"font-family: Nanum Myeongjo\"> 하차압구정로데오역 5번 출구</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ[도보] 400M 도보 이동 후</span></p><p><span style=\"font-family: Nanum Myeongjo\">학동사거리 횡단보도 건너우측 200M</span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p style=\"text-align: center\"><span style=\"font-family: Nanum Myeongjo\"><strong>버스</strong></span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\">정류장_도산공원사거리.호림아트센터</span></p><p><span style=\"font-family: Nanum Myeongjo\">[정류장 번호-23125]</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ간선버스_145, 440</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ지선버스_3011, 4212</span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\">정류장_영동119안전센터</span></p><p><span style=\"font-family: Nanum Myeongjo\">[정류장 번호-23126]</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ지선버스_3011, 4212</span></p>",
-            "mapLinks": {
-                "naver": "https://map.naver.com/p/entry/place/21413303",
-                "kakao": "https://map.kakao.com/?map_type=TYPE_MAP&itemId=17416438",
-                "tmap": "https://poi.tmobiweb.com/app/share/position?contents=cGtleT0yOTA2ODA0MDAmcG9pSWQ9MjkwNjgwNCZuYXZTZXE9MCZ0eXBlPTImcG9pTmFtZT0lRUIlQTclODglRUIlQTYlQUMlRUMlOTUlODQlRUMlQTUlQUMlRUMlOEElQTQlRUQlODAlOTglRUMlOTYlQjQmY2VudGVyWD00NTczMzkzJmNlbnRlclk9MTM1MDY4MyZ0aW1lPTIwMjUlRUIlODUlODQrMDklRUMlOUIlOTQrMjYlRUMlOUQlQkMrMDclM0EzNSZ0ZWw9MDItNTQxLTUwMDcmYWRkcj0lRUMlODQlOUMlRUMlOUElQjgrJUVBJUIwJTk1JUVCJTgyJUE4JUVBJUI1JUFDKyVFQiU4RiU4NCVFQyU4MiVCMCVFQiU4QyU4MCVFQiVBMSU5QyszMTg",
-                "google": "https://maps.app.goo.gl/iQ5VbCdJjo3anBcx6"
-            },
-            "navLinks": {
-                "kakao": "https://map.kakao.com/?map_type=TYPE_MAP&itemId=17416438",
-                "tmap": "https://poi.tmobiweb.com/app/share/position?contents=cGtleT0yOTA2ODA0MDAmcG9pSWQ9MjkwNjgwNCZuYXZTZXE9MCZ0eXBlPTImcG9pTmFtZT0lRUIlQTclODglRUIlQTYlQUMlRUMlOTUlODQlRUMlQTUlQUMlRUMlOEElQTQlRUQlODAlOTglRUMlOTYlQjQmY2VudGVyWD00NTczMzkzJmNlbnRlclk9MTM1MDY4MyZ0aW1lPTIwMjUlRUIlODUlODQrMDklRUMlOUIlOTQrMjYlRUMlOUQlQkMrMDclM0EzNSZ0ZWw9MDItNTQxLTUwMDcmYWRkcj0lRUMlODQlOUMlRUMlOUElQjgrJUVBJUIwJTk1JUVCJTgyJUE4JUVBJUI1JUFDKyVFQiU4RiU4NCVFQyU4MiVCMCVFQiU4QyU4MCVFQiVBMSU5QyszMTg"
-            },
-            "mapImage": "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/map/1768983348773_약도.png"
-        },
-        "secrets": {
-            "kakaoApiKey": "dacffa882aa3284870d06afa02bd5947",
-            "githubToken": ""
-        }
+  "config": {
+    "weddingDate": "2026-05-02T13:00:00",
+    "venue": {
+      "name": "마리아쥬 스퀘어",
+      "phone": "02-541-5007",
+      "address": "서울특별시 강남구 도산대로 318 SB타워 G층",
+      "guideText": "<p style=\"text-align: center\"><span style=\"font-family: Nanum Myeongjo\"><u>내부주차 300대 수용 가능</u></span></p><p style=\"text-align: center\"><span style=\"font-family: Nanum Myeongjo\"><u>당일 교통혼잡이 예상되는 경우,</u></span></p><p style=\"text-align: center\"><span style=\"color: rgb(241, 95, 95);font-family: Nanum Myeongjo\"><u>지하철</u></span><span style=\"font-family: Nanum Myeongjo\"><u> + </u></span><span style=\"color: rgb(0, 51, 153);font-family: Nanum Myeongjo\"><span style=\"font-family: Nanum Myeongjo\"><u>셔틀버스</u></span></span><span style=\"font-family: Nanum Myeongjo\"><u> 이용을</u></span></p><p style=\"text-align: center\"><span style=\"font-family: Nanum Myeongjo\"><u>적극 권장드립니다.</u></span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p style=\"text-align: center\"><span style=\"font-family: Nanum Myeongjo\"><strong>셔틀운행</strong></span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\">7호선, 분당선 강남구청역 3번출구 셔틀버스 이용</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ예식 있을 시 수시 운행</span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p style=\"text-align: center\"><span style=\"font-family: Nanum Myeongjo\"><strong>지하철</strong></span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\">7호선, 분당선 강남구청역 하차</span></p><p><span style=\"font-family: Nanum Myeongjo\">강남구청역 3-1번 출구</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ[도보] 출구 좌측 학동사거리 방향 600M 도보 이동 후</span></p><p><span style=\"font-family: Nanum Myeongjo\">학동사거리에서 좌회전 200M</span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\">분당선 압구정로데오역</span></p><p><span style=\"font-family: Nanum Myeongjo\"> 하차압구정로데오역 5번 출구</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ[도보] 400M 도보 이동 후</span></p><p><span style=\"font-family: Nanum Myeongjo\">학동사거리 횡단보도 건너우측 200M</span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p style=\"text-align: center\"><span style=\"font-family: Nanum Myeongjo\"><strong>버스</strong></span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\"><span style=\"font-family: Nanum Myeongjo\">정류장_</span>도산공원사거리.호림아트센터</span></p><p><span style=\"font-family: Nanum Myeongjo\">[정류장 번호-23125]</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ간선버스_145, 440</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ지선버스_3011, 4212</span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\">정류장_영동119안전센터</span></p><p><span style=\"font-family: Nanum Myeongjo\">[정류장 번호-23126]</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ지선버스_3011, 4212</span></p>",
+      "mapLinks": {
+        "naver": "https://map.naver.com/p/entry/place/21413303",
+        "kakao": "https://map.kakao.com/?map_type=TYPE_MAP&itemId=17416438",
+        "tmap": "https://poi.tmobiweb.com/app/share/position?contents=cGtleT0yOTA2ODA0MDAmcG9pSWQ9MjkwNjgwNCZuYXZTZXE9MCZ0eXBlPTImcG9pTmFtZT0lRUIlQTclODglRUIlQTYlQUMlRUMlOTUlODQlRUMlQTUlQUMlRUMlOEElQTQlRUQlODAlOTglRUMlOTYlQjQmY2VudGVyWD00NTczMzkzJmNlbnRlclk9MTM1MDY4MyZ0aW1lPTIwMjUlRUIlODUlODQrMDklRUMlOUIlOTQrMjYlRUMlOUQlQkMrMDclM0EzNSZ0ZWw9MDItNTQxLTUwMDcmYWRkcj0lRUMlODQlOUMlRUMlOUElQjgrJUVBJUIwJTk1JUVCJTgyJUE4JUVBJUI1JUFDKyVFQiU4RiU4NCVFQyU4MiVCMCVFQiU4QyU4MCVFQiVBMSU5QyszMTg",
+        "google": "https://maps.app.goo.gl/iQ5VbCdJjo3anBcx6"
+      },
+      "navLinks": {
+        "kakao": "https://map.kakao.com/?map_type=TYPE_MAP&itemId=17416438",
+        "tmap": "https://poi.tmobiweb.com/app/share/position?contents=cGtleT0yOTA2ODA0MDAmcG9pSWQ9MjkwNjgwNCZuYXZTZXE9MCZ0eXBlPTImcG9pTmFtZT0lRUIlQTclODglRUIlQTYlQUMlRUMlOTUlODQlRUMlQTUlQUMlRUMlOEElQTQlRUQlODAlOTglRUMlOTYlQjQmY2VudGVyWD00NTczMzkzJmNlbnRlclk9MTM1MDY4MyZ0aW1lPTIwMjUlRUIlODUlODQrMDklRUMlOUIlOTQrMjYlRUMlOUQlQkMrMDclM0EzNSZ0ZWw9MDItNTQxLTUwMDcmYWRkcj0lRUMlODQlOUMlRUMlOUElQjgrJUVBJUIwJTk1JUVCJTgyJUE4JUVBJUI1JUFDKyVFQiU4RiU4NCVFQyU4MiVCMCVFQiU4QyU4MCVFQiVBMSU5QyszMTg"
+      },
+      "mapImage": "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/map/1768983348773_약도.png",
+      "lat": 37.521958,
+      "lng": 127.036586
     },
-    "groom": {
-        "name": "조현우",
-        "rank": "장남",
-        "phone": "010-3366-4848",
-        "bank": "기업",
-        "account": "040-086067-01-014",
-        "parents": {
-            "father": "조복래",
-            "mother": "나선희",
-            "fPhone": "010-9090-0824",
-            "mPhone": "010-8877-0824",
-            "fBank": "우리",
-            "fAccount": "109-08-072450",
-            "mBank": "신한",
-            "mAccount": "110-587-170868"
-        }
-    },
-    "bride": {
-        "name": "류하영",
-        "rank": "장녀",
-        "phone": "010-6556-7525",
-        "bank": "국민",
-        "account": "926-54-7559-46",
-        "parents": {
-            "father": "류민석",
-            "mother": "고우희",
-            "fPhone": "010-5356-7558",
-            "mPhone": "010-9858-7551",
-            "fBank": "농협",
-            "fAccount": "302-5356-7558-41",
-            "mBank": "신한",
-            "mAccount": "339-06-063092"
-        }
-    },
-    "images": {
-        "main": "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/bg/1768983395225_03.png",
-        "gallery": [
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974811293_KakaoTalk_20260120_232644976.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974825974_KakaoTalk_20260120_232644976_02.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974836256_KakaoTalk_20260120_232644976_04.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974841724_KakaoTalk_20260120_232644976_03.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974849659_KakaoTalk_20260120_232644976_05.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974857706_KakaoTalk_20260120_232644976_06.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974866646_KakaoTalk_20260120_232644976_07.png",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974874542_KakaoTalk_20260120_232644976_08.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974880899_KakaoTalk_20260120_232644976_09.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974889957_KakaoTalk_20260120_232644976_10.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974896661_KakaoTalk_20260120_232644976_11.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974903158_KakaoTalk_20260120_232644976_12.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974911156_KakaoTalk_20260120_232644976_13.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974927568_KakaoTalk_20260120_232644976_14.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974935131_KakaoTalk_20260120_232644976_15.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974942563_KakaoTalk_20260120_232644976_16.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974954274_KakaoTalk_20260120_232644976_17.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974962639_KakaoTalk_20260120_232644976_18.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974969702_KakaoTalk_20260120_232644976_19.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974989052_KakaoTalk_20260120_232644976_20.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974996089_KakaoTalk_20260120_232644976_21.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975019202_20230119_161204.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975027368_20221231_150128.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975038587_20230212_130341.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975048130_20240829_114654.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975060148_20230313_165215.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975109874_KakaoTalk_20260118_122505220_15.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975129236_KakaoTalk_20260118_122505220_09.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975141918_20240826_193349.jpg",
-            "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975181539_20241114_235227.jpg"
-        ]
-    },
-    "text": {
-        "mainOverlay": "<p><br></p><p><br></p><p>Wedding Invitation</p>",
-        "mainMessage": "<p style=\"text-align: center\">류하영 그리고 조현우</p><p style=\"text-align: center\"><br></p><p style=\"text-align: center\">2026년 05월 02일 토요일 PM 13시 00분</p><p style=\"text-align: center\">강남 마리아쥬 스퀘어</p><p style=\"text-align: center\"><br></p><p style=\"text-align: center\">영원히 함께할</p><p style=\"text-align: center\">사랑의 맹세</p><p style=\"text-align: center\">같이 축복해주세요</p><p style=\"text-align: center\"><br></p><p style=\"text-align: center\"><u>하객분들을 위해 준비한</u></p><p style=\"text-align: center\"><span style=\"color: rgb(103, 0, 0)\"><u>무제한 카페</u></span><u>와 </u><span style=\"color: rgb(107, 153, 0)\"><u>야외정원</u></span><u>이있으니</u></p><p style=\"text-align: center\"><u>30분 일찍 오셔서 즐거운 시간을</u></p><p style=\"text-align: center\"><u>보내주시길 바랍니다</u></p><p style=\"text-align: center\"><u><br></u></p><p style=\"text-align: center\"><span style=\"color: rgb(153, 0, 133)\"><u>(12시 30분 개장)</u></span></p>"
-    },
-    "media": {
-        "youtube": "UmdCDfXQ8wQ",
-        "bgm": []
-    },
-    "theme": {
-        "effect": "petals",
-        "color": "#f2aebc"
-    },
-    "sections": [
-        {
-            "id": "names",
-            "title": "청첩장 상단(Names)",
-            "isVisible": true,
-            "isFolded": false,
-            "order": 1
-        },
-        {
-            "id": "calendar",
-            "title": "결혼식 날(Calendar)",
-            "isVisible": true,
-            "isFolded": false,
-            "order": 2
-        },
-        {
-            "id": "youtube",
-            "title": "영상(Video)",
-            "isVisible": false,
-            "isFolded": false,
-            "order": 3
-        },
-        {
-            "id": "gallery",
-            "title": "사진 앨범(Gallery)",
-            "isVisible": true,
-            "isFolded": false,
-            "order": 4
-        },
-        {
-            "id": "phone",
-            "title": "연락처(Contact)",
-            "isVisible": true,
-            "isFolded": true,
-            "order": 5
-        },
-        {
-            "id": "accounts",
-            "title": "마음 전하실 곳(Accounts)",
-            "isVisible": true,
-            "isFolded": false,
-            "order": 6
-        },
-        {
-            "id": "location",
-            "title": "오시는 길(Location)",
-            "isVisible": true,
-            "isFolded": false,
-            "order": 7
-        },
-        {
-            "id": "guestbook",
-            "title": "방명록(Guestbook)",
-            "isVisible": false,
-            "isFolded": false,
-            "order": 8
-        },
-        {
-            "id": "rsvp",
-            "title": "참석여부(RSVP)",
-            "isVisible": false,
-            "isFolded": false,
-            "order": 9
-        },
-        {
-            "id": "share",
-            "title": "공유(Share)",
-            "isVisible": true,
-            "isFolded": false,
-            "order": 10
-        }
+    "secrets": {
+      "kakaoApiKey": "dacffa882aa3284870d06afa02bd5947",
+      "githubToken": ""
+    }
+  },
+  "groom": {
+    "name": "조현우",
+    "rank": "장남",
+    "phone": "010-3366-4848",
+    "bank": "기업",
+    "account": "040-086067-01-014",
+    "parents": {
+      "father": "조복래",
+      "mother": "나선희",
+      "fPhone": "010-9090-0824",
+      "mPhone": "010-8877-0824",
+      "fBank": "우리",
+      "fAccount": "109-08-072450",
+      "mBank": "신한",
+      "mAccount": "110-587-170868"
+    }
+  },
+  "bride": {
+    "name": "류하영",
+    "rank": "장녀",
+    "phone": "010-6556-7525",
+    "bank": "국민",
+    "account": "926-54-7559-46",
+    "parents": {
+      "father": "류민석",
+      "mother": "고우희",
+      "fPhone": "010-5356-7558",
+      "mPhone": "010-9858-7551",
+      "fBank": "농협",
+      "fAccount": "302-5356-7558-41",
+      "mBank": "신한",
+      "mAccount": "339-06-063092"
+    }
+  },
+  "images": {
+    "main": "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/bg/1768983395225_03.png",
+    "gallery": [
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974811293_KakaoTalk_20260120_232644976.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974825974_KakaoTalk_20260120_232644976_02.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974836256_KakaoTalk_20260120_232644976_04.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974841724_KakaoTalk_20260120_232644976_03.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974849659_KakaoTalk_20260120_232644976_05.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974857706_KakaoTalk_20260120_232644976_06.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974866646_KakaoTalk_20260120_232644976_07.png",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974874542_KakaoTalk_20260120_232644976_08.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974880899_KakaoTalk_20260120_232644976_09.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974889957_KakaoTalk_20260120_232644976_10.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974896661_KakaoTalk_20260120_232644976_11.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974903158_KakaoTalk_20260120_232644976_12.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974911156_KakaoTalk_20260120_232644976_13.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974927568_KakaoTalk_20260120_232644976_14.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974935131_KakaoTalk_20260120_232644976_15.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974942563_KakaoTalk_20260120_232644976_16.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974954274_KakaoTalk_20260120_232644976_17.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974962639_KakaoTalk_20260120_232644976_18.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974969702_KakaoTalk_20260120_232644976_19.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974989052_KakaoTalk_20260120_232644976_20.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974996089_KakaoTalk_20260120_232644976_21.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975019202_20230119_161204.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975027368_20221231_150128.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975038587_20230212_130341.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975048130_20240829_114654.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975060148_20230313_165215.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975109874_KakaoTalk_20260118_122505220_15.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975129236_KakaoTalk_20260118_122505220_09.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975141918_20240826_193349.jpg",
+      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975181539_20241114_235227.jpg"
     ],
-    "guestbook": [],
-    "rsvp": []
+    "og": {
+      "kakao": "",
+      "facebook": "",
+      "insta": "",
+      "x": "",
+      "blog": ""
+    }
+  },
+  "text": {
+    "mainOverlay": "<p><br></p><p><br></p><p>Wedding Invitation</p>",
+    "mainMessage": "<p style=\"text-align: center\">류하영 그리고 조현우</p><p style=\"text-align: center\"><br></p><p style=\"text-align: center\">2026년 05월 02일 토요일 PM 13시 00분</p><p style=\"text-align: center\">강남 마리아쥬 스퀘어</p><p style=\"text-align: center\"><br></p><p style=\"text-align: center\">영원히 함께할</p><p style=\"text-align: center\">사랑의 맹세</p><p style=\"text-align: center\">같이 축복해주세요</p><p style=\"text-align: center\"><br></p><p style=\"text-align: center\"><u>하객분들을 위해 준비한</u></p><p style=\"text-align: center\"><span style=\"color: rgb(103, 0, 0)\"><u>무제한 카페</u></span><u>와 </u><span style=\"color: rgb(107, 153, 0)\"><u>야외정원</u></span><u>이있으니</u></p><p style=\"text-align: center\"><u>30분 일찍 오셔서 즐거운 시간을</u></p><p style=\"text-align: center\"><u>보내주시길 바랍니다</u></p><p style=\"text-align: center\"><u><br></u></p><p style=\"text-align: center\"><span style=\"color: rgb(153, 0, 133)\"><u>(12시 30분 개장)</u></span></p>"
+  },
+  "media": {
+    "youtube": "UmdCDfXQ8wQ",
+    "bgm": []
+  },
+  "theme": {
+    "effect": "petals",
+    "color": "#f2aebc"
+  },
+  "sections": [
+    {
+      "id": "names",
+      "title": "청첩장 상단(Names)",
+      "isVisible": true,
+      "isFolded": false,
+      "order": 1
+    },
+    {
+      "id": "calendar",
+      "title": "결혼식 날(Calendar)",
+      "isVisible": true,
+      "isFolded": false,
+      "order": 2
+    },
+    {
+      "id": "youtube",
+      "title": "영상(Video)",
+      "isVisible": false,
+      "isFolded": false,
+      "order": 3
+    },
+    {
+      "id": "gallery",
+      "title": "사진 앨범(Gallery)",
+      "isVisible": true,
+      "isFolded": false,
+      "order": 4
+    },
+    {
+      "id": "phone",
+      "title": "연락처(Contact)",
+      "isVisible": true,
+      "isFolded": true,
+      "order": 5
+    },
+    {
+      "id": "accounts",
+      "title": "마음 전하실 곳(Accounts)",
+      "isVisible": true,
+      "isFolded": false,
+      "order": 6
+    },
+    {
+      "id": "location",
+      "title": "오시는 길(Location)",
+      "isVisible": true,
+      "isFolded": false,
+      "order": 7
+    },
+    {
+      "id": "guestbook",
+      "title": "방명록(Guestbook)",
+      "isVisible": false,
+      "isFolded": false,
+      "order": 8
+    },
+    {
+      "id": "rsvp",
+      "title": "참석여부(RSVP)",
+      "isVisible": false,
+      "isFolded": false,
+      "order": 9
+    },
+    {
+      "id": "share",
+      "title": "공유(Share)",
+      "isVisible": true,
+      "isFolded": false,
+      "order": 10
+    }
+  ],
+  "guestbook": [],
+  "rsvp": []
 }
