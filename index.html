@@ -34,6 +34,10 @@
             background: #fffcfc;
         }
 
+        .sun-editor-common {
+            text-align: var(--text-align, center);
+        }
+
         .eng-font {
             font-family: 'Great Vibes', cursive;
         }
@@ -237,11 +241,11 @@
                         <!-- 1. Names/Hero -->
                         <template x-if="section.id === 'names'">
                             <div class="text-center pb-12 bg-white">
-                                <div class="relative w-full mb-12 overflow-hidden">
+                                <div class="relative w-full mb-12 overflow-hidden bg-[#fffcfc]">
                                     <img :src="data.images.main" @click="lightbox = data.images.main"
-                                        class="w-full min-h-[500px] h-[75vh] object-cover block shadow-inner cursor-pointer">
+                                        class="w-full min-h-[500px] h-[75vh] object-contain block shadow-inner cursor-pointer">
                                     <div
-                                        class="absolute inset-0 flex flex-col items-center justify-center p-12 bg-black/10 pointer-events-none">
+                                        class="absolute inset-0 flex flex-col items-center justify-center p-12 bg-black/5 pointer-events-none">
                                         <div class="eng-font text-white text-5xl md:text-7xl mb-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] sun-editor-common"
                                             x-html="data.text.mainOverlay"></div>
                                         <div class="w-16 h-[1px] bg-white/50"></div>
@@ -249,8 +253,8 @@
                                 </div>
 
                                 <div class="max-w-md mx-auto space-y-8">
-                                    <div class="text-sm md:text-base leading-relaxed whitespace-pre-line lux-font sun-editor-common px-8"
-                                        :style="`font-size: ${data.theme?.style?.fontSize || '14px'}; line-height: ${data.theme?.style?.lineHeight || '1.8'}; letter-spacing: ${data.theme?.style?.letterSpacing || '0px'}; text-align: ${data.theme?.style?.textAlign || 'center'}`"
+                                    <div class="text-sm md:text-base leading-relaxed lux-font sun-editor-common px-8"
+                                        :style="`font-size: ${data.theme?.style?.fontSize || '14px'}; line-height: ${data.theme?.style?.lineHeight || '1.8'}; letter-spacing: ${data.theme?.style?.letterSpacing || '0px'}; --text-align: ${data.theme?.style?.textAlign || 'center'}`"
                                         x-html="data.text.mainMessage"></div>
                                 </div>
 
@@ -437,9 +441,8 @@
                                     <div class="text-sm text-gray-500 mt-1" x-text="data.config.venue.address"></div>
                                 </div>
                                 <div id="map" class="w-full h-64 bg-gray-100 rounded mb-4"></div>
-                                <div class="text-sm md:text-base leading-relaxed bg-[#fff9f9] p-6 md:p-10 rounded-2xl shadow-sm border border-pink-50 sun-editor-common"
-                                    style="white-space: pre-wrap; word-break: break-word;"
-                                    x-html="data.config.venue.guideText"></div>
+                                <div class="text-sm md:text-base leading-relaxed bg-[#fff9f9] p-6 md:p-10 rounded-2xl shadow-sm border border-pink-50 sun-editor-common mb-8"
+                                    style="word-break: break-word;" x-html="data.config.venue.guideText"></div>
 
                                 <!-- Map Apps -->
                                 <div class="grid grid-cols-4 gap-4 mb-8">
