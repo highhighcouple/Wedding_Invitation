@@ -5,7 +5,7 @@
             "name": "마리아쥬 스퀘어",
             "phone": "02-541-5007",
             "address": "서울특별시 강남구 도산대로 318 SB타워 G층",
-            "guideText": "<p style=\"text-align: center\"><u>내부주차 300대 수용 가능</u></p><p style=\"text-align: center\"><u>당일 교통혼잡이 예상되는 경우, 지하철 + 셔틀버스 이용을 적극 권장드립니다.</u></p><p><br></p><p><strong>셔틀운행</strong></p><p><br></p><p>7호선, 분당선 강남구청역 3번출구 셔틀버스 이용</p><p>ㄴ예식 있을 시 수시 운행</p><p><br></p><p><strong>지하철</strong></p><p><br></p><p>7호선, 분당선 강남구청역 하차강남구청역 3-1번 출구</p><p>ㄴ[도보] 3-1번출구 좌측 학동사거리 방향 600M 도보 후 학동사거리에서 좌회전 200M</p><p><br></p><p>분당선 압구정로데오역</p><p> 하차압구정로데오역 5번 출구</p><p>ㄴ[도보] 400M 도보 후 학동사거리 횡단보도 건너 우측 200M</p><p><br></p><p><strong>버스</strong></p><p><br></p><p>정류장_도산공원사거리.호림아트센터 [정류장 번호-23125]</p><p>ㄴ간선버스_145, 440</p><p>ㄴ지선버스_3011, 4212</p><p><br></p><p>정류장_영동119안전센터 [정류장 번호-23126]</p><p>ㄴ지선버스_3011, 4212</p>",
+            "guideText": "<p style=\"text-align: center\"><span style=\"font-family: Nanum Myeongjo\"><u>내부주차 300대 수용 가능</u></span></p><p style=\"text-align: center\"><span style=\"font-family: Nanum Myeongjo\"><u>당일 교통혼잡이 예상되는 경우,</u></span></p><p style=\"text-align: center\"><span style=\"font-family: Nanum Myeongjo\"><u>지하철 + 셔틀버스 이용을 적극 권장드립니다.</u></span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\"><strong>셔틀운행</strong></span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\">7호선, 분당선 강남구청역 3번출구 셔틀버스 이용</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ예식 있을 시 수시 운행</span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\"><strong>지하철</strong></span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\">7호선, 분당선 강남구청역 하차강남구청역 3-1번 출구</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ[도보] 3-1번출구 좌측 학동사거리 방향 600M 도보 후 학동사거리에서 좌회전 200M</span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\">분당선 압구정로데오역</span></p><p><span style=\"font-family: Nanum Myeongjo\"> 하차압구정로데오역 5번 출구</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ[도보] 400M 도보 후 학동사거리 횡단보도 건너 우측 200M</span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\"><strong>버스</strong></span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\">정류장_도산공원사거리.호림아트센터 [정류장 번호-23125]</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ간선버스_145, 440</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ지선버스_3011, 4212</span></p><p><span style=\"font-family: Nanum Myeongjo\"><br></span></p><p><span style=\"font-family: Nanum Myeongjo\">정류장_영동119안전센터 [정류장 번호-23126]</span></p><p><span style=\"font-family: Nanum Myeongjo\">ㄴ지선버스_3011, 4212</span></p>",
             "mapLinks": {
                 "naver": "https://map.naver.com/p/entry/place/21413303",
                 "kakao": "https://map.kakao.com/?map_type=TYPE_MAP&itemId=17416438",
@@ -18,7 +18,7 @@
             }
         },
         "secrets": {
-            "kakaoApiKey": "",
+            "kakaoApiKey": "dacffa882aa3284870d06afa02bd5947",
             "githubToken": ""
         }
     },
