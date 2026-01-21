@@ -111,7 +111,7 @@
     {
       "id": "gallery",
       "title": "사진 앨범(Gallery)",
-      "isVisible": false,
+      "isVisible": true,
       "isFolded": false,
       "order": 4
     },
