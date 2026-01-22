@@ -583,6 +583,21 @@
                             </div>
                         </template>
 
+                        <!-- 10. Mini Game (Wedding Path) -->
+                        <template x-if="section.id === 'minigame'">
+                            <div class="px-4 pb-10 text-center bg-[#111] text-white py-12">
+                                <h2 class="text-2xl font-bold mb-6 font-[Nanum Myeongjo] text-pink-300">Wedding Path
+                                </h2>
+                                <p class="text-xs text-gray-400 mb-4">PC: WASD / Arrows | Mobile: Touch to Start</p>
+                                <div class="relative w-full max-w-[800px] mx-auto aspect-[2/1] border-4 border-gray-800 rounded-lg overflow-hidden shadow-2xl"
+                                    x-init="$nextTick(() => { window.publicGame = new HighHighGame('publicGameCanvas'); })">
+                                    <canvas id="publicGameCanvas" width="800" height="400"
+                                        class="w-full h-full object-contain"></canvas>
+                                </div>
+                                <p class="text-[10px] text-gray-500 mt-4">검은색 영역을 피해 가운데에서 만나세요!</p>
+                            </div>
+                        </template>
+
                         <!-- 10. Share -->
                         <template x-if="section.id === 'share'">
                             <div class="px-8 pb-10 flex flex-col items-center gap-6">
@@ -675,6 +690,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="minigame.js"></script>
     <script>
         function app() {
             return {
