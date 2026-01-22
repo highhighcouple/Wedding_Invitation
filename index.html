@@ -365,15 +365,20 @@
                         <!-- 4. Gallery -->
                         <template x-if="section.id === 'gallery'">
                             <div class="px-4 pb-10">
-                                <div class="gal-main mb-2 rounded shadow-xl"
-                                    :style="`background-image: url(${getGalleryImage(galIdx, 'thumbnail')})`"
-                                    @click="openLightbox(getGalleryImage(galIdx, 'original'))"></div>
+                                <!-- Main Gallery Image (Original, Object-Contain) -->
+                                <div class="gal-main mb-2 rounded shadow-xl relative overflow-hidden bg-black"
+                                    @click="openLightbox(getGalleryImage(galIdx, 'original'))">
+                                    <img :src="getGalleryImage(galIdx, 'original')" class="w-full h-full object-contain"
+                                        x-show="galleryMainLoaded" @load="galleryMainLoaded = true"
+                                        style="transition: opacity 0.6s ease-in-out;">
+                                </div>
+                                <!-- Thumbnail Grid (Thumbnails, 5x6 max 30 images) -->
                                 <div class="grid grid-cols-5 gap-1">
                                     <template x-for="(img, idx) in data.images.gallery.slice(0,30)" :key="idx">
                                         <div class="gal-grid-item"
                                             :style="`background-image: url(${getGalleryImage(idx, 'thumbnail')})`"
-                                            :class="galIdx===idx ? 'ring-2 ring-pink-300 z-10' : ''"
-                                            @click="galIdx = idx"></div>
+                                            :class="galIdx===idx ? 'ring-2 ring-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.6)] z-10' : ''"
+                                            @click="selectGalleryImage(idx)"></div>
                                     </template>
                                 </div>
                             </div>
@@ -678,6 +683,8 @@
                 calDays: [], calTitle: '', dDay: '',
                 bgmPlaying: false, audio: null,
                 galIdx: 0,
+                galleryMainLoaded: false,
+                nextImagePreloader: null,
                 bbs: [], newPost: { name: '', message: '' },
                 join: [], newJoin: { side: 'groom', name: '', count: 0, meal: true },
                 copyNotified: false,
@@ -739,12 +746,22 @@
                         try { this.bbs = await (await fetch('bbs.json')).json(); } catch (e) { }
                         try { this.join = await (await fetch('join.json')).json(); } catch (e) { }
 
-                        // Gallery Loop (Smooth, slower transitions)
-                        setInterval(() => {
-                            if (this.data.images.gallery.length) {
-                                this.galIdx = (this.galIdx + 1) % this.data.images.gallery.length;
-                            }
-                        }, 8000);
+                        // Gallery Loop (Random start, 6s interval, preload next)
+                        if (this.data.images.gallery.length > 0) {
+                            // Random start
+                            this.galIdx = Math.floor(Math.random() * this.data.images.gallery.length);
+                            this.preloadNextGalleryImage();
+
+                            setInterval(() => {
+                                if (this.data.images.gallery.length) {
+                                    this.galleryMainLoaded = false;
+                                    setTimeout(() => {
+                                        this.galIdx = (this.galIdx + 1) % this.data.images.gallery.length;
+                                        this.preloadNextGalleryImage();
+                                    }, 600); // Wait for fade out
+                                }
+                            }, 6000);
+                        }
 
                         // Observer
                         setTimeout(() => this.initObserver(), 500);
@@ -1072,6 +1089,26 @@
 
                 openLightbox(src) {
                     if (src) this.lightbox = src;
+                },
+
+                // Gallery: Select image from thumbnail grid
+                selectGalleryImage(idx) {
+                    this.galleryMainLoaded = false;
+                    this.galIdx = idx;
+                    this.preloadNextGalleryImage();
+                },
+
+                // Gallery: Preload next image for smooth transitions
+                preloadNextGalleryImage() {
+                    if (!this.data.images || !this.data.images.gallery || this.data.images.gallery.length === 0) return;
+
+                    const nextIdx = (this.galIdx + 1) % this.data.images.gallery.length;
+                    const nextImgUrl = this.getGalleryImage(nextIdx, 'original');
+
+                    if (nextImgUrl) {
+                        this.nextImagePreloader = new Image();
+                        this.nextImagePreloader.src = nextImgUrl;
+                    }
                 },
 
 
