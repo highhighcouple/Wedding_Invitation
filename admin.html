@@ -972,6 +972,13 @@
                     if (!file) return;
                     if (!this.data.config.secrets.githubToken) return alert('GitHub Token required for upload');
 
+                    // For gallery images, generate thumbnail
+                    if (target === 'gallery' && file.type.startsWith('image/')) {
+                        await this.uploadGalleryWithThumbnail(file);
+                        return;
+                    }
+
+                    // For other files, use standard upload
                     const reader = new FileReader();
                     reader.onload = async (evt) => {
                         const content = evt.target.result.split(',')[1]; // base64
@@ -1000,16 +1007,87 @@
                                 else if (target === 'bgm') this.data.media.bgm.push(url);
                                 else if (target === 'mapImg') this.data.config.venue.mapImage = url;
 
-                                alert('업로드 성공: ' + path);
-
-                                // Auto Publish on Upload for Instant Apply
-                                this.publishGithub(true);
+                                alert('Upload successful!');
+                                await this.saveData();
                             } else {
-                                const err = await res.json();
-                                alert('업로드 실패: ' + err.message);
+                                alert('Upload failed');
                             }
-                        } catch (err) { alert('네트워크 오류'); }
+                        } catch (err) {
+                            alert('Upload error: ' + err.message);
+                        }
                     };
+                    reader.readAsDataURL(file);
+                },
+
+                async uploadGalleryWithThumbnail(file) {
+                    const timestamp = Date.now();
+                    const baseName = file.name.replace(/\.[^/.]+$/, '');
+                    const ext = file.name.split('.').pop();
+
+                    // Create thumbnail using Canvas
+                    const createThumbnail = (img, maxWidth = 200, quality = 0.6) => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        const ratio = maxWidth / img.width;
+                        canvas.width = maxWidth;
+                        canvas.height = img.height * ratio;
+
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        return canvas.toDataURL('image/jpeg', quality).split(',')[1];
+                    };
+
+                    // Load image
+                    const img = new Image();
+                    const reader = new FileReader();
+
+                    reader.onload = async (e) => {
+                        img.onload = async () => {
+                            try {
+                                // Generate thumbnail
+                                const thumbContent = createThumbnail(img);
+
+                                // Get original content
+                                const originalContent = e.target.result.split(',')[1];
+
+                                // Upload thumbnail
+                                const thumbPath = `local/images/gallery/${timestamp}_thumb_${baseName}.jpg`;
+                                const thumbRes = await fetch(`https://api.github.com/repos/highhighcouple/Wedding_Invitation/contents/${thumbPath}`, {
+                                    method: 'PUT',
+                                    headers: { 'Authorization': `token ${this.data.config.secrets.githubToken}` },
+                                    body: JSON.stringify({ message: 'upload thumbnail', content: thumbContent })
+                                });
+
+                                // Upload original
+                                const origPath = `local/images/gallery/${timestamp}_${file.name}`;
+                                const origRes = await fetch(`https://api.github.com/repos/highhighcouple/Wedding_Invitation/contents/${origPath}`, {
+                                    method: 'PUT',
+                                    headers: { 'Authorization': `token ${this.data.config.secrets.githubToken}` },
+                                    body: JSON.stringify({ message: 'upload original', content: originalContent })
+                                });
+
+                                if (thumbRes.ok && origRes.ok) {
+                                    const thumbJson = await thumbRes.json();
+                                    const origJson = await origRes.json();
+
+                                    // Add to gallery as object
+                                    this.data.images.gallery.push({
+                                        thumbnail: thumbJson.content.download_url,
+                                        original: origJson.content.download_url
+                                    });
+
+                                    alert('Gallery image uploaded with thumbnail!');
+                                    await this.saveData();
+                                } else {
+                                    alert('Upload failed');
+                                }
+                            } catch (err) {
+                                alert('Thumbnail generation error: ' + err.message);
+                            }
+                        };
+                        img.src = e.target.result;
+                    };
+
                     reader.readAsDataURL(file);
                 },
 

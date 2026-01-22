@@ -12,7 +12,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://highhighcouple.github.io/Wedding_Invitation/">
     <meta property="og:title" content="조현우 ♥ 류하영의 모바일 청첩장">
-    <meta property="og:description" content="2026년 05월 02일 토요일 PM 13시 00분 | 강남 마리아쥬 스퀘어 | 영원히 함께할 사랑의 맹세, 같이 축복해주세요">
+    <meta property="og:description" content="2026년 5월 2일 토요일 PM 13시 | 강남 마리아쥬 스퀘어 | 영원히 함께할 사랑의 맹세, 같이 축복해주세요">
     <meta property="og:image"
         content="https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/og/thumbnail.png">
     <meta property="og:image:width" content="1200">
@@ -24,12 +24,12 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://highhighcouple.github.io/Wedding_Invitation/">
     <meta name="twitter:title" content="조현우 ♥ 류하영의 모바일 청첩장">
-    <meta name="twitter:description" content="2026년 05월 02일 토요일 PM 13시 00분 | 강남 마리아쥬 스퀘어 | 영원히 함께할 사랑의 맹세, 같이 축복해주세요">
+    <meta name="twitter:description" content="2026년 5월 2일 토요일 PM 13시 | 강남 마리아쥬 스퀘어 | 영원히 함께할 사랑의 맹세, 같이 축복해주세요">
     <meta name="twitter:image"
         content="https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/og/thumbnail.png">
 
     <!-- Additional Meta Tags -->
-    <meta name="description" content="2026년 05월 02일 토요일 PM 13시 00분 | 강남 마리아쥬 스퀘어 | 조현우와 류하영의 결혼식에 초대합니다">
+    <meta name="description" content="2026년 5월 2일 토요일 PM 13시 | 강남 마리아쥬 스퀘어 | 조현우와 류하영의 결혼식에 초대합니다">
     <meta name="keywords" content="결혼식, 청첩장, 모바일청첩장, 조현우, 류하영, 마리아쥬스퀘어">
     <meta name="author" content="조현우, 류하영">
     <meta name="theme-color" content="#f2aebc">
@@ -172,6 +172,12 @@
             background-position: center;
             border: 1px solid #f0f0f0;
             cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .gal-grid-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .gal-main {
@@ -181,8 +187,9 @@
             background-color: #000;
             background-repeat: no-repeat;
             background-position: center;
-            transition: opacity 0.5s;
+            transition: opacity 0.8s ease-in-out, background-image 0.8s ease-in-out;
             position: relative;
+            cursor: pointer;
         }
 
         .gal-main::after {
@@ -263,8 +270,7 @@
                         <template x-if="section.id === 'names'">
                             <div class="text-center pb-12 bg-white">
                                 <div class="relative w-full overflow-hidden bg-[#fffcfc] h-[75vh]">
-                                    <img :src="data.images.main" @click="lightbox = data.images.main"
-                                        class="w-full h-full object-cover block shadow-inner cursor-pointer">
+                                    <img :src="data.images.main" class="w-full h-full object-cover block shadow-inner">
                                     <div
                                         class="absolute inset-0 flex flex-col items-center justify-center p-12 bg-black/5 pointer-events-none">
                                         <div class="eng-font text-white text-5xl md:text-7xl mb-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)] sun-editor-common"
@@ -360,12 +366,12 @@
                         <template x-if="section.id === 'gallery'">
                             <div class="px-4 pb-10">
                                 <div class="gal-main mb-2 rounded shadow-xl"
-                                    :style="`background-image: url(${data.images.gallery[galIdx] || ''})`"
-                                    @click="openLightbox(data.images.gallery[galIdx])">
-                                </div>
+                                    :style="`background-image: url(${getGalleryImage(galIdx, 'thumbnail')})`"
+                                    @click="openLightbox(getGalleryImage(galIdx, 'original'))"></div>
                                 <div class="grid grid-cols-5 gap-1">
                                     <template x-for="(img, idx) in data.images.gallery.slice(0,30)" :key="idx">
-                                        <div class="gal-grid-item" :style="`background-image: url(${img})`"
+                                        <div class="gal-grid-item"
+                                            :style="`background-image: url(${getGalleryImage(idx, 'thumbnail')})`"
                                             :class="galIdx===idx ? 'ring-2 ring-pink-300 z-10' : ''"
                                             @click="galIdx = idx"></div>
                                     </template>
@@ -733,12 +739,12 @@
                         try { this.bbs = await (await fetch('bbs.json')).json(); } catch (e) { }
                         try { this.join = await (await fetch('join.json')).json(); } catch (e) { }
 
-                        // Gallery Loop
+                        // Gallery Loop (Smooth, slower transitions)
                         setInterval(() => {
                             if (this.data.images.gallery.length) {
                                 this.galIdx = (this.galIdx + 1) % this.data.images.gallery.length;
                             }
-                        }, 5000);
+                        }, 8000);
 
                         // Observer
                         setTimeout(() => this.initObserver(), 500);
@@ -1040,8 +1046,6 @@
                     document.querySelectorAll('.section-wrap').forEach(el => obs.observe(el));
                 },
 
-                openLightbox(img) { this.lightbox = img; },
-
                 getPhones(side) {
                     const p = this.data[side];
                     const pp = p.parents;
@@ -1049,6 +1053,25 @@
                     if (pp.father) list.push({ label: pp.father, phone: pp.fPhone });
                     if (pp.mother) list.push({ label: pp.mother, phone: pp.mPhone });
                     return list;
+                },
+
+                // Gallery Helper: Support both old (string) and new (object) formats
+                getGalleryImage(idx, type = 'thumbnail') {
+                    if (!this.data.images || !this.data.images.gallery) return '';
+                    const img = this.data.images.gallery[idx];
+                    if (!img) return '';
+
+                    // New format: {thumbnail: '...', original: '...'}
+                    if (typeof img === 'object' && img.thumbnail && img.original) {
+                        return type === 'original' ? img.original : img.thumbnail;
+                    }
+
+                    // Old format: just a string URL (backward compatible)
+                    return img;
+                },
+
+                openLightbox(src) {
+                    if (src) this.lightbox = src;
                 },
 
 
