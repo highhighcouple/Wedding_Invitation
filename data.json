@@ -62,36 +62,10 @@
   "images": {
     "main": "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/bg/1768983395225_03.png",
     "gallery": [
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974811293_KakaoTalk_20260120_232644976.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974825974_KakaoTalk_20260120_232644976_02.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974836256_KakaoTalk_20260120_232644976_04.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974841724_KakaoTalk_20260120_232644976_03.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974849659_KakaoTalk_20260120_232644976_05.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974857706_KakaoTalk_20260120_232644976_06.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974866646_KakaoTalk_20260120_232644976_07.png",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974874542_KakaoTalk_20260120_232644976_08.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974880899_KakaoTalk_20260120_232644976_09.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974889957_KakaoTalk_20260120_232644976_10.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974896661_KakaoTalk_20260120_232644976_11.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974903158_KakaoTalk_20260120_232644976_12.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974911156_KakaoTalk_20260120_232644976_13.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974927568_KakaoTalk_20260120_232644976_14.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974935131_KakaoTalk_20260120_232644976_15.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974942563_KakaoTalk_20260120_232644976_16.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974954274_KakaoTalk_20260120_232644976_17.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974962639_KakaoTalk_20260120_232644976_18.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974969702_KakaoTalk_20260120_232644976_19.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974989052_KakaoTalk_20260120_232644976_20.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768974996089_KakaoTalk_20260120_232644976_21.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975019202_20230119_161204.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975027368_20221231_150128.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975038587_20230212_130341.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975048130_20240829_114654.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975060148_20230313_165215.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975109874_KakaoTalk_20260118_122505220_15.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975129236_KakaoTalk_20260118_122505220_09.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975141918_20240826_193349.jpg",
-      "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1768975181539_20241114_235227.jpg"
+      {
+        "thumbnail": "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1769046576809_thumb_KakaoTalk_20260120_232644976.jpg",
+        "original": "https://raw.githubusercontent.com/highhighcouple/Wedding_Invitation/main/local/images/gallery/1769046576809_KakaoTalk_20260120_232644976.jpg"
+      }
     ],
     "og": {
       "kakao": "",
