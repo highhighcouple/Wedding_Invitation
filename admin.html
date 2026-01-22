@@ -833,6 +833,14 @@
                         } catch (e) { }
                     }
                     if (!this.data.sections || !this.data.sections.length) this.data.sections = this.defaultSections;
+                    else {
+                        // Merge missing default sections
+                        this.defaultSections.forEach(def => {
+                            if (!this.data.sections.find(s => s.id === def.id)) {
+                                this.data.sections.push(def);
+                            }
+                        });
+                    }
                     if (!this.data.media) this.data.media = { bgm: [] };
                     if (!this.data.media.bgm) this.data.media.bgm = [];
 

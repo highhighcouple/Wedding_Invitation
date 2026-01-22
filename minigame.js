@@ -35,7 +35,12 @@ class HighHighGame {
     }
 
     bindEvents() {
-        window.addEventListener('keydown', e => this.keys[e.key] = true);
+        window.addEventListener('keydown', e => {
+            if (this.state === 'playing' && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+                e.preventDefault();
+            }
+            this.keys[e.key] = true;
+        });
         window.addEventListener('keyup', e => this.keys[e.key] = false);
 
         // Start on Click/Touch
