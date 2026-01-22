@@ -1077,7 +1077,7 @@
                                     });
 
                                     alert('Gallery image uploaded with thumbnail!');
-                                    await this.saveData();
+                                    await this.publishGithub(true);
                                 } else {
                                     alert('Upload failed');
                                 }
@@ -1143,7 +1143,7 @@
                         })
                         .then(r => {
                             if (r.ok) {
-                                if (!silent) alert('🎉 배포가 성공적으로 완료되었습니다!\n방금 수정한 내용이 수 분 내에 실제 사이트에 반영됩니다.');
+                                if (!silent) alert('✅ 배포되었습니다!\n\n수정한 내용이 수 분 내에 실제 사이트에 반영됩니다.');
                                 else console.log('Auto-apply: Successful');
                             } else {
                                 return r.json().then(err => {
@@ -1151,9 +1151,9 @@
                                 });
                             }
                         })
-                        .catch(err => {
-                            if (!silent) alert('❌ 배포 실패: ' + err.message);
-                            console.error('Publish Error:', err);
+                        .catch(e => {
+                            if (!silent) alert('❌ 배포 실패되었습니다.\n\n에러: ' + e.message);
+                            else console.error('Auto-apply failed:', e);
                         });
 
                     localStorage.setItem('wedding_v2_data', JSON.stringify(this.data));
