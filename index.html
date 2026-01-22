@@ -378,7 +378,7 @@
                                     <template x-for="(img, idx) in data.images.gallery.slice(0,30)" :key="idx">
                                         <div class="gal-grid-item"
                                             :style="`background-image: url(${getGalleryImage(idx, 'thumbnail')})`"
-                                            :class="galIdx===idx ? 'ring-2 ring-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.6)] z-10' : ''"
+                                            :class="galIdx===idx ? 'ring-2 ring-pink-300 shadow-[0_0_15px_rgba(249,168,212,0.8)] z-10' : ''"
                                             @click="selectGalleryImage(idx)"></div>
                                     </template>
                                 </div>
@@ -685,6 +685,7 @@
                 bgmPlaying: false, audio: null,
                 galIdx: 0,
                 galleryMainLoaded: false,
+                galleryTimer: null,
                 nextImagePreloader: null,
                 bbs: [], newPost: { name: '', message: '' },
                 join: [], newJoin: { side: 'groom', name: '', count: 0, meal: true },
@@ -753,15 +754,8 @@
                             this.galIdx = Math.floor(Math.random() * this.data.images.gallery.length);
                             this.preloadNextGalleryImage();
 
-                            setInterval(() => {
-                                if (this.data.images.gallery.length) {
-                                    this.galleryMainLoaded = false;
-                                    setTimeout(() => {
-                                        this.galIdx = (this.galIdx + 1) % this.data.images.gallery.length;
-                                        this.preloadNextGalleryImage();
-                                    }, 600); // Wait for fade out
-                                }
-                            }, 6000);
+                            this.galleryMainLoaded = true;
+                            this.startGalleryLoop();
                         }
 
                         // Observer
@@ -1094,9 +1088,38 @@
 
                 // Gallery: Select image from thumbnail grid
                 selectGalleryImage(idx) {
+                    this.stopGalleryLoop();
+
+                    // Instant switch logic
                     this.galleryMainLoaded = false;
-                    this.galIdx = idx;
+                    this.galIdx = idx; // Switch index
+
+                    // Wait for Vue/Alpine to process update then fade in via @load or timeout
+                    // Note: If image is cached, @load might fire very fast.
+                    // We restart the loop after a delay so user can view the selected image.
                     this.preloadNextGalleryImage();
+
+                    this.startGalleryLoop();
+                },
+
+                startGalleryLoop() {
+                    this.stopGalleryLoop();
+                    this.galleryTimer = setInterval(() => {
+                        if (this.data.images.gallery.length) {
+                            this.galleryMainLoaded = false;
+                            setTimeout(() => {
+                                this.galIdx = (this.galIdx + 1) % this.data.images.gallery.length;
+                                this.preloadNextGalleryImage();
+                            }, 600); // Wait for fade out
+                        }
+                    }, 6000);
+                },
+
+                stopGalleryLoop() {
+                    if (this.galleryTimer) {
+                        clearInterval(this.galleryTimer);
+                        this.galleryTimer = null;
+                    }
                 },
 
                 // Gallery: Preload next image for smooth transitions
