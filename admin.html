@@ -903,9 +903,29 @@
 
                 async loadExternalData() {
                     try {
-                        const r1 = await fetch('bbs.json'); if (r1.ok) this.bbs = await r1.json();
-                        const r2 = await fetch('join.json'); if (r2.ok) this.joins = await r2.json();
-                    } catch (e) { }
+                        const timestamp = Date.now();
+                        const r1 = await fetch('bbs.json?v=' + timestamp); if (r1.ok) this.bbs = await r1.json();
+                        const r2 = await fetch('join.json?v=' + timestamp); if (r2.ok) this.joins = await r2.json();
+
+                        // Load Main Data
+                        const r3 = await fetch('data.json?v=' + timestamp);
+                        if (r3.ok) {
+                            const cloudData = await r3.json();
+                            // Merge or Replace? Replace is safer for "Sync from Server"
+                            this.data = cloudData;
+
+                            // Re-init editors with new data
+                            this.$nextTick(() => {
+                                if (this._editors) {
+                                    Object.keys(this._editors).forEach(key => {
+                                        const val = _.get(this, key) || '';
+                                        this._editors[key].setContents(val);
+                                    });
+                                }
+                            });
+                            alert('서버에서 데이터를 불러왔습니다.');
+                        }
+                    } catch (e) { console.error(e); }
                 },
 
                 async deleteItem(type, idx) {

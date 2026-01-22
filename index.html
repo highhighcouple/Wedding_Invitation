@@ -368,9 +368,10 @@
                                 <!-- Main Gallery Image (Original, Object-Contain) -->
                                 <div class="gal-main mb-2 rounded shadow-xl relative overflow-hidden bg-black"
                                     @click="openLightbox(getGalleryImage(galIdx, 'original'))">
-                                    <img :src="getGalleryImage(galIdx, 'original')" class="w-full h-full object-contain"
-                                        x-show="galleryMainLoaded" @load="galleryMainLoaded = true"
-                                        style="transition: opacity 0.6s ease-in-out;">
+                                    <img :src="getGalleryImage(galIdx, 'original')"
+                                        class="w-full h-full object-contain transition-opacity duration-600 ease-in-out"
+                                        :class="galleryMainLoaded ? 'opacity-100' : 'opacity-0'"
+                                        @load="galleryMainLoaded = true">
                                 </div>
                                 <!-- Thumbnail Grid (Thumbnails, 5x6 max 30 images) -->
                                 <div class="grid grid-cols-5 gap-1">
