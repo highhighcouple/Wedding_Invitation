@@ -741,9 +741,35 @@
             </div>
         </div>
 
+        <!-- TAB: MINI GAME -->
+        <div x-show="tab === 'mini_game'" class="space-y-4">
+            <div class="card p-6 rounded-lg text-center bg-[#0e141b] border border-[#2a475e]">
+                <h3 class="text-xl font-bold text-[#66c0f4] mb-4">High High Couple Game Test</h3>
+                <p class="text-sm text-gray-400 mb-6 font-mono">
+                    <span class="text-white">Groom (Left):</span> W, A, S, D &nbsp;|&nbsp;
+                    <span class="text-white">Bride (Right):</span> Arrows
+                </p>
+                <div id="game-container"
+                    class="relative mx-auto border-4 border-[#2a475e] shadow-[0_0_20px_rgba(0,0,0,0.5)]"
+                    style="width: 800px; height: 400px; background: black;">
+                    <canvas id="gameCanvas" width="800" height="400"></canvas>
+                </div>
+                <div class="mt-6 flex justify-center gap-4">
+                    <button class="btn-blue px-8 py-2 text-lg font-bold"
+                        onclick="if(!window.gameInstance) window.gameInstance = new HighHighGame('gameCanvas'); window.gameInstance.start();">
+                        🎮 GAME START
+                    </button>
+                    <button class="btn-gray px-6 py-2" onclick="if(window.gameInstance) window.gameInstance.reset();">
+                        Restart
+                    </button>
+                </div>
+            </div>
+        </div>
+
         </div>
     </main>
 
+    <script src="minigame.js"></script>
     <script>
         function admin() {
             return {
@@ -757,6 +783,7 @@
                     { id: 'logistics', name: '오시는 길 (Location)', icon: '📍' },
                     { id: 'data_mgmt', name: '방명록 및 참석여부 (Data)', icon: '📂' },
                     { id: 'settings', name: '고급 설정 (Settings)', icon: '⚙️' },
+                    { id: 'mini_game', name: '미니게임 테스트 (Game)', icon: '🎮' },
                 ],
                 bbs: [], joins: [],
                 effects: [
