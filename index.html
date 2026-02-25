@@ -352,8 +352,7 @@
                                 <div class="relative w-full aspect-video bg-black rounded shadow-lg overflow-hidden group cursor-pointer"
                                     @click="showVideo=true">
                                     <img :src="`https://i.ytimg.com/vi/${data.media.youtube.trim()}/hqdefault.jpg`"
-                                        @error="$el.src='https://i.ytimg.com/vi/'+data.media.youtube.trim()+'/0.jpg'"
-                                        class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition">
+                                        class="w-full h-full object-cover transition duration-300">
                                     <div class="absolute inset-0 flex items-center justify-center">
                                         <div
                                             class="w-12 h-12 bg-white/80 rounded-full flex items-center justify-center text-xl pl-1">
