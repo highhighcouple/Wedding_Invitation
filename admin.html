@@ -476,6 +476,17 @@
                     </div>
                 </div>
 
+                <!-- YouTube Video -->
+                <div class="p-4 bg-[#12151a] rounded border border-[#2a475e]">
+                    <label class="steam-label">YouTube 동영상 (ID 또는 URL)</label>
+                    <div class="flex gap-2">
+                        <input type="text" x-model="data.media.youtube"
+                            @input="data.media.youtube = extractYoutubeId($event.target.value)" class="steam-input"
+                            placeholder="유튜브 링크 또는 ID를 입력하세요">
+                    </div>
+                    <p class="text-[10px] text-gray-500 mt-2">※ 링크를 붙여넣으면 자동으로 영상 ID가 추출됩니다.</p>
+                </div>
+
                 <!-- Gallery -->
                 <div class="space-y-4">
                     <div class="flex justify-between">
@@ -841,8 +852,9 @@
                             }
                         });
                     }
-                    if (!this.data.media) this.data.media = { bgm: [] };
+                    if (!this.data.media) this.data.media = { bgm: [], youtube: '' };
                     if (!this.data.media.bgm) this.data.media.bgm = [];
+                    if (!this.data.media.youtube) this.data.media.youtube = '';
 
                     // Token Sync Logic
                     const localToken = localStorage.getItem('ghToken');
@@ -1268,6 +1280,13 @@
                         };
                         document.head.appendChild(script);
                     }
+                },
+
+                extractYoutubeId(url) {
+                    if (!url) return '';
+                    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+                    const match = url.match(regExp);
+                    return (match && match[2].length === 11) ? match[2] : url;
                 },
 
                 getAdminImageUrl(img) {
