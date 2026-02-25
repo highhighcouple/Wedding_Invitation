@@ -221,7 +221,7 @@
     {
       "id": "youtube",
       "title": "영상(Video)",
-      "isVisible": false,
+      "isVisible": true,
       "isFolded": false,
       "order": 3
     },
